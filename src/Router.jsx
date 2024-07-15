@@ -1,5 +1,7 @@
 import {createBrowserRouter,RouterProvider} from "react-router-dom";
 import Home from './pages/Home'
+import AddEvent from './pages/AddEvent'
+
 
 function Router() {
     const router = createBrowserRouter([
@@ -7,6 +9,10 @@ function Router() {
           path: "/",
           element: <Home />,
         //   errorElement:<ErrorPage/>
+        },
+        {
+            path: "/AddEvent",
+            element: <AddEvent />,
         },
       ]);
     return(
