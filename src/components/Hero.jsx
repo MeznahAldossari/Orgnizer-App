@@ -6,7 +6,7 @@ const Hero = () => {
     <section className="bg-[#F3F6FF] py-10 sm:py-16 lg:py-24 h-[80vh]">
         <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div className="grid items-start grid-cols-1 gap-10 lg:grid-cols-2">
-                <div className='w-[35vw] pl-6 max-sm:w-[90vw]'>
+                <div className='w-[35vw] pl-6 max-sm:w-[90vw] h-[50vh] flex flex-col justify-center'>
                     <h1 className="text-4xl font-bold text-[#5C59C2] max-sm:text-3xl">نظّم معارض التوظيف بسهولة واحترافية</h1>
                     <p className="mt-8 text-base text-black sm:text-md">منصة متكاملة لإدارة وتنظيم معارض التوظيف, تسهل التواصل بين الشركات والطلاب </p>
                     <div className="mt-10 sm:flex sm:items-center sm:space-x-8">
