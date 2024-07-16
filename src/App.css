@@ -1,0 +1,16 @@
+.tab-content {
+  display: none; /* Hide all tab contents by default */
+}
+
+.active-tab-content {
+  display: block; /* Display the active tab content */
+}
+
+.hidden-tab-content {
+  display: none; /* Hide inactive tab contents */
+}
+.active-tab{
+  color: white !important;
+  background-color: #99d2cb;
+  
+}

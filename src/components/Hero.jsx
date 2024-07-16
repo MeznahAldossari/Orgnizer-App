@@ -1,42 +1,32 @@
 import React from 'react'
 
+import Lottie from "lottie-react";
+import Main_Animations from "../assets/bgHero2.json";
+
+
 const Hero = () => {
   return (
-    // <section className="bg-[#F3F6FF ] py-10 sm:py-16 lg:py-24 h-[80vh]">
-    //     <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-    //         <div className="grid items-start grid-cols-1 gap-10 lg:grid-cols-2">
-    //             <div className='pl-6 max-sm:w-[90vw]'>
-    //                 <h1 className="text-4xl font-bold text-black max-sm:text-3xl  ">
-    //                     Welcome to the Student Graduation Project Management
-    //                     <div className="relative inline-flex">
-    //                         <span className="absolute inset-x-0 bottom-0 border-b-[30px] border-[#f6c182]"></span>
-    //                         <h1 className="relative text-4xl font-bold text-black max-sm:text-3xl "> System</h1>
-    //                     </div>
-    //                 </h1>
+    <div className='h-[65vh] flex justify-center items-center '>
+      <div className='grid grid-cols-2 w-[100%]'>
+      {/* <svg viewBox="0 0 170 200" xmlns="http://www.w3.org/2000/svg">
+  <path fill="#6E68C4" d="M42.4,-39.7C55.3,-29.4,66.5,-14.7,67.5,1C68.5,16.7,59.3,33.4,46.3,46.5C33.4,59.7,16.7,69.3,2.4,66.9C-12,64.6,-23.9,50.2,-36.6,37.1C-49.3,23.9,-62.7,12,-65.7,-3C-68.7,-17.9,-61.2,-35.9,-48.5,-46.1C-35.9,-56.4,-17.9,-59,-1.6,-57.4C14.7,-55.8,29.4,-49.9,42.4,-39.7Z" transform="translate(100 100)" />
+</svg> */}
+<div className='mt-[20%] mr-12'>
+  <p className='text-[2rem] font-bold text-[#6e68c4] w-[60%]'>نظم معارض التوظيف بسهولة واحترافيه</p>
+  <p className='text-[1.2rem] w-[85%] mt-10'>منصة متكاملة لأدارة وتنظيم معارض التوظيف. وتسهيل التواصل بين الشركات والطلاب</p>
+</div>
 
-    //                 <p className="mt-8 text-base text-black sm:text-md">Easily manage and track graduation projects with our platform. Whether you’re a student submitting your innovative ideas or an admin overseeing project approvals, our system simplifies the entire process.</p>
+<div className='mt-12  ml-0 justify-center flex  items-start mr-4 h-auto'>
+<Lottie animationData={Main_Animations} style={{width:"85%"}}/>
 
-    //                 <div className="mt-10 sm:flex sm:items-center sm:space-x-8">
-    //                     <a href="#" title="" className="inline-flex items-center justify-center px-10 py-4 text-lg font-semibold text-white transition-all duration-200 bg-[#3763e0] hover:bg-[#5c88ff] rounded-lg max-sm:w-[50vw] max-sm:h-[8vh] max-sm:text-sm" role="button"> Craete Account </a>
 
-    //                     {/* <a href="#" title="" className="inline-flex items-center mt-6 text-base font-semibold transition-all duration-200 sm:mt-0 hover:opacity-80">
-    //                         <svg class="w-10 h-10 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    //                             <path fill="#F97316" stroke="#F97316" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-    //                             <path strokeLinecap="round" strokeLinejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-    //                         </svg>
-    //                         Watch video
-    //                     </a> */}
-    //                 </div>
-    //             </div>
-    //             <div>
-    //                 {/* <img className="w-full h-full" src={HeadImag} alt="header-image" /> */}
-    //             </div>
-    //         </div>
-    //     </div>
-    // </section>
-    <>
-    Hero section
-    </>
+</div>
+
+  </div>
+    
+
+    </div>
+
   )
 }
 
