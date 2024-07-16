@@ -3,6 +3,8 @@ import Nav from '../components/Nav'
 import { CiCalendar } from "react-icons/ci";
 import { FaLocationDot } from "react-icons/fa6";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { FaEdit } from "react-icons/fa";
+import { IoMdInformationCircleOutline } from "react-icons/io";
 
 
 
@@ -39,9 +41,13 @@ const EventInfo = () => {
 نتمنى لك التوفيق والنجاح.</p>
         </div>
 
-<div className='flex mt-4 gap-4 '>
-<button className="px-6  py-2 w-24 leading-5 text-white bg-[#5C59C2] rounded-md shadow-md hover:bg-[#4b47a7]">تعديل </button>
-<button className="px-6  py-2 w-24 leading-5 text-white bg-[#f39e4e] rounded-md shadow-md hover:bg-[#ffa754]">حذف </button>
+<div className='flex mt-7 gap-4   '>
+  <button>
+  <FaEdit   style={{ color: 'black', fontSize: '28px' }}/>                                   
+  </button>
+  <button>
+  <RiDeleteBin6Line  style={{ color: 'red', fontSize: '28px' }}/>                                   
+  </button>
 
 
 </div>
@@ -90,12 +96,18 @@ const EventInfo = () => {
                                 </td>
                                 <td className="">
                                     <div className="flex items-center ">
-                                    <button className=" py-2 w-24 leading-5 text-white bg-[#5C59C2] rounded-md shadow-md hover:bg-[#4b47a7]">التفاصيل</button>
+                                      <button>
+                                      <IoMdInformationCircleOutline style={{ color: 'black', fontSize: '20px' }} />                                   
+                                      </button>
+
                                     </div>
                                 </td>
                                 <td className="">
                                     <div className="flex items-center ">
-                                    <RiDeleteBin6Line  style={{ color: 'red', fontSize: '20px' }}/>                                    </div>
+                                      <button>
+                                      <RiDeleteBin6Line  style={{ color: 'red', fontSize: '20px' }}/>
+                                      </button>
+                               </div>
                                 </td>
                             
                       
@@ -145,10 +157,20 @@ const EventInfo = () => {
                                         <p className="text-base font-medium leading-none text-gray-700 mr-2">مقبول   </p>
                                     </div>
                                 </td>
-                            
+                                <td className="">
+                                    <div className="flex items-center ">
+                                      <button>
+                                      <IoMdInformationCircleOutline style={{ color: 'black', fontSize: '20px' }} />                                   
+                                      </button>
+
+                                    </div>
+                                </td>
                                 <td className="">
                                     <div className="flex items-center pl-5">
-                                    <RiDeleteBin6Line  style={{ color: 'red', fontSize: '20px' }}/>                                    </div>
+                                      <button>
+                                      <RiDeleteBin6Line  style={{ color: 'red', fontSize: '20px' }}/>  
+                                      </button>
+                                  </div>
                                 </td>
                             
                       
