@@ -86,11 +86,11 @@ const AddEvents = () => {
               display: 'flex',
               justifyContent: 'space-between',
               '.MuiChip-label': {
-                paddingRight: '14px', // Adjust padding to prevent overlap with delete icon
+                paddingRight: '14px', 
               },
               '.MuiChip-deleteIcon': {
                 position: 'relative',
-                marginRight: '1px', // Adjust margin to place delete icon inside the chip
+                marginRight: '1px', 
                 marginLeft:"3px"
               },
             }}
@@ -108,8 +108,8 @@ const AddEvents = () => {
                 backgroundColor: 'white',
               },
               '.MuiInputLabel-formControl': {
-                right: 20, // تحريك النص إلى اليمين
-                left: 'unset', // إزالة الانحياز الأيسر
+                right: 20, 
+                left: 'unset', 
               }
              
 
