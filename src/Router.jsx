@@ -26,6 +26,16 @@ function Router() {
           path: "/companyInfo",
           element: <CompanyDetails />,
         },
+        {
+          path: "/AddEvents",
+          element: <AddEvents />,
+        //   errorElement:<ErrorPage/>
+        },
+        {
+          path: "/EventInfo",
+          element: <EventInfo />,
+        //   errorElement:<ErrorPage/>
+        },
       ]);
     return(
         
