@@ -50,3 +50,23 @@
   fill: #FFFFFF;
 }
 
+.custom-shape-divider-bottom-1721182767 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+}
+
+.custom-shape-divider-bottom-1721182767 svg {
+    position: relative;
+    display: block;
+    width: calc(194% + 1.3px);
+    height: 197px;
+    transform: rotateY(180deg);
+}
+
+.custom-shape-divider-bottom-1721182767 .shape-fill {
+    fill: #FFFFFF;
+}
