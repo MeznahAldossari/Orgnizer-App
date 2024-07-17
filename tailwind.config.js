@@ -6,21 +6,40 @@ export default {
   ],
   theme: {
     extend: {},
-  },daisyui: {
+  },
+  plugins: [require('daisyui'),],daisyui: {
     themes: [
       {
         mytheme: {
-          "primary": "#a991f7",
-          "secondary": "#f6d860",
-          "accent": "#37cdbe",
-          "neutral": "#3d4451",
-          "base-100": "#ffffff",
-        },
-      }
-    ],
-  },
-  plugins: [
-    require('daisyui'),
-  ],
-}
+          
 
+"primary": "#5b21b6",
+          
+
+"secondary": "#f3f4f6",
+          
+
+"accent": "#00ffff",
+          
+
+"neutral": "#f3f4f6",
+          
+
+"base-100": "#f3f4f6",
+          
+
+"info": "#2563eb",
+          
+
+"success": "#00ff00",
+          
+
+"warning": "#00ff00",
+          
+
+"error": "#ff0000",
+          },
+        },
+      ],
+    },
+}

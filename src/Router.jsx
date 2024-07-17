@@ -1,5 +1,7 @@
 import {createBrowserRouter,RouterProvider} from "react-router-dom";
 import Home from './pages/Home'
+import AddEvents from "./pages/AddEvents";
+import EventInfo from "./pages/EventInfo";
 
 
 import Login from "./components/Login";
@@ -24,7 +26,6 @@ function Router() {
           path: "/companyInfo",
           element: <CompanyDetails />,
         },
-     
       ]);
     return(
         
