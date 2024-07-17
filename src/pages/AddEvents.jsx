@@ -33,13 +33,13 @@ const AddEvents = () => {
     <>
         <Nav />
         <div className='bg-[#F3F6FF] h-max w-full py-14'>
-          <div className='flex justify-start mr-24'>
-          <h1 className="text-2xl font-bold  text-black capitalize mb-5">إضافة معرض</h1>
+          <div className='flex justify-start mr-24 max-sm:mr-0'>
+          <h1 className="text-2xl font-bold max-sm:text-center w-full  text-black capitalize mb-5">إضافة معرض</h1>
           </div>
 
-        <section dir="rtl" className="max-w-4xl  p-6 mx-auto bg-white rounded-md shadow-2xl shadow-black">
+        <section dir="rtl" className="max-w-4xl max-sm:w-[95%] p-6 mx-auto bg-white rounded-md shadow-2xl shadow-black">
       <form>
-        <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 mt-4 ">
           <div>
             <label className="text-black" htmlFor="username">إسم المعرض</label>
             <input id="username" type="text" className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring" />
@@ -66,7 +66,7 @@ const AddEvents = () => {
           </div>
           <div>
             <label className="text-black" htmlFor="username"> الشركات</label>
-            <Stack spacing={3} sx={{ marginTop:"10px", width: 410, backgroundColor: 'white' }}>
+            <Stack spacing={3} sx={{ marginTop:"10px", width: 410, backgroundColor: 'white' }} className='max-sm:w-[50%]'>
       <Autocomplete
         multiple
         id="tags-filled"
@@ -168,7 +168,7 @@ const AddEvents = () => {
           </div>
         </div>
         <div className="flex justify-start mt-6">
-          <button className="px-6 py-2 w-24 leading-5 text-white bg-[#5C59C2] rounded-md shadow-md hover:bg-[#4b47a7]">حفظ</button>
+          <button className="px-6 py-2 w-24 leading-5 text-white bg-[#6e68c4] rounded-md shadow-md hover:bg-[#4b47a7]">حفظ</button>
         </div>
       </form>
     </section>

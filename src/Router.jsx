@@ -49,14 +49,14 @@ function Router() {
             path: "/Submissions",
             element: <Submissions />,
         },
-        // {
-        //     path: "/DetailsCompanies",
-        //     element: <DetailsCompanies />,
-        // },
-        // {
-        //     path: "/Companies",
-        //     element: <Companies />,
-        // },
+        {
+            path: "/DetailsCompanies",
+            element: <DetailsCompanies />,
+        },
+        {
+            path: "/Companies",
+            element: <Companies />,
+        },
       ]);
     return(
         

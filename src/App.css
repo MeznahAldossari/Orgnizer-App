@@ -23,6 +23,9 @@
 .mainHero{
   direction: ltr;
 }
+.mainStudent{
+  direction: rtl;
+}
 
 
 .custom-shape-divider-bottom-1721165418 {
@@ -44,6 +47,27 @@
 }
 
 .custom-shape-divider-bottom-1721165418 .shape-fill {
+  fill: #FFFFFF;
+}
+.custom-shape-divider-bottom-1721224378 {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  transform: rotate(180deg);
+}
+
+.custom-shape-divider-bottom-1721224378 svg {
+  position: relative;
+  display: block;
+  width: calc(188% + 1.3px);
+  height: 382px;
+  transform: rotateY(180deg);
+}
+
+.custom-shape-divider-bottom-1721224378 .shape-fill {
   fill: #FFFFFF;
 }
 

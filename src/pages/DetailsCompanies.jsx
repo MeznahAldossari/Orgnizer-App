@@ -12,9 +12,9 @@ const DetailsCompanies = () => {
    <div className='flex mt-10 flex-col'>
     <div className='flex gap-6 max-sm:flex-col max-sm:items-center'>
         <div className=''>
-            <img className='h-[40vh] w-[25vw] rounded-lg max-sm:w-[88vw]' src={Elm} />
+            <img className='h-[47vh] w-[25vw] rounded-lg max-sm:w-[88vw]' src={Elm} />
         </div>
-        <div className=' bg-white w-[66vw] h-[40vh] rounded-lg max-sm:w-[88vw] '>
+        <div className=' bg-white w-[66vw] h-[47vh] rounded-lg max-sm:w-[88vw] '>
             <h1 className='pt-6 pr-6 font-extrabold text-[#5C59C2] text-[1.5rem]'>شركة علم</h1>
             <h1 className='pr-6 pt-2 text-[#4b4b4b] text-[1rem]'>تقنية المعلومات</h1>
             <div className='pt-2 pr-5 flex gap-1 '>
@@ -32,7 +32,6 @@ const DetailsCompanies = () => {
                 <div className="flex justify-end items-center mt-4 ml-6">
                     <Link to="/Companies">                    <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#7c7c7c] hover:bg-[#919191] py-2 px-4 rounded-lg cursor-pointer text-center">العودة</p>
                     </Link>
-                    <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#7c7c7c] hover:bg-[#919191] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:text-[0.8rem] max-sm:w-[20vw]">العودة</p>
                 </div>
             </div>
         </div>      

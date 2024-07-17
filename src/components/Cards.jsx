@@ -30,17 +30,17 @@ const Cards = () => {
     }
 
   return (
-    <div className='flex flex-col w-full mt-32 bg-[#f7f6f5b3]'>
+    <div className='flex max-sm:mt-14 flex-col w-full mt-32   bg-[#f7f6f5b3]'>
       <div className='flex'>
         <Link to='/AddEvents'>
-        <button className='px-4 py-1 mt-6 text-white rounded-lg mr-12 bg-[#f39e4e]'>اضافة معرض</button>
+        <button className='px-4 py-1 mt-6 max-sm:mt-0 text-white rounded-lg mr-12 bg-[#f39e4e]'>اضافة معرض</button>
         </Link>
 
       </div>
       <div className='flex justify-center mt-4'>
       <div className='grid mt-12 w-[90%] grid-cols-3 place-items-center max-sm:grid-cols-1 max-sm:gap-6 '>
-         <div className='rounded-lg h-[67vh] w-[23vw] border-2 shadow-lg bg-white max-sm:w-[90vw]'>
-           <img src='https://media.licdn.com/dms/image/D4D0BAQESPMoQfW3MFA/company-logo_200_200/0/1719256028341/tuwaiqacademy_logo?e=2147483647&v=beta&t=QbYFSW5ik2LK_h7dq2LCrH5ZcMYIbbditOU3TVi1dKo' className='w-[100%]  h-[33vh] rounded-t-md'></img>
+         <div className='rounded-lg h-[67vh] w-[23vw] border-2 shadow-lg bg-white max-sm:w-[90vw]  max-sm:h-[50vh]'>
+           <img src='https://media.licdn.com/dms/image/D4D0BAQESPMoQfW3MFA/company-logo_200_200/0/1719256028341/tuwaiqacademy_logo?e=2147483647&v=beta&t=QbYFSW5ik2LK_h7dq2LCrH5ZcMYIbbditOU3TVi1dKo' className='max-sm:h-[28vh] w-[100%]  h-[33vh] rounded-t-md'></img>
            <div className="p-4">
         <h3 className="text-lg font-semibold mb-2 text-[#4e4e4e]">العنوان </h3>
         <div className="flex flex-col justify-start items-start gap-3 pt-2">
@@ -61,8 +61,8 @@ const Cards = () => {
     </div>
     
          </div>
-         <div className='rounded-md h-[67vh] w-[23vw]  border-2 shadow-lg bg-white max-sm:w-[90vw]'>
-           <img src='https://media.licdn.com/dms/image/D4D0BAQESPMoQfW3MFA/company-logo_200_200/0/1719256028341/tuwaiqacademy_logo?e=2147483647&v=beta&t=QbYFSW5ik2LK_h7dq2LCrH5ZcMYIbbditOU3TVi1dKo' className='w-[100%]  h-[33vh] rounded-t-md'></img>
+         <div className='rounded-md h-[67vh] w-[23vw]  border-2 shadow-lg bg-white max-sm:w-[90vw] max-sm:h-[50vh]'>
+           <img src='https://media.licdn.com/dms/image/D4D0BAQESPMoQfW3MFA/company-logo_200_200/0/1719256028341/tuwaiqacademy_logo?e=2147483647&v=beta&t=QbYFSW5ik2LK_h7dq2LCrH5ZcMYIbbditOU3TVi1dKo' className='w-[100%] max-sm:h-[28vh]  h-[33vh] rounded-t-md'></img>
            <div className="p-4">
         <h3 className="text-lg font-semibold mb-2 text-[#4e4e4e]">العنوان </h3>
         <div className="flex flex-col justify-start items-start gap-3 pt-2">
@@ -82,8 +82,8 @@ const Cards = () => {
     </div>
     
          </div>
-         <div className='rounded-md h-[67vh] w-[23vw]  border-2 shadow-lg bg-white max-sm:w-[90vw]'>
-           <img src='https://media.licdn.com/dms/image/D4D0BAQESPMoQfW3MFA/company-logo_200_200/0/1719256028341/tuwaiqacademy_logo?e=2147483647&v=beta&t=QbYFSW5ik2LK_h7dq2LCrH5ZcMYIbbditOU3TVi1dKo' className='w-[100%]  h-[33vh] rounded-t-md'></img>
+         <div className='rounded-md h-[67vh] w-[23vw]  border-2 shadow-lg bg-white max-sm:w-[90vw] max-sm:h-[50vh] '>
+           <img src='https://media.licdn.com/dms/image/D4D0BAQESPMoQfW3MFA/company-logo_200_200/0/1719256028341/tuwaiqacademy_logo?e=2147483647&v=beta&t=QbYFSW5ik2LK_h7dq2LCrH5ZcMYIbbditOU3TVi1dKo' className='w-[100%] max-sm:h-[28vh] h-[33vh] rounded-t-md'></img>
            <div className="p-4">
         <h3 className="text-lg font-semibold mb-2 text-[#4e4e4e]">العنوان </h3>
         <div className="flex flex-col justify-start items-start gap-3 pt-2">

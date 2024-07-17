@@ -45,10 +45,7 @@ const Submissions = () => {
             
         </div>
 
-        <div className="w-fit mx-auto grid grid-cols-3 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-10 mt-1 mb-16">
-            <div className='flex items-center mt-6 bg-white w-[25vw] h-full rounded-lg shadow'>
-                <img className='mr-4 rounded-full h-[20vh] w-[8vw]' src={Tamkeen} />
-        <div className="w-fit mx-auto grid grid-cols-3 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-20 mt-1 mb-16 max-sm:grid-cols-1 max-sm:gap-y-10">
+        <div className="w-[90%] mx-auto grid grid-cols-3 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-20 mt-1 mb-16 max-sm:grid-cols-1 max-sm:gap-y-10">
             <div className='flex items-center mt-6 bg-white w-full h-full rounded-lg shadow'>
                 <img className='mr-4 rounded-full h-[20vh] w-[8vw] max-sm:w-[20vw] max-sm:h-[15vh]' src={Tamkeen} />
                 <div className='mr-4 flex flex-col gap-2'>
@@ -68,14 +65,13 @@ const Submissions = () => {
                         <p className='text-[#5C59C2] text-[0.9rem]  border border-[#5C59C2] bg-[#5d59c24b] rounded text-center w-7'> 1 </p>
                     </div>
                     <div className='flex gap-2'>
-                        <p className='text-[gray] text-[0.9rem]'>المسمى الوظيفي</p>
                         {/* <p className='text-[#5C59C2] text-[0.9rem]  border border-[#5C59C2] bg-[#5d59c24b] rounded text-center w-7'> 1 </p> */}
                     </div>
                 </div>
             </div>
 
             <div className='flex items-center mt-6 bg-white w-full h-full rounded-lg shadow'>
-                <img className='mr-4 rounded-full h-[20vh] w-[8vw]' src={Elm} />
+                <img className='mr-4 rounded-full h-[20vh] w-[8vw] max-sm:w-[20vw] max-sm:h-[15vh]' src={Elm} />
                 <div className='mr-4 flex flex-col gap-2'>
                     <div className='flex gap-2'>
                         <span className="mt-3 relative flex h-3 w-3">
@@ -96,7 +92,7 @@ const Submissions = () => {
             </div>
 
             <div className='flex items-center mt-6 bg-white w-full h-full rounded-lg shadow'>
-                <img className='mr-4 rounded-full h-[20vh] w-[8vw]' src={Wadaie} />
+                <img className='mr-4 rounded-full h-[20vh] w-[8vw] max-sm:w-[20vw] max-sm:h-[15vh]' src={Wadaie} />
                 <div className='mr-4 flex flex-col gap-2'>
                     <div className='flex gap-2'>
                         <span className="mt-3 relative flex h-3 w-3">
@@ -116,7 +112,7 @@ const Submissions = () => {
                 </div>
             </div>
             <div className='flex items-center mt-6 bg-white w-full h-full rounded-lg shadow'>
-                <img className='mr-4 rounded-full h-[20vh] w-[8vw]' src={Wadaie} />
+                <img className='mr-4 rounded-full h-[20vh] w-[8vw] max-sm:w-[20vw] max-sm:h-[15vh]' src={Wadaie} />
                 <div className='mr-4 flex flex-col gap-2'>
                     <div className='flex gap-2'>
                         <span className="mt-3 relative flex h-3 w-3">
@@ -136,7 +132,7 @@ const Submissions = () => {
                 </div>
             </div>
             <div className='flex items-center mt-6 bg-white w-full h-full rounded-lg shadow'>
-                <img className='mr-4 rounded-full h-[20vh] w-[8vw]' src={Wadaie} />
+                <img className='mr-4 rounded-full h-[20vh] w-[8vw] max-sm:w-[20vw] max-sm:h-[15vh]' src={Wadaie} />
                 <div className='mr-4 flex flex-col gap-2'>
                     <div className='flex gap-2'>
                         <span className="mt-3 relative flex h-3 w-3">
@@ -156,7 +152,7 @@ const Submissions = () => {
                 </div>
             </div>
             <div className='flex items-center mt-6 bg-white w-full h-full rounded-lg shadow'>
-                <img className='mr-4 rounded-full h-[20vh] w-[8vw]' src={Wadaie} />
+                <img className='mr-4 rounded-full h-[20vh] w-[8vw] max-sm:w-[20vw] max-sm:h-[15vh]' src={Wadaie} />
                 <div className='mr-4 flex flex-col gap-2'>
                     <div className='flex gap-2'>
                         <span className="mt-3 relative flex h-3 w-3">
@@ -179,7 +175,6 @@ const Submissions = () => {
     </div>
     </div>
     </div>
-    </div> </div>
     </>
   )
 }
