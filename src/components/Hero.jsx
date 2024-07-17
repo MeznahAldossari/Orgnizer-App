@@ -8,7 +8,7 @@ import '../App.css'
 
 const Hero = () => {
   return (
-    <div className='h-[90vh] mt-[-1.5%] bg-slate-400 flex justify-center   '>
+    <div className='h-[90vh] mt-[-1.5%] bg-slate-400 flex justify-center '>
   <div className='mainHero border-none relative w-full'>
     <div className='h-[90vh] bg-black relative overflow-hidden'>
         <video className='absolute top-0 left-0 min-w-full min-h-full object-cover' autoPlay muted loop>

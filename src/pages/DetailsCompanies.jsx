@@ -26,9 +26,9 @@ const DetailsCompanies = () => {
             </div>
             <p className='pr-6 pt-2 text-[#202020] text-[0.9rem]'><span className='font-bold '>التفاصيل:</span> هي شركة مساهمة سعودية مدرجة في السوق المالية السعودية «تداول» ومركزها الرئيسي في العاصمة السعودية الرياض وتتنوع نشاطاتها في تقديم الحلول الرقمية كالمنصات والمنتجات، وتنفيذ المشاريع الرقمية، وحلول إسناد الأعمال المرتبطة بأعمال الشركة، مع تقديم الخدمات الاستشارية الداعمة في المجالات الرقمية ومجالات الأعمال المحيطة بها. </p>
             <div className='flex justify-end items-center'>
-                <div className="flex justify-end items-center mt-4 ml-2">
+                {/* <div className="flex justify-end items-center mt-4 ml-2">
                     <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#99D2CB] hover:bg-[#a5ddd7] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:text-[0.8rem] max-sm:w-[20vw] ">تقديم</p>
-                </div>
+                </div> */}
                 <div className="flex justify-end items-center mt-4 ml-6">
                     <Link to="/Companies">                    <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#7c7c7c] hover:bg-[#919191] py-2 px-4 rounded-lg cursor-pointer text-center">العودة</p>
                     </Link>
@@ -50,6 +50,7 @@ const DetailsCompanies = () => {
               <th className="text-right p-3 px-5">المسمى الوظيفي</th>
               <th className="text-right p-3 px-5">المسؤوليات </th>
               <th className="text-right p-3 px-5">المهارات المطلوبة</th>
+              <th className="text-right p-3 px-5">التقديم </th>
             </tr>
                  <tr tabindex="0" className="focus:outline-none h-16 border border-[#99D2CB] rounded">
                     {/* <td className="">
@@ -72,6 +73,13 @@ const DetailsCompanies = () => {
                             <p className="text-base font-medium leading-none text-gray-700 mr-2"> CSS - HTML - JavaSrcipt -React </p>
                         </div>
                     </td> 
+                    <td className="">
+                        <div className="flex items-center pl-5">
+                            <p className="text-base font-medium leading-none text-gray-700 mr-2">  <div className='flex gap-2'>
+                        <span className="bg-[#99D2CB] text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-[#99D2CB] dark:text-yellow-400 border border-[#99D2CB]">تقديم</span>
+                        </div> </p>
+                        </div>
+                    </td>
                 </tr>
             </tbody>
         </table>  
@@ -82,7 +90,7 @@ const DetailsCompanies = () => {
     <p className='text-lg mb-5 font-extrabold text-[#5C59C2] text-[1.1rem]' > قائمة تقديماتي</p>
     <table className="w-full whitespace-nowrap max-sm:table-xs">
             <tbody>
-            <tr className="focus:outline-none h-16 border border-[#99D2CB] bg-[#99d2cb38] rounded">
+            <tr className="focus:outline-none h-16 border border-[#99D2CB] bg-[#fafafa] rounded">
               <th className="text-right p-3 px-5">المسمى الوظيفي</th>
               <th className="text-right p-3 px-5">الحالة </th>
               <th className="text-right p-3 px-5"> الترتيب </th>
@@ -99,6 +107,7 @@ const DetailsCompanies = () => {
                             <p className="text-base font-medium leading-none text-gray-700 mr-5">   مطور ويب  </p>
                         </div>
                     </td>
+                    
                     <td className="">
                         <div className="flex items-center pl-5">
                             <p className="text-base font-medium leading-none text-gray-700 mr-2">  <div className='flex gap-2'>
