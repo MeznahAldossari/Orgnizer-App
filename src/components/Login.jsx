@@ -62,8 +62,8 @@ function Login() {
 
   return (
     <div className='flex justify-center items-center bg-[#f1f0f0] h-screen'>
-        <div className='flex flex-col justify-center items-center  w-[35%] bg-white shadow-lg h-[80vh] max-sm:w-[90%]'> 
-    
+        <div className='flex flex-col mt-[10%] items-center  w-[35%] bg-white shadow-lg h-[80vh] max-sm:w-[90%]'> 
+    <img src={Logo} className='w-[20vw]' />
   <input type='text' placeholder='البريد الألكتروني' className='pr-2  bg-[#f2f2f2]  pl-10 px-4 py-1 max-sm:w-[90%]  border border-gray-300 rounded-lg w-[80%]'>
   </input>
  

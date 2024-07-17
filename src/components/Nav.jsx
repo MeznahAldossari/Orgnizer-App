@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import Logo from '../assets/Logo.png'
 import { Link } from 'react-router-dom'
 import logOutIcon from '../assets/logoutbutton.png'
 import { useNavigate } from 'react-router-dom';
-import React from 'react'
+
 import Logo from '../assets/nazzem-logo.png'
 
 import { GiHamburgerMenu } from "react-icons/gi";
