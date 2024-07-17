@@ -2,7 +2,7 @@ import React from 'react'
 import Nav from '../components/Nav'
 import Hero from '../components/Hero'
 import Cards from '../components/Cards'
-
+import Footer from '../components/Footer'
 
 const Home = () => {
   return (
@@ -10,6 +10,7 @@ const Home = () => {
     <Nav />
     <Hero />
     <Cards />
+    <Footer />
     </>
 
   )
