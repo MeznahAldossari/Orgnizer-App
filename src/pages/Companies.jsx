@@ -3,6 +3,7 @@ import Nav from '../components/Nav'
 import HeroStudent from '../components/HeroStudent'
 
 import Elm from '../assets/elm.png'
+import { Link } from 'react-router-dom'
 
 const Companies = () => {
   return (
@@ -49,10 +50,14 @@ const Companies = () => {
                 </div>
                 <div className='flex justify-center items-center h-[12vh]'>
                     <div className="flex justify-end items-center mt-4 ml-2">
+                        
                         <p className="w-[6vw] h-[3vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#99D2CB] hover:bg-[#a5ddd7] py-2 px-4 rounded-lg cursor-pointer text-center">تقديم</p>
                     </div>
                     <div className="flex justify-end items-center mt-4 ml-2">
+                        <Link to="/DetailsCompanies">
                         <p className="w-[6vw] h-[3vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#5C59C2] hover:bg-[#7b78d8] py-2 px-4 rounded-lg cursor-pointer text-center">المزيد</p>
+
+                        </Link>
                     </div>
                 </div>
             </div>
@@ -74,7 +79,10 @@ const Companies = () => {
                         <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#99D2CB] hover:bg-[#a5ddd7] py-2 px-4 rounded-lg cursor-pointer text-center">تقديم</p>
                     </div>
                     <div className="flex justify-end items-center mt-4 ml-2">
-                        <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#5C59C2] hover:bg-[#7b78d8] py-2 px-4 rounded-lg cursor-pointer text-center">المزيد</p>
+                        <Link to="/DetailsCompanies">
+                        <p className="w-[6vw] h-[3vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#5C59C2] hover:bg-[#7b78d8] py-2 px-4 rounded-lg cursor-pointer text-center">المزيد</p>
+
+                        </Link>
                     </div>
                 </div>
             </div>
@@ -96,8 +104,10 @@ const Companies = () => {
                         <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#99D2CB] hover:bg-[#a5ddd7] py-2 px-4 rounded-lg cursor-pointer text-center">تقديم</p>
                     </div>
                     <div className="flex justify-end items-center mt-4 ml-2">
-                        <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#5C59C2] hover:bg-[#7b78d8] py-2 px-4 rounded-lg cursor-pointer text-center">المزيد</p>
-                    </div>
+                    <Link to="/DetailsCompanies">
+                        <p className="w-[6vw] h-[3vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#5C59C2] hover:bg-[#7b78d8] py-2 px-4 rounded-lg cursor-pointer text-center">المزيد</p>
+
+                        </Link>                    </div>
                 </div>
             </div>
         </div> 
@@ -118,8 +128,10 @@ const Companies = () => {
                         <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#99D2CB] hover:bg-[#a5ddd7] py-2 px-4 rounded-lg cursor-pointer text-center">تقديم</p>
                     </div>
                     <div className="flex justify-end items-center mt-4 ml-2">
-                        <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#5C59C2] hover:bg-[#7b78d8] py-2 px-4 rounded-lg cursor-pointer text-center">المزيد</p>
-                    </div>
+                    <Link to="/DetailsCompanies">
+                        <p className="w-[6vw] h-[3vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#5C59C2] hover:bg-[#7b78d8] py-2 px-4 rounded-lg cursor-pointer text-center">المزيد</p>
+
+                        </Link>                    </div>
                 </div>
             </div>
         </div>              

@@ -79,7 +79,24 @@
 
                       <td className="">
                           <div className="flex justify-center items-center pl-5">
-                              <img src={deleteStudent} className='w-4 cursor-pointer'/>
+                              <img src={deleteStudent} className='w-4 cursor-pointer' onClick={() => { document.getElementById('my_modal_4').showModal()}}/>
+                              <dialog id="my_modal_4" className="modal ">
+                                <div className="modal-box w-[35vw] max-w-5xl">
+
+                                <p className="py-4 text-[1.1rem]">هل انت متأكد من الغاء الطالب؟</p>
+                                <div className="modal-action">
+                                <form method="dialog" className='gap-6'>
+                               
+                                <button className="btn ml-1 bg-[#99D2CB] text-white" >نعم</button>
+                               
+                               
+                                <button className="btn bg-[#99D2CB] text-white">لا</button>
+                               
+
+                                </form>
+                                </div>
+                                </div>
+                            </dialog>
                           </div>
                       </td>
                   </tr>

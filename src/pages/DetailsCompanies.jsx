@@ -1,6 +1,7 @@
 import React from 'react'
 import Nav from '../components/Nav'
 import Elm from '../assets/elm.png'
+import { Link } from 'react-router-dom'
 
 
 const DetailsCompanies = () => {
@@ -29,7 +30,8 @@ const DetailsCompanies = () => {
                     <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#99D2CB] hover:bg-[#a5ddd7] py-2 px-4 rounded-lg cursor-pointer text-center">تقديم</p>
                 </div>
                 <div className="flex justify-end items-center mt-4 ml-6">
-                    <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#7c7c7c] hover:bg-[#919191] py-2 px-4 rounded-lg cursor-pointer text-center">العودة</p>
+                    <Link to="/Companies">                    <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#7c7c7c] hover:bg-[#919191] py-2 px-4 rounded-lg cursor-pointer text-center">العودة</p>
+                    </Link>
                 </div>
             </div>
         </div>      
@@ -38,7 +40,7 @@ const DetailsCompanies = () => {
 <div className='mt-8 bg-white rounded-md '>
 <div className='flex justify-center bg-[#5d6fa3] w-[93%] mr-10'>
   <div role="tablist" className="tabs w-[90vw] tabs-lifted bg-white">
-    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white hover:text-[#5C59C2] " aria-label="الشواغر" />
+    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white hover:text-[#5C59C2] " aria-label="الشواغر" defaultChecked/>
     <div role="tabpanel" className="tab-content bg-white border-base-100 rounded-box p-6">
       <p className='text-lg mb-5 font-extrabold text-[#5C59C2] text-[1.1rem]' > قائمة الشواغر</p>
     <table className="w-full whitespace-nowrap max-sm:table-xs">
@@ -74,7 +76,7 @@ const DetailsCompanies = () => {
         </table>  
 </div>
 {/* تقديماتي */}
-    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white hover:text-[#5C59C2]" aria-label="تقديماتي" defaultChecked />
+    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white hover:text-[#5C59C2]" aria-label="تقديماتي"  />
     <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6">
     <p className='text-lg mb-5 font-extrabold text-[#5C59C2] text-[1.1rem]' > قائمة تقديماتي</p>
     <table className="w-full whitespace-nowrap max-sm:table-xs">
