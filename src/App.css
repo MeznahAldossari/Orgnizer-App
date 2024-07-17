@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap');
+
+*{
+  font-family: "Cairo", sans-serif;
+  font-optical-sizing: auto;
+}
 .tab-content {
   display: none; /* Hide all tab contents by default */
 }
@@ -14,3 +20,33 @@
   background-color: #99d2cb;
   
 }
+.mainHero{
+  direction: ltr;
+}
+
+*{
+
+}
+
+.custom-shape-divider-bottom-1721165418 {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  transform: rotate(180deg);
+}
+
+.custom-shape-divider-bottom-1721165418 svg {
+  position: relative;
+  display: block;
+  width: calc(158% + 1.3px);
+  height: 144px;
+  transform: rotateY(180deg);
+}
+
+.custom-shape-divider-bottom-1721165418 .shape-fill {
+  fill: #FFFFFF;
+}
+
