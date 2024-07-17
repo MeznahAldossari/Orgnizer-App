@@ -3,11 +3,13 @@ import Nav from '../components/Nav'
 
 const StudentProfile = () => {
   return (
-    <>
+    <div>
     <Nav />
     <div className='bg-[#f3f3f3] h-full w-full'>
-        <div className='flex justify-start items-end w-full h-[10vh]'>
+        <div className='flex justify-between items-end w-full h-[10vh]'>
             <p className='font-semibold text-[1.5rem] mr-14'> مرحباً <span className='text-[#5C59C2]'> اسماء</span>  </p>
+            <button className="rounded-lg text-white bg-[#f39e4e] py-1 px-3 ml-14"> حفظ</button>
+
         </div>
         <div className='flex flex-col justify-center items-center'>
             <div className='flex items-center mt-6 bg-white w-[91%] h-[20vh] rounded-lg'>
@@ -25,7 +27,7 @@ const StudentProfile = () => {
                 <div className='flex justify-between w-[30vw] max-sm:w-[80vw] '>
                     <div className='flex flex-col '>
                         <p className='mt-2 mr-6 font-bold'>الاسم الأول</p>
-                        <p className='mt-2 mr-6 text-[gray]'>اسماء</p>
+                        <p className='mt-2  mr-6 text-[gray]'>اسماء</p>
                     </div>
                     <div className='flex flex-col '>
                         <p className='mt-2 mr-6 font-bold'>الاسم الاخير</p>
@@ -65,7 +67,7 @@ const StudentProfile = () => {
                         <form className="max-w-[40vw] mx-auto">
                         <label for="countries" className="mt-2 mr-6 font-bold">دولة الاقامة</label>
                         <div className="mr-6 mt-2 relative w-64">
-                            <select className="block appearance-none w-[31vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-4 pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline max-sm:w-[75vw]">
+                            <select className="block appearance-none w-[31vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-4 pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline">
                                 <option>السعودية</option>
                                 <option>البحرين</option>
                                 <option>الامارات</option>
@@ -83,7 +85,7 @@ const StudentProfile = () => {
                         <form className="max-w-[40vw] mx-auto">
                         <label for="countries" className="mt-2 mr-6 font-bold">المدينة</label>
                         <div className="mr-6 mt-2 relative w-64">
-                            <select className="block appearance-none w-[10vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-4 pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline max-sm:w-[34vw]">
+                            <select className="block appearance-none w-[10vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-4 pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline">
                                 <option>الرياض</option>
                                 <option>مكة </option>
                                 <option>المدينة</option>
@@ -98,7 +100,7 @@ const StudentProfile = () => {
                         <form className="max-w-[40vw] mx-auto">
                         <label for="countries" className="mt-2 mr-6 font-bold">خريج</label>
                         <div className="mr-6 mt-2 relative w-64">
-                            <select className="block appearance-none w-[10vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-4 pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline max-sm:w-[34vw]">
+                            <select className="block appearance-none w-[10vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-4 pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline">
                                 <option >طويق</option>
                                 <option>ابل </option>
                                 {/* <option>الاكاديمية السعودية </option> */}
@@ -170,7 +172,7 @@ const StudentProfile = () => {
         </div>
 
     </div>
-    </>
+    </div>
   )
 }
 

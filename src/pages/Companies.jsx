@@ -3,6 +3,7 @@ import Nav from '../components/Nav'
 import HeroStudent from '../components/HeroStudent'
 
 import Elm from '../assets/elm.png'
+import { Link } from 'react-router-dom'
 
 const Companies = () => {
   return (
@@ -51,12 +52,12 @@ const Companies = () => {
                             <span className="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5  dark:bg-yellow-700 dark:text-yellow-400 border border-[#eebf59] rounded-full ">مصمم واجهات</span>
                         </div>
                 </div>
-                <div className='flex justify-center items-center h-[12vh] max-sm:flex-col'>
-                    <div className="flex justify-end items-center mt-4 ml-2 ">
-                        <p className="w-[6vw] h-[3vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#99D2CB] hover:bg-[#a5ddd7] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:w-[20vw] max-sm:h-[4vh]">تقديم</p>
+                <div className='flex justify-center items-center h-[12vh]'>
+                    <div className="flex justify-end items-center mt-4 ml-2">
+                        <p className="w-[6vw] h-[3vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#99D2CB] hover:bg-[#a5ddd7] py-2 px-4 rounded-lg cursor-pointer text-center">تقديم</p>
                     </div>
                     <div className="flex justify-end items-center mt-4 ml-2">
-                        <p className="w-[6vw] h-[3vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#5C59C2] hover:bg-[#7b78d8] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:w-[20vw] max-sm:h-[4vh]">المزيد</p>
+                        <p className="w-[6vw] h-[3vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#5C59C2] hover:bg-[#7b78d8] py-2 px-4 rounded-lg cursor-pointer text-center">المزيد</p>
                     </div>
                 </div>
             </div>
@@ -78,7 +79,7 @@ const Companies = () => {
                         <p className="w-[6vw] h-[3vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#99D2CB] hover:bg-[#a5ddd7] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:w-[20vw] max-sm:h-[4vh]">تقديم</p>
                     </div>
                     <div className="flex justify-end items-center mt-4 ml-2">
-                        <p className="w-[6vw] h-[3vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#5C59C2] hover:bg-[#7b78d8] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:w-[20vw] max-sm:h-[4vh]">المزيد</p>
+                        <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#5C59C2] hover:bg-[#7b78d8] py-2 px-4 rounded-lg cursor-pointer text-center">المزيد</p>
                     </div>
                 </div>
             </div>
@@ -100,7 +101,7 @@ const Companies = () => {
                         <p className="w-[6vw] h-[3vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#99D2CB] hover:bg-[#a5ddd7] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:w-[20vw] max-sm:h-[4vh]">تقديم</p>
                     </div>
                     <div className="flex justify-end items-center mt-4 ml-2">
-                        <p className="w-[6vw] h-[3vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#5C59C2] hover:bg-[#7b78d8] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:w-[20vw] max-sm:h-[4vh]">المزيد</p>
+                        <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#5C59C2] hover:bg-[#7b78d8] py-2 px-4 rounded-lg cursor-pointer text-center">المزيد</p>
                     </div>
                 </div>
             </div>
@@ -122,6 +123,10 @@ const Companies = () => {
                         <p className="w-[6vw] h-[3vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#99D2CB] hover:bg-[#a5ddd7] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:w-[20vw] max-sm:h-[4vh]">تقديم</p>
                     </div>
                     <div className="flex justify-end items-center mt-4 ml-2">
+                    <Link to="/DetailsCompanies">
+                        <p className="w-[6vw] h-[3vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#5C59C2] hover:bg-[#7b78d8] py-2 px-4 rounded-lg cursor-pointer text-center">المزيد</p>
+
+                        </Link>                    </div>
                         <p className="w-[6vw] h-[3vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#5C59C2] hover:bg-[#7b78d8] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:w-[20vw] max-sm:h-[4vh]">المزيد</p>
                     </div>
                 </div>
@@ -132,7 +137,7 @@ const Companies = () => {
 </div>
 </div>
 
-    </div>
+    
     </>
   )
 }
