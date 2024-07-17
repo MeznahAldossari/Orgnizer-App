@@ -1,6 +1,7 @@
 import React from 'react'
 import Nav from '../components/Nav'
 import Elm from '../assets/elm.png'
+import { Link } from 'react-router-dom'
 
 
 const DetailsCompanies = () => {
@@ -11,9 +12,9 @@ const DetailsCompanies = () => {
    <div className='flex mt-10 flex-col'>
     <div className='flex gap-6 max-sm:flex-col max-sm:items-center'>
         <div className=''>
-            <img className='h-[40vh] w-[25vw] rounded-lg max-sm:w-[88vw]' src={Elm} />
+            <img className='h-[47vh] w-[25vw] rounded-lg max-sm:w-[88vw]' src={Elm} />
         </div>
-        <div className=' bg-white w-[66vw] h-[40vh] rounded-lg max-sm:w-[88vw] '>
+        <div className=' bg-white w-[66vw] h-[47vh] rounded-lg max-sm:w-[88vw] '>
             <h1 className='pt-6 pr-6 font-extrabold text-[#5C59C2] text-[1.5rem]'>شركة علم</h1>
             <h1 className='pr-6 pt-2 text-[#4b4b4b] text-[1rem]'>تقنية المعلومات</h1>
             <div className='pt-2 pr-5 flex gap-1 '>
@@ -25,11 +26,12 @@ const DetailsCompanies = () => {
             </div>
             <p className='pr-6 pt-2 text-[#202020] text-[0.9rem]'><span className='font-bold '>التفاصيل:</span> هي شركة مساهمة سعودية مدرجة في السوق المالية السعودية «تداول» ومركزها الرئيسي في العاصمة السعودية الرياض وتتنوع نشاطاتها في تقديم الحلول الرقمية كالمنصات والمنتجات، وتنفيذ المشاريع الرقمية، وحلول إسناد الأعمال المرتبطة بأعمال الشركة، مع تقديم الخدمات الاستشارية الداعمة في المجالات الرقمية ومجالات الأعمال المحيطة بها. </p>
             <div className='flex justify-end items-center'>
-                <div className="flex justify-end items-center mt-4 ml-2">
+                {/* <div className="flex justify-end items-center mt-4 ml-2">
                     <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#99D2CB] hover:bg-[#a5ddd7] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:text-[0.8rem] max-sm:w-[20vw] ">تقديم</p>
-                </div>
+                </div> */}
                 <div className="flex justify-end items-center mt-4 ml-6">
-                    <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#7c7c7c] hover:bg-[#919191] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:text-[0.8rem] max-sm:w-[20vw]">العودة</p>
+                    <Link to="/Companies">                    <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#7c7c7c] hover:bg-[#919191] py-2 px-4 rounded-lg cursor-pointer text-center">العودة</p>
+                    </Link>
                 </div>
             </div>
         </div>      
@@ -38,7 +40,7 @@ const DetailsCompanies = () => {
 <div className='mt-8 bg-white rounded-md '>
 <div className='flex justify-center bg-[#5d6fa3] w-[93%] mr-10'>
   <div role="tablist" className="tabs w-[90vw] tabs-lifted bg-white">
-    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white hover:text-[#5C59C2] " aria-label="الشواغر" />
+    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white hover:text-[#5C59C2] " aria-label="الشواغر" defaultChecked/>
     <div role="tabpanel" className="tab-content bg-white border-base-100 rounded-box p-6">
       <p className='text-lg mb-5 font-extrabold text-[#5C59C2] text-[1.1rem]' > قائمة الشواغر</p>
     <table className="w-full whitespace-nowrap max-sm:table-xs">
@@ -47,6 +49,7 @@ const DetailsCompanies = () => {
               <th className="text-right p-3 px-5">المسمى الوظيفي</th>
               <th className="text-right p-3 px-5">المسؤوليات </th>
               <th className="text-right p-3 px-5">المهارات المطلوبة</th>
+              <th className="text-right p-3 px-5">التقديم </th>
             </tr>
                  <tr tabindex="0" className="focus:outline-none h-16 border border-[#99D2CB] rounded">
                     {/* <td className="">
@@ -69,17 +72,24 @@ const DetailsCompanies = () => {
                             <p className="text-base font-medium leading-none text-gray-700 mr-2"> CSS - HTML - JavaSrcipt -React </p>
                         </div>
                     </td> 
+                    <td className="">
+                        <div className="flex items-center pl-5">
+                            <p className="text-base font-medium leading-none text-gray-700 mr-2">  <div className='flex gap-2'>
+                        <span className="bg-[#99D2CB] text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-[#99D2CB] dark:text-yellow-400 border border-[#99D2CB]">تقديم</span>
+                        </div> </p>
+                        </div>
+                    </td>
                 </tr>
             </tbody>
         </table>  
 </div>
 {/* تقديماتي */}
-    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white hover:text-[#5C59C2]" aria-label="تقديماتي" defaultChecked />
+    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white hover:text-[#5C59C2]" aria-label="تقديماتي"  />
     <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6">
     <p className='text-lg mb-5 font-extrabold text-[#5C59C2] text-[1.1rem]' > قائمة تقديماتي</p>
     <table className="w-full whitespace-nowrap max-sm:table-xs">
             <tbody>
-            <tr className="focus:outline-none h-16 border border-[#99D2CB] bg-[#99d2cb38] rounded">
+            <tr className="focus:outline-none h-16 border border-[#99D2CB] bg-[#fafafa] rounded">
               <th className="text-right p-3 px-5">المسمى الوظيفي</th>
               <th className="text-right p-3 px-5">الحالة </th>
               <th className="text-right p-3 px-5"> الترتيب </th>
@@ -96,6 +106,7 @@ const DetailsCompanies = () => {
                             <p className="text-base font-medium leading-none text-gray-700 mr-5">   مطور ويب  </p>
                         </div>
                     </td>
+                    
                     <td className="">
                         <div className="flex items-center pl-5">
                             <p className="text-base font-medium leading-none text-gray-700 mr-2">  <div className='flex gap-2'>

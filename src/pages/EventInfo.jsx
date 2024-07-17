@@ -1,7 +1,7 @@
 import React from 'react'
 import Nav from '../components/Nav'
 import { CiCalendar } from "react-icons/ci";
-import { FaLocationDot } from "react-icons/fa6";
+// import { FaLocationDot } from "react-icons/fa6";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaEdit } from "react-icons/fa";
 import { IoMdInformationCircleOutline } from "react-icons/io";
@@ -13,23 +13,25 @@ const EventInfo = () => {
     <>
 <Nav/>
     <div className=' h-full w-full bg-[#F3F6FF]' dir='rtl'>
-        <div className='flex max-sm:flex-wrap gap-5 p-10  bg-[#F3F6FF]'>
+        <div className='flex max-sm:flex-wrap gap-5 p-10 bg-[#F3F6FF]'>
         <img src="https://static.sayidaty.net/styles/900_scale/public/2024-06/349805.jpg.webp" className='w-[30vw] h-[60vh]  max-sm:w-full' alt="" srcset="" />
         <div className='flex flex-col w-full bg-white  h-[60vh]  mr-4 p-3 max-sm:w-[90vw] max-sm:mr-0' >
         <p className='text-2xl font-bold'>معرض طويق التوظيفي </p>
 
-        <div className='flex gap-2 mt-4'>
-        <CiCalendar className='w-5 h-5' />
+        <div className='flex gap-2 mt-4 pt-2 pr-5'>
+        <CiCalendar className='w-5 h-5 ' />
         <p className='text-base font-medium '> 01/01/2024</p>
         <p className='text-base font-medium '>الى 03/01/2024</p>
         </div>
-        <div className='flex gap-2 mt-4'>
-        <FaLocationDot className='w-5 h-5' />
-        <p className='text-base font-medium '> كراج</p>
-        </div>
+        <div className='pt-2 pr-5 flex gap-1 '>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5 text-[#99D2CB]">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                </svg>
+                <p className='text-[gray] text-[0.8rem] '> كراج</p>
+            </div>
         <div className='mt-4'>
-            <p className=' text-lg font-semibold'>التفاصيل :</p>
-            <p>تنتظرك +650 فرصة وظيفية في +80 جهة من مختلف القطاعات ..
+        <p className='pr-6 pt-2 text-[#202020] text-[0.9rem]'><span className='font-bold '>التفاصيل:</span> نتظرك +650 فرصة وظيفية في +80 جهة من مختلف القطاعات ..
 نود تذكيرك بحضور (برنامج طويق للتوظيف) المقام خلال:
 
 الأحد والإثنين 2-3 يونيو
@@ -39,15 +41,42 @@ const EventInfo = () => {
 *الدعوة خاصة: يلزم إبراز الهوية للموظف المختص وإبراز باركود القبول من ملفك الشخصي عبر موقع أكاديمية طويق.
 
 نتمنى لك التوفيق والنجاح.</p>
+
+            {/* <p>ت</p> */}
         </div>
 
 <div className='flex mt-7 gap-4   '>
   <button>
   <FaEdit   style={{ color: 'black', fontSize: '28px' }}/>                                   
   </button>
-  <button>
+  <button onClick={() => { document.getElementById('my_modal_4').showModal()}}>
   <RiDeleteBin6Line  style={{ color: 'red', fontSize: '28px' }}/>                                   
   </button>
+  <dialog id="my_modal_4" className="modal ">
+                                <div className="modal-box w-[35vw] max-w-5xl">
+
+                                <p className="py-4 text-[1.1rem]">هل انت متأكد من حذف المعرض</p>
+                                <div className="modal-action">
+                                <form method="dialog" className='gap-6'>
+                               
+                                <button className="btn ml-1 bg-[#99D2CB] text-white" >نعم</button>
+                               
+                               
+                                <button className="btn bg-[#99D2CB] text-white">لا</button>
+                               
+
+                                </form>
+                                </div>
+                                </div>
+                            </dialog>
+<div className='flex justify-end items-center w-[60vw]'>
+                {/* <div className="flex justify-end items-center mt-4 ml-2">
+                    <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#99D2CB] hover:bg-[#a5ddd7] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:text-[0.8rem] max-sm:w-[20vw] ">تقديم</p>
+                </div> */}
+                <div className="flex justify-end items-center mt-4 ml-6">
+                    {/* <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#7c7c7c] hover:bg-[#919191] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:text-[0.8rem] max-sm:w-[20vw]">العودة</p> */}
+                </div>
+            </div>
 
 
 </div>
@@ -58,16 +87,18 @@ const EventInfo = () => {
         </div>
         <div className='flex justify-center  bg-[#F3F6FF] w-[93%] mr-10 max-sm:mr-3 '>
   <div role="tablist" className="tabs w-[90vw] tabs-lifted bg-white">
-    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white " aria-label="الشركات" />
+    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white hover:text-[#5C59C2]" aria-label="الشركات" defaultChecked/>
     <div role="tabpanel" className="tab-content bg-white border-base-100 rounded-box p-6">
       <p className='text-lg font-bold mb-5' > قائمة الشركات</p>
-      <table className="w-full text-md bg-white shadow-md rounded mb-4   max-sm:text-xs max-sm:table-xs" >
-          <tbody>
-            <tr className="border-b">
-            <th className="text-right p-3 px-5 max-sm:p-1">الصورة</th>
-              <th className="text-right p-3 px-5 max-sm:p-1">الاسم</th>
-              <th className="text-right p-3 px-5 max-sm:p-1">الإيميل</th>
-              <th className="text-right p-3 px-5 max-sm:p-1">المجال</th>
+    <table className="w-full whitespace-nowrap max-sm:table-xs">
+                        <tbody>
+                        <tr className="focus:outline-none h-16 border border-base-100 rounded">
+              <th className="text-right p-3 px-5">الصورة</th>
+              <th className="text-right p-3 px-5">الاسم </th>
+              <th className="text-right p-3 px-5">الإيميل</th>
+              <th className="text-right p-3 px-5">المجال</th>
+
+
               <th></th>
             </tr>
               <tr  className={`border-b hover:bg-slate-200 `}>
@@ -87,27 +118,41 @@ const EventInfo = () => {
                 <td className="p-3 px-5 flex max-sm:mt-3 justify-evenly max-sm:p-1">
                 <button>
                                       <IoMdInformationCircleOutline style={{ color: 'black', fontSize: '20px' }} />                                   
-                                      </button> 
-                                      <button>
-                                      <RiDeleteBin6Line  style={{ color: 'red', fontSize: '20px' }}/>  
-                                      </button>     
-                </td>
-              </tr>
-          </tbody>
-        </table>
+                                      </button>
 
+                                    </div>
+                                </td>
+                                <td className="">
+                                    <div className="flex items-center ">
+                                      <button>
+                                      <RiDeleteBin6Line  style={{ color: 'red', fontSize: '20px' }}/>
+                                      </button>
+                               </div>
+                                </td>
+                            
+                      
+                              
+                                <td>
+                               
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>  
             </div>
 
-    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white " aria-label="الطلاب" defaultChecked />
-    <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6  ">
-    <p className='text-lg font-bold mb-5' > قائمة الطلاب</p>
-    <table className="w-full text-md bg-white shadow-md rounded mb-4   max-sm:text-xs max-sm:table-xs" >
-          <tbody>
-            <tr className="border-b">
-            <th className="text-right p-3 px-5 max-sm:p-1">الأسم</th>
-              <th className="text-right p-3 px-5 max-sm:p-1">المعسكر</th>
-              <th className="text-right p-3 px-5 max-sm:p-1">الإيميل</th>
-              <th className="text-right p-3 px-5 max-sm:p-1">الحالة</th>
+    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white" aria-label="الطلاب"  />
+    <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6">
+    <p className='text-lg mb-5 font-extrabold text-[#5C59C2] text-[1.1rem]' > قائمة الطلاب</p>
+
+    <table className="w-full whitespace-nowrap">
+                        <tbody>
+                        <tr className="focus:outline-none h-16 border rounded border-[#99D2CB] bg-[#fafafa]">
+              <th className="text-right p-3 px-5">الأسم</th>
+              <th className="text-right p-3 px-5">المعسكر</th>
+              <th className="text-right p-3 px-5">الإيميل</th>
+              <th className="text-right p-3 px-5">الحالة</th>
+
+
               <th></th>
             </tr>
               <tr  className={`border-b hover:bg-slate-200 `}>
@@ -127,14 +172,26 @@ const EventInfo = () => {
                 <td className="p-3 px-5 flex max-sm:mt-3 justify-evenly max-sm:p-1">
                 <button>
                                       <IoMdInformationCircleOutline style={{ color: 'black', fontSize: '20px' }} />                                   
-                                      </button> 
+                                      </button>
+
+                                    </div>
+                                </td>
+                                <td className="">
+                                    <div className="flex items-center pl-5">
                                       <button>
                                       <RiDeleteBin6Line  style={{ color: 'red', fontSize: '20px' }}/>  
-                                      </button>     
-                </td>
-              </tr>
-          </tbody>
-        </table>
+                                      </button>
+                                  </div>
+                                </td>
+                            
+                      
+                              
+                                <td>
+                               
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>  
                       </div>
   </div>
 </div>
