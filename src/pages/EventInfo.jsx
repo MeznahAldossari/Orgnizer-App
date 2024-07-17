@@ -46,12 +46,14 @@ const EventInfo = () => {
         </div>
 
 <div className='flex mt-7 gap-4   '>
-  <button>
-  <FaEdit   style={{ color: 'black', fontSize: '28px' }}/>                                   
-  </button>
-  <button>
-  <RiDeleteBin6Line  style={{ color: 'red', fontSize: '28px' }}/>                                   
-  </button>
+<div className='flex justify-end items-center w-[60vw]'>
+                {/* <div className="flex justify-end items-center mt-4 ml-2">
+                    <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#99D2CB] hover:bg-[#a5ddd7] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:text-[0.8rem] max-sm:w-[20vw] ">تقديم</p>
+                </div> */}
+                <div className="flex justify-end items-center mt-4 ml-6">
+                    <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#7c7c7c] hover:bg-[#919191] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:text-[0.8rem] max-sm:w-[20vw]">العودة</p>
+                </div>
+            </div>
 
 
 </div>

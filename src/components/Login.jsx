@@ -1,14 +1,16 @@
 import React from 'react'
-import { FaRegUser } from "react-icons/fa";
+// import { FaRegUser } from "react-icons/fa";
 import { Link } from 'react-router-dom';
+import Logo from '../assets/nazzem-logo.png'
 
 function Login() {
   return (
     <div className='flex justify-center items-center bg-[#f1f0f0] h-screen'>
         <div className='flex flex-col justify-center items-center  w-[35%] bg-white shadow-lg h-[80vh] max-sm:w-[90%]'> 
-    
-  <input type='text' placeholder='البريد الألكتروني' className='pr-2  bg-[#f2f2f2]  pl-10 px-4 py-1 max-sm:w-[90%]  border border-gray-300 rounded-lg w-[80%]'>
-  </input>
+        <img className='h-[30vh] ' src={Logo} />
+
+        <input type='text' placeholder='البريد الألكتروني' className='pr-2  bg-[#f2f2f2]  pl-10 px-4 py-1 max-sm:w-[90%]  border border-gray-300 rounded-lg w-[80%]'>
+        </input>
  
             
   

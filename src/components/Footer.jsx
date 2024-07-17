@@ -22,7 +22,7 @@ const Footer = () => {
             </div>
         </div>
         <hr className='w-[100%] h-[2px] my-5 bg-[#797979] border-none max-sm:my-3' />
-        <p className="footer-copy max-sm:text-sm">Cpoyright 2024 © Nazzem.com - All Right Reserved.</p>
+        <p className="footer-copy max-sm:text-sm">جميع الحقوق محفوظة © نظّم</p>
     </div>
 )
 }
