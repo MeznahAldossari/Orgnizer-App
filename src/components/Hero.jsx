@@ -8,16 +8,16 @@ import '../App.css'
 
 const Hero = () => {
   return (
-    <div className='h-[90vh] mt-[-1.5%] bg-slate-400 flex justify-center '>
-  <div className='mainHero border-none relative w-full'>
-    <div className='h-[90vh] bg-black relative overflow-hidden'>
-        <video className='absolute top-0 left-0 min-w-full min-h-full object-cover' autoPlay muted loop>
+    <div className='h-[90vh] bg-[#f7f6f5b3] max-sm:h-[50vh] mt-[-1.5%]  flex justify-center '>
+  <div className='mainHero bg-[#f7f6f5b3] max-sm:h-[50vh] border-none relative w-full'>
+    <div className='h-[90vh] max-sm:h-[50vh] border-none relative overflow-hidden'>
+        <video className='absolute top-0 left-0 border-none min-w-full min-h-full object-cover' autoPlay muted loop>
             <source src={heroVideo} type="video/mp4" />
         </video>
         {/* Overlay color */}
         <div className="absolute top-0 left-0 w-full h-full bg-[#6e68c4] opacity-50"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-center">
-        <h1 className="text-4xl font-bold">نظم معارض التوظيف بسهولة واحترافية</h1>
+        <h1 className="text-4xl max-sm:text-2xl font-bold">نظم معارض التوظيف بسهولة واحترافية</h1>
         <p className="text-lg">Additional text or description</p>
     </div>
     </div>

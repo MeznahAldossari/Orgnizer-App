@@ -12,7 +12,7 @@ import Companies from './pages/Companies'
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import CompanyDetails from "./components/CompanyDetails";
-
+import EventData from "./components/EventData";
 function Router() {
     const router = createBrowserRouter([
         {
@@ -38,7 +38,7 @@ function Router() {
         },
         {
           path: "/EventInfo",
-          element: <EventInfo />,
+          element: <EventData />,
         //   errorElement:<ErrorPage/>
         },
         {

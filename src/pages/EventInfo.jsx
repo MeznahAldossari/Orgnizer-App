@@ -46,6 +46,29 @@ const EventInfo = () => {
         </div>
 
 <div className='flex mt-7 gap-4   '>
+  <button>
+  <FaEdit   style={{ color: 'black', fontSize: '28px' }}/>                                   
+  </button>
+  <button onClick={() => { document.getElementById('my_modal_4').showModal()}}>
+  <RiDeleteBin6Line  style={{ color: 'red', fontSize: '28px' }}/>                                   
+  </button>
+  <dialog id="my_modal_4" className="modal ">
+                                <div className="modal-box w-[35vw] max-w-5xl">
+
+                                <p className="py-4 text-[1.1rem]">هل انت متأكد من حذف المعرض</p>
+                                <div className="modal-action">
+                                <form method="dialog" className='gap-6'>
+                               
+                                <button className="btn ml-1 bg-[#99D2CB] text-white" >نعم</button>
+                               
+                               
+                                <button className="btn bg-[#99D2CB] text-white">لا</button>
+                               
+
+                                </form>
+                                </div>
+                                </div>
+                            </dialog>
 <div className='flex justify-end items-center w-[60vw]'>
                 {/* <div className="flex justify-end items-center mt-4 ml-2">
                     <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#99D2CB] hover:bg-[#a5ddd7] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:text-[0.8rem] max-sm:w-[20vw] ">تقديم</p>
@@ -64,7 +87,7 @@ const EventInfo = () => {
         </div>
         <div className='flex justify-center bg-[#F3F6FF] w-[93%] mr-10'>
   <div role="tablist" className="tabs w-[90vw] tabs-lifted bg-white">
-    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white hover:text-[#5C59C2] " aria-label="الشركات" />
+    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white hover:text-[#5C59C2]" aria-label="الشركات" defaultChecked/>
     <div role="tabpanel" className="tab-content bg-white border-base-100 rounded-box p-6">
       <p className='text-lg mb-5 font-extrabold text-[#5C59C2] text-[1.1rem]' > قائمة الشركات</p>
     <table className="w-full whitespace-nowrap max-sm:table-xs">
@@ -110,9 +133,26 @@ const EventInfo = () => {
                                 </td>
                                 <td className="">
                                     <div className="flex items-center ">
-                                      <button>
+                                      <button onClick={() => { document.getElementById('my_modal_4').showModal()}}>
                                       <RiDeleteBin6Line  style={{ color: 'red', fontSize: '20px' }}/>
                                       </button>
+                                      <dialog id="my_modal_4" className="modal ">
+                                <div className="modal-box w-[35vw] max-w-5xl">
+
+                                <p className="py-4 text-[1.1rem]">هل انت متأكد من حذف هذه الشركة</p>
+                                <div className="modal-action">
+                                <form method="dialog" className='gap-6'>
+                               
+                                <button className="btn ml-1 bg-[#99D2CB] text-white">نعم</button>
+                               
+                               
+                                <button className="btn bg-[#99D2CB] text-white">لا</button>
+                               
+
+                                </form>
+                                </div>
+                                </div>
+                            </dialog>
                                </div>
                                 </td>
                             
@@ -126,7 +166,7 @@ const EventInfo = () => {
                     </table>  
             </div>
 
-    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white hover:text-[#5C59C2]" aria-label="الطلاب" defaultChecked />
+    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white" aria-label="الطلاب"  />
     <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6">
     <p className='text-lg mb-5 font-extrabold text-[#5C59C2] text-[1.1rem]' > قائمة الطلاب</p>
 
@@ -173,9 +213,26 @@ const EventInfo = () => {
                                 </td>
                                 <td className="">
                                     <div className="flex items-center pl-5">
-                                      <button>
+                                      <button onClick={() => { document.getElementById('my_modal_4').showModal()}}>
                                       <RiDeleteBin6Line  style={{ color: 'red', fontSize: '20px' }}/>  
                                       </button>
+                                      <dialog id="my_modal_4" className="modal ">
+                                <div className="modal-box w-[35vw] max-w-5xl">
+
+                                <p className="py-4 text-[1.1rem]">هل انت متأكد من حذف الطالب؟</p>
+                                <div className="modal-action">
+                                <form method="dialog" className='gap-6'>
+                               
+                                <button className="btn ml-1 bg-[#99D2CB] text-white" >نعم</button>
+                               
+                               
+                                <button className="btn bg-[#99D2CB] text-white">لا</button>
+                               
+
+                                </form>
+                                </div>
+                                </div>
+                            </dialog>
                                   </div>
                                 </td>
                             
