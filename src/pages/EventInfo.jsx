@@ -13,10 +13,10 @@ const EventInfo = () => {
     <>
 <Nav/>
     <div className=' h-full w-full bg-[#F3F6FF]' dir='rtl'>
-        <div className='flex max-sm:flex-wrap gap-5 p-10 bg-[#F3F6FF]'>
-        <img src="https://static.sayidaty.net/styles/900_scale/public/2024-06/349805.jpg.webp" className='w-[30vw] h-[60vh]  max-sm:w-full' alt="" srcset="" />
-        <div className='flex flex-col w-full bg-white  h-[60vh]  mr-4 p-3 max-sm:w-[90vw] max-sm:mr-0' >
-        <p className='text-2xl font-bold'>معرض طويق التوظيفي </p>
+        <div className='flex max-sm:flex-wrap w-[65vw] gap-5 p-10 bg-[#f3f3f3]'>
+        <img src="https://static.sayidaty.net/styles/900_scale/public/2024-06/349805.jpg.webp" className='w-[30vw] h-[60vh] rounded-lg  max-sm:w-full' alt="" srcset="" />
+        <div className='flex flex-col w-full bg-white rounded-lg  h-[60vh]  mr-4 p-3 max-sm:w-[90vw] max-sm:mr-0' >
+        <p className='pt-6 pr-6 font-extrabold text-[#5C59C2] text-[1.5rem]'>معرض طويق التوظيفي </p>
 
         <div className='flex gap-2 mt-4 pt-2 pr-5'>
         <CiCalendar className='w-5 h-5 ' />
@@ -85,14 +85,14 @@ const EventInfo = () => {
         </div>
         
         </div>
-        <div className='flex justify-center  bg-[#F3F6FF] w-[93%] mr-10 max-sm:mr-3 '>
+        <div className='flex justify-center bg-[#F3F6FF] w-[93%] mr-10'>
   <div role="tablist" className="tabs w-[90vw] tabs-lifted bg-white">
     <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white hover:text-[#5C59C2]" aria-label="الشركات" defaultChecked/>
     <div role="tabpanel" className="tab-content bg-white border-base-100 rounded-box p-6">
-      <p className='text-lg font-bold mb-5' > قائمة الشركات</p>
+      <p className='text-lg mb-5 font-extrabold text-[#5C59C2] text-[1.1rem]' > قائمة الشركات</p>
     <table className="w-full whitespace-nowrap max-sm:table-xs">
                         <tbody>
-                        <tr className="focus:outline-none h-16 border border-base-100 rounded">
+                        <tr className="focus:outline-none h-16 border  rounded border-[#99D2CB] bg-[#fafafa]">
               <th className="text-right p-3 px-5">الصورة</th>
               <th className="text-right p-3 px-5">الاسم </th>
               <th className="text-right p-3 px-5">الإيميل</th>
@@ -101,22 +101,31 @@ const EventInfo = () => {
 
               <th></th>
             </tr>
-              <tr  className={`border-b hover:bg-slate-200 `}>
-                <td className="p-3 px-5 max-sm:p-1 ">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPk0IrfQt8yu8km4DYRG69OOhe2GQlK5NLvzIk23B3u77AjSRLJ3NLOqK9_W53M8jHV6Y&usqp=CAU" alt="" srcset="" className='w-[7vw] h-[7vh] mr-2' />
-                </td>
-                <td className="p-3 px-5 max-sm:p-1">
-                <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 mr-2">شركة سدايا     </p>
-                </td>
-                <td className="p-3 px-5 max-sm:p-1">
-                <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 mr-2">SADIAI@gmail.com   </p>
-                </td>
-                <td className="p-3 px-5 max-sm:p-1 ">
-                <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 mr-2">تقنية معلومات    </p>
-
-                </td>
-                <td className="p-3 px-5 flex max-sm:mt-3 justify-evenly max-sm:p-1">
-                <button>
+                            <tr tabindex="0" className="focus:outline-none h-16 border border-base-100 rounded">
+                               
+                                <td className="">
+                                    <div className="flex items-center pl-5">
+                                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPk0IrfQt8yu8km4DYRG69OOhe2GQlK5NLvzIk23B3u77AjSRLJ3NLOqK9_W53M8jHV6Y&usqp=CAU" alt="" srcset="" className='w-[7vw] h-[7vh] mr-2' />
+                                    </div>
+                                </td>
+                                <td className="">
+                                    <div className="flex items-center pl-5">
+                                        <p className="text-base font-medium leading-none text-gray-700 mr-2">  شركة سدايا  </p>
+                                    </div>
+                                </td>
+                                <td className="">
+                                    <div className="flex items-center pl-5">
+                                        <p className="text-base font-medium leading-none text-gray-700 mr-2">SADIAI@gmail.com    </p>
+                                    </div>
+                                </td>
+                                <td className="">
+                                    <div className="flex items-center pl-5">
+                                        <p className="text-base font-medium leading-none text-gray-700 mr-2">تقنية معلومات   </p>
+                                    </div>
+                                </td>
+                                <td className="">
+                                    <div className="flex items-center ">
+                                      <button>
                                       <IoMdInformationCircleOutline style={{ color: 'black', fontSize: '20px' }} />                                   
                                       </button>
 
@@ -124,9 +133,26 @@ const EventInfo = () => {
                                 </td>
                                 <td className="">
                                     <div className="flex items-center ">
-                                      <button>
+                                      <button onClick={() => { document.getElementById('my_modal_4').showModal()}}>
                                       <RiDeleteBin6Line  style={{ color: 'red', fontSize: '20px' }}/>
                                       </button>
+                                      <dialog id="my_modal_4" className="modal ">
+                                <div className="modal-box w-[35vw] max-w-5xl">
+
+                                <p className="py-4 text-[1.1rem]">هل انت متأكد من حذف هذه الشركة</p>
+                                <div className="modal-action">
+                                <form method="dialog" className='gap-6'>
+                               
+                                <button className="btn ml-1 bg-[#99D2CB] text-white">نعم</button>
+                               
+                               
+                                <button className="btn bg-[#99D2CB] text-white">لا</button>
+                               
+
+                                </form>
+                                </div>
+                                </div>
+                            </dialog>
                                </div>
                                 </td>
                             
@@ -155,22 +181,31 @@ const EventInfo = () => {
 
               <th></th>
             </tr>
-              <tr  className={`border-b hover:bg-slate-200 `}>
-                <td className="p-3 px-5 max-sm:p-1 ">
-                <p className="text-base font-medium leading-none max-sm:text-xs text-gray-700 mr-2">زياد الصاعدي </p>
-                </td>
-                <td className="p-3 px-5 max-sm:p-1">
-                <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 mr-2">معسكر تصميم واجهات  </p>
-                </td>
-                <td className="p-3 px-5 max-sm:p-1">
-                <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 mr-2">ziad@gmail.com    </p>
-                </td>
-                <td className="p-3 px-5 max-sm:p-1 ">
-                <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 mr-2">مقبول   </p>
-
-                </td>
-                <td className="p-3 px-5 flex max-sm:mt-3 justify-evenly max-sm:p-1">
-                <button>
+                            <tr tabindex="0" className="focus:outline-none h-16 border border-base-100 rounded">
+                               
+                                <td className="">
+                                    <div className="flex items-center pl-5">
+                                        <p className="text-base font-medium leading-none text-gray-700 mr-2">زياد الصاعدي </p>
+                                    </div>
+                                </td>
+                                <td className="">
+                                    <div className="flex items-center pl-5">
+                                        <p className="text-base font-medium leading-none text-gray-700 mr-2">معسكر تصميم واجهات  </p>
+                                    </div>
+                                </td>
+                                <td className="">
+                                    <div className="flex items-center pl-5">
+                                        <p className="text-base font-medium leading-none text-gray-700 mr-2">ziad@gmail.com    </p>
+                                    </div>
+                                </td>
+                                <td className="">
+                                    <div className="flex items-center pl-5">
+                                        <p className="text-base font-medium leading-none text-gray-700 mr-2">مقبول   </p>
+                                    </div>
+                                </td>
+                                <td className="">
+                                    <div className="flex items-center ">
+                                      <button>
                                       <IoMdInformationCircleOutline style={{ color: 'black', fontSize: '20px' }} />                                   
                                       </button>
 
@@ -178,9 +213,26 @@ const EventInfo = () => {
                                 </td>
                                 <td className="">
                                     <div className="flex items-center pl-5">
-                                      <button>
+                                      <button onClick={() => { document.getElementById('my_modal_4').showModal()}}>
                                       <RiDeleteBin6Line  style={{ color: 'red', fontSize: '20px' }}/>  
                                       </button>
+                                      <dialog id="my_modal_4" className="modal ">
+                                <div className="modal-box w-[35vw] max-w-5xl">
+
+                                <p className="py-4 text-[1.1rem]">هل انت متأكد من حذف الطالب؟</p>
+                                <div className="modal-action">
+                                <form method="dialog" className='gap-6'>
+                               
+                                <button className="btn ml-1 bg-[#99D2CB] text-white" >نعم</button>
+                               
+                               
+                                <button className="btn bg-[#99D2CB] text-white">لا</button>
+                               
+
+                                </form>
+                                </div>
+                                </div>
+                            </dialog>
                                   </div>
                                 </td>
                             
