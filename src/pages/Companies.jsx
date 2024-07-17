@@ -1,6 +1,6 @@
 import React from 'react'
 import Nav from '../components/Nav'
-import Hero from '../components/HeroStudent'
+import HeroStudent from '../components/HeroStudent'
 
 import Elm from '../assets/elm.png'
 
@@ -8,7 +8,7 @@ const Companies = () => {
   return (
     <>
     <Nav />
-    <Hero />
+    <HeroStudent />
     <div className='bg-[#ffffff] h-full w-full flex justify-center '>
     <div className='flex flex-col justify-center items-start  mr-8 mb-8 ml-8 w-full h-full'>
 

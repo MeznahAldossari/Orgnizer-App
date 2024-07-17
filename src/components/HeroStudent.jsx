@@ -5,7 +5,7 @@ import React from 'react'
 // import heroVideo from '../assets/videoBG.mp4'
 import '../App.css'
 
-const Hero = () => {
+const HeroStudent = () => {
   return (
     <>
 <div className='bg-[#5C59C2] h-[86vh]'>
@@ -28,4 +28,4 @@ const Hero = () => {
   )
 }
 
-export default Hero
+export default HeroStudent
