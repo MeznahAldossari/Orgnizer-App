@@ -24,9 +24,6 @@
   direction: ltr;
 }
 
-*{
-
-}
 
 .custom-shape-divider-bottom-1721165418 {
   position: absolute;
@@ -50,7 +47,7 @@
   fill: #FFFFFF;
 }
 
-.custom-shape-divider-bottom-1721182767 {
+/* .custom-shape-divider-bottom-1721182767 {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -69,4 +66,4 @@
 
 .custom-shape-divider-bottom-1721182767 .shape-fill {
     fill: #FFFFFF;
-}
+} */

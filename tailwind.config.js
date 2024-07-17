@@ -7,18 +7,11 @@ export default {
   theme: {
     extend: {},
   },
-<<<<<<< HEAD
   plugins: [require('daisyui'),],daisyui: {
     themes: [
       {
         mytheme: {
           
-=======
-  plugins: [
-    require('daisyui'),
-  ],
-}
->>>>>>> origin/afnan
 
 "primary": "#5b21b6",
           
