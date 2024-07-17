@@ -32,9 +32,14 @@ const Cards = () => {
   return (
     <div className='flex max-sm:mt-14 flex-col w-full mt-32   bg-[#f7f6f5b3]'>
       <div className='flex'>
-        <Link to='/AddEvents'>
-        <button className='px-4 py-1 mt-6 max-sm:mt-0 text-white rounded-lg mr-12 bg-[#f39e4e]'>اضافة معرض</button>
-        </Link>
+      {(getLocal !== undefined && getLocal && getLocal.role === "admin" &&
+      <>
+       <Link to='/AddEvents'>
+       <button className='px-4 py-1 mt-6 max-sm:mt-0 text-white rounded-lg mr-12 bg-[#f39e4e]'>اضافة معرض</button>
+       </Link>
+       </>
+       )}
+       
 
       </div>
       <div className='flex justify-center mt-4'>

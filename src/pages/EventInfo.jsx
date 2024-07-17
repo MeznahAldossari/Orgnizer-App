@@ -13,7 +13,7 @@ const EventInfo = () => {
     <>
 <Nav/>
     <div className=' h-full w-full bg-[#F3F6FF]' dir='rtl'>
-        <div className='flex max-sm:flex-wrap gap-5 p-10 bg-[#f3f3f3]'>
+        <div className='flex max-sm:flex-wrap w-[65vw] gap-5 p-10 bg-[#f3f3f3]'>
         <img src="https://static.sayidaty.net/styles/900_scale/public/2024-06/349805.jpg.webp" className='w-[30vw] h-[60vh] rounded-lg  max-sm:w-full' alt="" srcset="" />
         <div className='flex flex-col w-full bg-white rounded-lg  h-[60vh]  mr-4 p-3 max-sm:w-[90vw] max-sm:mr-0' >
         <p className='pt-6 pr-6 font-extrabold text-[#5C59C2] text-[1.5rem]'>معرض طويق التوظيفي </p>
@@ -74,7 +74,7 @@ const EventInfo = () => {
                     <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#99D2CB] hover:bg-[#a5ddd7] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:text-[0.8rem] max-sm:w-[20vw] ">تقديم</p>
                 </div> */}
                 <div className="flex justify-end items-center mt-4 ml-6">
-                    <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#7c7c7c] hover:bg-[#919191] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:text-[0.8rem] max-sm:w-[20vw]">العودة</p>
+                    {/* <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#7c7c7c] hover:bg-[#919191] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:text-[0.8rem] max-sm:w-[20vw]">العودة</p> */}
                 </div>
             </div>
 

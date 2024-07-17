@@ -49,7 +49,7 @@ const StudentProfile = () => {
                         <form className="max-w-[40vw] mx-auto">
                         <label for="countries" className="mt-2 mr-6 font-bold">الجنسية</label>
                         <div className="mr-6 mt-2 relative w-64 ">
-                            <select className="block appearance-none w-[31vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-4  pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline max-sm:w-[75vw]">
+                            <select className="block  appearance-none w-[31vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-2  pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline max-sm:w-[75vw]">
                                 <option className=''>سعودي</option>
                                 <option>بحريني</option>
                                 <option>اماراتي</option>
@@ -67,7 +67,7 @@ const StudentProfile = () => {
                         <form className="max-w-[40vw] mx-auto">
                         <label for="countries" className="mt-2 mr-6 font-bold">دولة الاقامة</label>
                         <div className="mr-6 mt-2 relative w-64">
-                            <select className="block appearance-none w-[31vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-4 pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline">
+                            <select className="block appearance-none w-[31vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4  py-2  pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline">
                                 <option>السعودية</option>
                                 <option>البحرين</option>
                                 <option>الامارات</option>
@@ -85,7 +85,7 @@ const StudentProfile = () => {
                         <form className="max-w-[40vw] mx-auto">
                         <label for="countries" className="mt-2 mr-6 font-bold">المدينة</label>
                         <div className="mr-6 mt-2 relative w-64">
-                            <select className="block appearance-none w-[10vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-4 pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline">
+                            <select className="block appearance-none w-[10vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4  py-2  pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline">
                                 <option>الرياض</option>
                                 <option>مكة </option>
                                 <option>المدينة</option>
@@ -100,7 +100,7 @@ const StudentProfile = () => {
                         <form className="max-w-[40vw] mx-auto">
                         <label for="countries" className="mt-2 mr-6 font-bold">خريج</label>
                         <div className="mr-6 mt-2 relative w-64">
-                            <select className="block appearance-none w-[10vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-4 pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline">
+                            <select className="block appearance-none w-[10vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4  py-2  pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline">
                                 <option >طويق</option>
                                 <option>ابل </option>
                                 {/* <option>الاكاديمية السعودية </option> */}

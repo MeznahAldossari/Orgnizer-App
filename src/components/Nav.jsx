@@ -95,7 +95,10 @@ const Nav = () => {
 
         <div>
         {/* <p className='pr-12 text-[1.7rem] font-medium text-[#6e68c4]'>نظم</p> */}
+        <Link to='/'>
         <img className='w-[10vw] h-[12vh]' src={Logo} />
+    </Link>
+    
 
         </div>
         {getLocal ==undefined && !getLocal &&(
@@ -123,16 +126,19 @@ const Nav = () => {
           </Link>
 
         </div>
-        <div>
-          <img src={logOutIcon} className='w-5 ml-12 cursor-pointer' onClick={removeLocal}></img>
-        {/* <button className="rounded-lg text-white bg-[#f39e4e] py-1 px-3 ml-12">تسجيل الدخول</button> */}
-        </div>
+       
 
         </div>
 </>
         
         
         )}
+
+{getLocal !== null  && (
+    <li onClick={removeLocal} className="rounded-lg mt-4 flex items-center cursor-pointer text-[1.2rem] text-[#6e68c4] py-1 px-3 ml-4">
+      تسجيل الخروج
+    </li>
+  )}
         
         
 
