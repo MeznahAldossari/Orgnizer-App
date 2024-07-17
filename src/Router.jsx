@@ -4,6 +4,7 @@ import AddEvent from './pages/AddEvent'
 import StudentProfile from './pages/StudentProfile'
 import Submissions from './pages/Submissions'
 import DetailsCompanies from './pages/DetailsCompanies'
+import Companies from './pages/Companies'
 
 function Router() {
     const router = createBrowserRouter([
@@ -27,6 +28,10 @@ function Router() {
         {
             path: "/DetailsCompanies",
             element: <DetailsCompanies />,
+        },
+        {
+            path: "/Companies",
+            element: <Companies />,
         },
       ]);
     return(

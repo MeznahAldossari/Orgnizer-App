@@ -42,6 +42,7 @@ const Submissions = () => {
     <div className='bg-white w-full h-full rounded-lg'>
         <div className='flex justify-start items-end w-full h-[10vh]'>
             <p className='font-semibold text-[1.5rem] mr-16 pt-6 pr-1 text-[#5C59C2]'> تقديماتي </p>
+            
         </div>
 
         <div className="w-fit mx-auto grid grid-cols-3 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-20 mt-1 mb-16">
@@ -57,11 +58,11 @@ const Submissions = () => {
                     </div>
                     <div className='flex gap-2'>
                         <p className='text-[gray] text-[0.9rem]'>حالة التقديم</p>
-                        <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">مقبول</span>
+                        <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400 mr-2">مقبول</span>
                     </div>
                     <div className='flex gap-2'>
                         <p className='text-[gray] text-[0.9rem]'>دورك في الطابور</p>
-                        <p className='text-[#5C59C2] text-[0.9rem]  border border-[#5C59C2] bg-[#5d59c24b] rounded-md text-center w-7'> 1 </p>
+                        <p className='text-[#5C59C2] text-[0.9rem]  border border-[#5C59C2] bg-[#5d59c24b] rounded text-center w-7'> 1 </p>
                     </div>
                 </div>
             </div>
@@ -78,11 +79,11 @@ const Submissions = () => {
                     </div>
                     <div className='flex gap-2'>
                         <p className='text-[gray] text-[0.9rem]'>حالة التقديم</p>
-                        <span className="bg-yellow-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-700 dark:text-yellow-400 border border-yellow-400">انتظار</span>
+                        <span className="bg-yellow-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-700 dark:text-yellow-400 border border-yellow-400 mr-2">انتظار</span>
                     </div>
                     <div className='flex gap-2'>
                         <p className='text-[gray] text-[0.9rem]'>دورك في الطابور</p>
-                        <p className='text-[#5C59C2] text-[0.9rem]  border border-[#5C59C2] bg-[#5d59c24b] rounded-md text-center w-7'> 10 </p>
+                        <p className='text-[#5C59C2] text-[0.9rem]  border border-[#5C59C2] bg-[#5d59c24b] rounded text-center w-7'> 10 </p>
                     </div>
                 </div>
             </div>
@@ -99,7 +100,27 @@ const Submissions = () => {
                     </div>
                     <div className='flex gap-2'>
                         <p className='text-[gray] text-[0.9rem]'>حالة التقديم</p>
-                        <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-400">منتهيه</span>
+                        <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-400 mr-2">منتهيه</span>
+                    </div>
+                    <div className='flex gap-2'>
+                        <p className='text-[gray] text-[0.9rem]'>دورك في الطابور</p>
+                        <p className='bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-400'> 0 </p>
+                    </div>
+                </div>
+            </div>
+            <div className='flex items-center mt-6 bg-white w-full h-full rounded-lg shadow'>
+                <img className='mr-4 rounded-full h-[20vh] w-[8vw]' src={Wadaie} />
+                <div className='mr-4 flex flex-col gap-2'>
+                    <div className='flex gap-2'>
+                        <span className="mt-3 relative flex h-3 w-3">
+                                <span className=" absolute inline-flex h-full w-full rounded-full bg-gray-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-[#aaaaaa]"></span>
+                        </span>
+                        <p className='font-bold text-[1.3rem] '>شركة ودائع </p>
+                    </div>
+                    <div className='flex gap-2'>
+                        <p className='text-[gray] text-[0.9rem]'>حالة التقديم</p>
+                        <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-400 mr-2">منتهيه</span>
                     </div>
                     <div className='flex gap-2'>
                         <p className='text-[gray] text-[0.9rem]'>دورك في الطابور</p>
@@ -119,7 +140,7 @@ const Submissions = () => {
                     </div>
                     <div className='flex gap-2'>
                         <p className='text-[gray] text-[0.9rem]'>حالة التقديم</p>
-                        <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-400">منتهيه</span>
+                        <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-400 mr-2">منتهيه</span>
                     </div>
                     <div className='flex gap-2'>
                         <p className='text-[gray] text-[0.9rem]'>دورك في الطابور</p>
@@ -139,27 +160,7 @@ const Submissions = () => {
                     </div>
                     <div className='flex gap-2'>
                         <p className='text-[gray] text-[0.9rem]'>حالة التقديم</p>
-                        <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-400">انتهى</span>
-                    </div>
-                    <div className='flex gap-2'>
-                        <p className='text-[gray] text-[0.9rem]'>دورك في الطابور</p>
-                        <p className='bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-400'> 0 </p>
-                    </div>
-                </div>
-            </div>
-            <div className='flex items-center mt-6 bg-white w-full h-full rounded-lg shadow'>
-                <img className='mr-4 rounded-full h-[20vh] w-[8vw]' src={Wadaie} />
-                <div className='mr-4 flex flex-col gap-2'>
-                    <div className='flex gap-2'>
-                        <span class="mt-3 relative flex h-3 w-3">
-                                <span className=" absolute inline-flex h-full w-full rounded-full bg-gray-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-3 w-3 bg-[#aaaaaa]"></span>
-                        </span>
-                        <p className='font-bold text-[1.3rem] '>شركة ودائع </p>
-                    </div>
-                    <div className='flex gap-2'>
-                        <p className='text-[gray] text-[0.9rem]'>حالة التقديم</p>
-                        <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-400">منتهيه</span>
+                        <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-400 mr-2">منتهيه</span>
                     </div>
                     <div className='flex gap-2'>
                         <p className='text-[gray] text-[0.9rem]'>دورك في الطابور</p>

@@ -47,8 +47,8 @@ const StudentProfile = () => {
                         <form className="max-w-[40vw] mx-auto">
                         <label for="countries" className="mt-2 mr-6 font-bold">الجنسية</label>
                         <div className="mr-6 mt-2 relative w-64">
-                            <select className="block appearance-none w-[31vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-2 pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline">
-                                <option>سعودي</option>
+                            <select className="block appearance-none w-[31vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-4  pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline">
+                                <option className=''>سعودي</option>
                                 <option>بحريني</option>
                                 <option>اماراتي</option>
                             </select>
@@ -65,7 +65,7 @@ const StudentProfile = () => {
                         <form className="max-w-[40vw] mx-auto">
                         <label for="countries" className="mt-2 mr-6 font-bold">دولة الاقامة</label>
                         <div className="mr-6 mt-2 relative w-64">
-                            <select className="block appearance-none w-[31vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-2 pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline">
+                            <select className="block appearance-none w-[31vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-4 pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline">
                                 <option>السعودية</option>
                                 <option>البحرين</option>
                                 <option>الامارات</option>
@@ -83,7 +83,7 @@ const StudentProfile = () => {
                         <form className="max-w-[40vw] mx-auto">
                         <label for="countries" className="mt-2 mr-6 font-bold">المدينة</label>
                         <div className="mr-6 mt-2 relative w-64">
-                            <select className="block appearance-none w-[10vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-2 pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline">
+                            <select className="block appearance-none w-[10vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-4 pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline">
                                 <option>الرياض</option>
                                 <option>مكة </option>
                                 <option>المدينة</option>
@@ -98,7 +98,7 @@ const StudentProfile = () => {
                         <form className="max-w-[40vw] mx-auto">
                         <label for="countries" className="mt-2 mr-6 font-bold">خريج</label>
                         <div className="mr-6 mt-2 relative w-64">
-                            <select className="block appearance-none w-[10vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-2 pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline">
+                            <select className="block appearance-none w-[10vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-4 pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline">
                                 <option >طويق</option>
                                 <option>ابل </option>
                                 {/* <option>الاكاديمية السعودية </option> */}
@@ -147,20 +147,20 @@ const StudentProfile = () => {
                 <br />
                 <hr className='flex justify-center w-full' />
                 <div className="bg-white w-full h-[5vh] py-8 flex items-center justify-center gap-40 flex-wrap">
-                    <button className="group transition-all duration-500 hover:-translate-y-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 93 92" fill="none">
+                    <button className="group transition-all duration-500 hover:-translate-y-2 ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 93 92" fill="none">
                         <rect x="1.13867" width="91.5618" height="91.5618" rx="15" fill="#337FFF"/>
                         <path d="M57.4233 48.6403L58.7279 40.3588H50.6917V34.9759C50.6917 32.7114 51.8137 30.4987 55.4013 30.4987H59.1063V23.4465C56.9486 23.1028 54.7685 22.9168 52.5834 22.8901C45.9692 22.8901 41.651 26.8626 41.651 34.0442V40.3588H34.3193V48.6403H41.651V68.671H50.6917V48.6403H57.4233Z" fill="white"/>
                         </svg>
                     </button>
                     <button className="group transition-all duration-500 hover:-translate-y-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 93 92" fill="none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 93 92" fill="none">
                         <rect x="0.138672" width="91.5618" height="91.5618" rx="15" fill="black"/>
                         <path d="M50.7568 42.1716L69.3704 21H64.9596L48.7974 39.383L35.8887 21H21L40.5205 48.7983L21 71H25.4111L42.4788 51.5869L56.1113 71H71L50.7557 42.1716H50.7568ZM44.7152 49.0433L42.7374 46.2752L27.0005 24.2492H33.7756L46.4755 42.0249L48.4533 44.7929L64.9617 67.8986H58.1865L44.7152 49.0443V49.0433Z" fill="white"/>
                         </svg>
                     </button>
-                    <button className="group transition-all duration-500 hover:-translate-y-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 93 93" fill="none">
+                    <button className="group transition-all duration-500 hover:-translate-y-2  ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 93 93" fill="none">
                         <rect x="1.13867" y="1" width="91.5618" height="91.5618" rx="15" fill="#006699"/>
                         <path d="M37.1339 63.4304V40.9068H29.6473V63.4304H37.1346H37.1339ZM33.3922 37.8321C36.0023 37.8321 37.6273 36.1025 37.6273 33.9411C37.5785 31.7304 36.0023 30.0491 33.4418 30.0491C30.8795 30.0491 29.2061 31.7304 29.2061 33.9409C29.2061 36.1023 30.8305 37.8319 33.3431 37.8319H33.3916L33.3922 37.8321ZM41.2777 63.4304H48.7637V50.8535C48.7637 50.1813 48.8125 49.5072 49.0103 49.0271C49.5513 47.6815 50.7831 46.2887 52.8517 46.2887C55.5599 46.2887 56.644 48.354 56.644 51.3822V63.4304H64.1297V50.516C64.1297 43.598 60.4369 40.3787 55.5115 40.3787C51.4733 40.3787 49.6998 42.6357 48.7144 44.173H48.7643V40.9075H41.2781C41.3759 43.0205 41.2775 63.4312 41.2775 63.4312L41.2777 63.4304Z" fill="white"/>
                         </svg>
