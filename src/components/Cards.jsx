@@ -1,3 +1,4 @@
+
 import React from 'react'
 import Pic from '../assets/pic1.jpg'
 import Lottie from "lottie-react";
