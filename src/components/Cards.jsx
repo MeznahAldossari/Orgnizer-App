@@ -11,8 +11,8 @@ const Cards = () => {
 
       </div>
       <div className='flex justify-center mt-4'>
-      <div className='grid mt-12 w-[90%] grid-cols-3 place-items-center '>
-         <div className='rounded-lg h-[67vh] w-[23vw]  border-2 shadow-lg bg-white'>
+      <div className='grid mt-12 w-[90%] grid-cols-3 place-items-center max-sm:grid-cols-1 max-sm:gap-6 '>
+         <div className='rounded-lg h-[67vh] w-[23vw] border-2 shadow-lg bg-white max-sm:w-[90vw]'>
            <img src='https://media.licdn.com/dms/image/D4D0BAQESPMoQfW3MFA/company-logo_200_200/0/1719256028341/tuwaiqacademy_logo?e=2147483647&v=beta&t=QbYFSW5ik2LK_h7dq2LCrH5ZcMYIbbditOU3TVi1dKo' className='w-[100%]  h-[33vh] rounded-t-md'></img>
            <div className="p-4">
         <h3 className="text-lg font-semibold mb-2 text-[#4e4e4e]">العنوان </h3>
@@ -32,7 +32,7 @@ const Cards = () => {
     </div>
     
          </div>
-         <div className='rounded-md h-[67vh] w-[23vw]  border-2 shadow-lg bg-white'>
+         <div className='rounded-md h-[67vh] w-[23vw]  border-2 shadow-lg bg-white max-sm:w-[90vw]'>
            <img src='https://media.licdn.com/dms/image/D4D0BAQESPMoQfW3MFA/company-logo_200_200/0/1719256028341/tuwaiqacademy_logo?e=2147483647&v=beta&t=QbYFSW5ik2LK_h7dq2LCrH5ZcMYIbbditOU3TVi1dKo' className='w-[100%]  h-[33vh] rounded-t-md'></img>
            <div className="p-4">
         <h3 className="text-lg font-semibold mb-2 text-[#4e4e4e]">العنوان </h3>
@@ -52,7 +52,7 @@ const Cards = () => {
     </div>
     
          </div>
-         <div className='rounded-md h-[67vh] w-[23vw]  border-2 shadow-lg bg-white'>
+         <div className='rounded-md h-[67vh] w-[23vw]  border-2 shadow-lg bg-white max-sm:w-[90vw]'>
            <img src='https://media.licdn.com/dms/image/D4D0BAQESPMoQfW3MFA/company-logo_200_200/0/1719256028341/tuwaiqacademy_logo?e=2147483647&v=beta&t=QbYFSW5ik2LK_h7dq2LCrH5ZcMYIbbditOU3TVi1dKo' className='w-[100%]  h-[33vh] rounded-t-md'></img>
            <div className="p-4">
         <h3 className="text-lg font-semibold mb-2 text-[#4e4e4e]">العنوان </h3>

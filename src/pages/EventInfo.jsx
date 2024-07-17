@@ -15,7 +15,7 @@ const EventInfo = () => {
     <div className=' h-full w-full bg-[#F3F6FF]' dir='rtl'>
         <div className='flex max-sm:flex-wrap gap-5 p-10 bg-[#F3F6FF]'>
         <img src="https://static.sayidaty.net/styles/900_scale/public/2024-06/349805.jpg.webp" className='w-[30vw] h-[60vh]  max-sm:w-full' alt="" srcset="" />
-        <div className='flex flex-col w-full bg-white  h-[60vh]  mr-4 p-3' >
+        <div className='flex flex-col w-full bg-white  h-[60vh]  mr-4 p-3 max-sm:w-[90vw] max-sm:mr-0' >
         <p className='text-2xl font-bold'>معرض طويق التوظيفي </p>
 
         <div className='flex gap-2 mt-4'>

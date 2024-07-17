@@ -8,7 +8,7 @@ import '../App.css'
 const HeroStudent = () => {
   return (
     <>
-<div className='bg-[#5C59C2] h-[86vh]'>
+<div className='bg-[#5C59C2] h-[86vh] max-sm:h-[60vh]'>
    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-center">
         <h1 className="text-4xl font-bold">مرحباً بك في معرض التوظيف</h1>
         <p className="text-lg mt-2">اكتشف فرص عمل جديدة وتابع طلباتك بفعالية وابحث عن أبرز الشركات بمجال اهتمامك</p>

@@ -24,19 +24,19 @@
           </div>
           <div className='flex flex-col justify-center items-center'>
               <div className='flex items-center mt-6 bg-white w-[91%] h-[20vh] rounded-lg'>
-                  <img className='mr-4 rounded-full border-[1.5px] h-[15vh] object-cover w-[7vw]' src='https://cdn.wamda.com/feature-images/6dee4eb29803976.png' />
+                  <img className='mr-4 rounded-full border-[1.5px] h-[15vh] object-cover w-[7vw] max-sm:w-[20vw] max-sm:h-[10vh]' src='https://cdn.wamda.com/feature-images/6dee4eb29803976.png' />
                   <div className='mr-4'>
                       <p className='font-bold text-[1.3rem]'> شركة علم</p>
                       {/* <p className='text-[gray] text-[0.9rem]'>معسكر تطوير واجهات المستخدم باسخدام جافاسكربت</p> */}
                   </div>
               </div>
-              <div className='grid pb-12  w-[91%]  grid-cols-3 gap-6'>
+              <div className='grid pb-12  w-[91%]  grid-cols-3 gap-6 max-sm:grid-cols-1'>
                   <div className='mt-6 col-span-2 bg-white  h-[100vh] rounded-lg'>
                       <h1 className='pt-6 pr-6 font-extrabold text-[#6e68c4] text-[1.1rem]'>قائمة المتقدمين</h1>
                       <br />
                       <hr className='flex justify-center w-full' />
                       <div className='flex justify-center bg-[#F3F6FF] w-[93%] mt-4 mr-10'>
-    <div role="tablist" className="tabs w-[90vw] tabs-lifted bg-white">
+    <div role="tablist" className="tabs w-[90vw] tabs-lifted bg-white max-sm:w-[80vw]">
       <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white " aria-label="المتقدمون"  defaultChecked/>
       <div role="tabpanel" className="tab-content bg-white border-base-100 rounded-box p-6">
         {/* <p className='text-lg font-bold mb-5' > قائمة الشركات</p> */}
@@ -143,7 +143,7 @@
             
                       
                   </div>
-                  <div className='mt-6 bg-white  h-[100vh]  rounded-lg'>
+                  <div className='mt-6 bg-white h-[100vh] rounded-lg max-sm:h-[50vh] max-sm:w-[90vw]'>
                     <div className='flex items-center justify-between'>
                     <h1 className='pt-6 pr-6 font-extrabold text-[#6e68c4] text-[1.1rem]'>  تفاصيل الشركة </h1>
                     <button className="mt-6 rounded-lg text-white bg-[#f39e4e] py-1 px-3 ml-6"> تعديل</button>
