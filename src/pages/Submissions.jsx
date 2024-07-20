@@ -3,6 +3,7 @@ import Nav from '../components/Nav'
 import Tamkeen from '../assets/tamkeen tech.png'
 import Elm from '../assets/elm.png'
 import Wadaie from '../assets/wadaie.png'
+import { Link } from 'react-router-dom';
 
 
 
@@ -34,15 +35,15 @@ const Submissions = () => {
     </div> */}
     {/* search end here */}
 
-<div className='bg-[#f3f3f3] h-full w-full flex justify-center items-center '>
+<div className='bg-[#f7f7f7] h-full w-full flex justify-center items-center '>
     
     <div className='flex flex-col justify-center items-start mt-8 mr-8 mb-8 ml-8 w-full h-full '>
-
-
     <div className='bg-white w-full h-full rounded-lg'>
-        <div className='flex justify-start items-end w-full h-[10vh]'>
-            <p className='font-semibold text-[1.5rem] mr-16 pt-6 pr-1 text-[#5C59C2]'> تقديماتي </p>
-            
+        <div className='flex justify-between items-end w-full h-[10vh]'>
+            <p className='font-semibold text-[1.5rem] mr-16 pt-6 pr-1 text-[#5C59C2]'> تقديماتي </p> 
+            <div className='flex gap-2'>
+                <Link to='/'><button className="rounded-lg text-white bg-[#999999] hover:bg-[#b1b1b1]  py-1 px-3 ml-16"> عودة</button></Link>
+            </div>
         </div>
 
         <div className="w-[90%] mx-auto grid grid-cols-3 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-20 mt-1 mb-16 max-sm:grid-cols-1 max-sm:gap-y-10">
@@ -54,7 +55,7 @@ const Submissions = () => {
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-3 w-3 bg-[#5fd47c]"></span>
                         </span>
-                        <p className='font-bold text-[1.3rem] '>شركة تمكين  </p>
+                        <p className='font-bold text-[1.3rem] flex flex-wrap '>شركة تمكين للتقنيات  </p>
                     </div>
                     <div className='flex gap-2'>
                         <p className='text-[gray] text-[0.9rem]'>حالة التقديم</p>
@@ -62,7 +63,7 @@ const Submissions = () => {
                     </div>
                     <div className='flex gap-2'>
                         <p className='text-[gray] text-[0.9rem]'>دورك في الطابور</p>
-                        <p className='text-[#5C59C2] text-[0.9rem]  border border-[#5C59C2] bg-[#5d59c24b] rounded text-center w-7'> 1 </p>
+                        <p className='mr-1 text-[#5C59C2] text-[0.9rem]  border border-[#5C59C2] bg-[#5d59c24b] rounded text-center w-7'> 1 </p>
                     </div>
                     <div className='flex gap-2'>
                         {/* <p className='text-[#5C59C2] text-[0.9rem]  border border-[#5C59C2] bg-[#5d59c24b] rounded text-center w-7'> 1 </p> */}
@@ -173,8 +174,8 @@ const Submissions = () => {
             </div>
         </div>
     </div>
-    </div>
-    </div>
+</div>
+</div>
     </>
   )
 }

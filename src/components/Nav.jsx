@@ -13,7 +13,7 @@ const Nav = () => {
   useEffect(()=>{
 
   },[bool])
-  const  removeLocal = ()=>{
+  const removeLocal = ()=>{
     setBool(false)
     localStorage.removeItem("loggedIn");
     setBool(true)
@@ -25,14 +25,13 @@ const Nav = () => {
 
   return (
     <>
-    <nav className='h-16 shadow-md  w-full mb-6 max-sm:overflow-x-hidden'>
+<nav className='h-16 shadow-md w-full max-sm:mb-0 max-sm:overflow-x-hidden'>
     <div className='flex w-full justify-between md:hidden h-12' max-sm:overflow-x-hidden>
-  <div className='mt-4 pl-2  w-[80%] float-right'>
+      <div className='mt-4 pl-2  w-[80%] float-right'>
     <Link to="/">
-    <p className='pr-4 text-[1.3rem] font-medium text-[#6e68c4]'>نظم</p>
-
+        <p className='pr-4 text-[1.3rem] font-medium text-[#6e68c4]'>نظم</p>
     </Link>
-  </div>
+      </div>
     <div className="drawer flex justify-end  drawer-end float-left md:hidden  h-full z-50">
     <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
 
@@ -102,10 +101,9 @@ const Nav = () => {
 
         </div>
         {getLocal ==undefined && !getLocal &&(
-          <div>
-          <Link to="/login">        <button className="rounded-lg text-white bg-[#f39e4e] py-1 px-3 ml-12">تسجيل الدخول</button>
+        <div>
+          <Link to="/login"><button className="rounded-lg text-white bg-[#f39e4e] py-1 px-3 ml-7 mb-1">تسجيل الدخول</button>
           </Link>
-
         </div>
         
         )}
@@ -117,14 +115,13 @@ const Nav = () => {
           
       
          <div>
-         <Link to="/Submissions">        <p className="rounded-lg  text-[#6e68c4] py-1 px-3 ">  تقديمي</p>
+         <Link to="/Submissions"> <p className="rounded-lg text-[#6e68c4] hover:text-[#f39e4e] py-1 px-3 ">  تقديمي</p>
          </Link>
 
        </div>
        <div className=''>
-          <Link to="/StudentProfile">        <p className="rounded-lg  text-[#6e68c4] py-1 px-3 ml-4"> الملف الشخصي</p>
+          <Link to="/StudentProfile"> <p className="rounded-lg text-[#6e68c4] hover:text-[#f39e4e] py-1 px-3 ml-4"> الملف الشخصي</p>
           </Link>
-
         </div>
        
 
@@ -135,8 +132,10 @@ const Nav = () => {
         )}
 
 {getLocal !== null  && (
-    <li onClick={removeLocal} className="rounded-lg mt-4 flex items-center cursor-pointer text-[1.2rem] text-[#6e68c4] py-1 px-3 ml-4">
-      تسجيل الخروج
+    <li onClick={removeLocal} className="rounded-lg flex items-center cursor-pointer text-[1.2rem] text-[#6e68c4] hover:text-[#f39e4e] py-1 px-3 ml-4 ">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-7">
+      <path fillRule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM6.166 5.106a.75.75 0 0 1 0 1.06 8.25 8.25 0 1 0 11.668 0 .75.75 0 1 1 1.06-1.06c3.808 3.807 3.808 9.98 0 13.788-3.807 3.808-9.98 3.808-13.788 0-3.808-3.807-3.808-9.98 0-13.788a.75.75 0 0 1 1.06 0Z" clipRule="evenodd" />
+    </svg>
     </li>
   )}
         

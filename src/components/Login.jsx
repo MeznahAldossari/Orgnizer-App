@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Logo from '../assets/nazzem-logo.png'
+// import BgLogin from '../assets/bg-login.png'
 
 function Login() {
   const [user, setUser] = useState({
