@@ -4,10 +4,12 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Logo from '../assets/nazzem-logo.png'
-
+import { auth, db } from '../config/firebase';
+import { getDoc, doc, collection } from 'firebase/firestore';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 function Login() {
   const [user, setUser] = useState({
-    name: '',
+    
     email: '',
     password: ''
   });
@@ -15,9 +17,9 @@ function Login() {
   const [err, setErr]= useState('')
 
 
-  const changeName= (e)=>{
+  const changeName=  (e)=>{
 
-    setUser({...user, "name": e.target.value})
+    setUser({...user, "email": e.target.value})
     setErr('')
 
   }
@@ -27,49 +29,61 @@ function Login() {
     setErr('')
   }
 
-  const loginData = ()=>{
-    setErr('')
-    if(user.name.trim() !=='' && user.password.trim() !==''){
-        axios.get('https://665736969f970b3b36c8658a.mockapi.io/form')
-      .then(function (response) {
-        // handle success
-        const getUser = response.data.find((userData)=>userData.email === user.name && userData.password === user.password )
-        if(getUser){
-          let obj= {
-            "id": getUser.id,
-            "role":getUser.role
-          }
-          localStorage.setItem("loggedIn", JSON.stringify(obj))
-          navigate('/')
-        }else{
-          setErr('Please, Make Sure to Enter Correct Data')
-        }
+  const loginData = async () => {
+    try {
+      const userInfo = await signInWithEmailAndPassword(auth, user.email, user.password);
+      console.log("User info:", userInfo);
+    
+      const userDocRef = doc(db, "users", userInfo.user.uid);
+      const userDocSnapshot = await getDoc(userDocRef);
+      
+      if (userDocSnapshot.exists()) {
+        const userData = userDocSnapshot.data();
+        console.log("User data:", userData);
         
-        console.log(response);
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-      })
-      .finally(function () {
-        // always executed
-      });
-      }else{
-        setErr('Please, Fill All Field')
+        let obj = {
+          id: userInfo.user.uid,
+          role: userData.role
+        };
+        
+        localStorage.setItem("loggedIn", JSON.stringify(obj));
+        navigate('/');
+      } else {
+        const companyDocRef = doc(db, "CompaniesData", userInfo.user.uid);
+        const companyDocSnapshot = await getDoc(companyDocRef);
+        
+        if (companyDocSnapshot.exists()) {
+          const companyData = companyDocSnapshot.data();
+          console.log("Company data:", companyData);
+          
+          let obj = {
+            id: userInfo.user.uid,
+            role: companyData.role
+          };
+          
+          localStorage.setItem("loggedIn", JSON.stringify(obj));
+          navigate('/');
+        } else {
+          console.log("Document does not exist.");
+          // Handle case where neither user nor company document exists
+        }
       }
-}
-
+    } catch (error) {
+      // Handle error gracefully
+    }
+  };
+  
 
   return (
     <div className='flex justify-center items-center bg-[#f1f0f0] h-screen'>
         <div className='flex flex-col items-center  w-[35%] bg-white shadow-lg h-[80vh] max-sm:w-[90%]'> 
     <img src={Logo} className='w-[20vw] mt-[10%]' />
-  <input type='text' onChange={changeName} placeholder='البريد الألكتروني' className='pr-2  bg-[#f2f2f2]  pl-10 px-4 py-1 max-sm:w-[90%]  border border-gray-300 rounded-lg w-[80%]'>
+  <input type='email' value={user.email} onChange={changeName} placeholder='البريد الألكتروني' className='pr-2  bg-[#f2f2f2]  pl-10 px-4 py-1 max-sm:w-[90%]  border border-gray-300 rounded-lg w-[80%]'>
   </input>
  
             
   
-            <input type='password' onChange={changePassword} placeholder='كلمة المرور' className='pr-2  bg-[#f2f2f2]  pl-10 px-4 py-1 mt-1 max-sm:w-[90%]  border border-gray-300 rounded-lg w-[80%]'></input>
+            <input type='password' value={user.password} onChange={changePassword} placeholder='كلمة المرور' className='pr-2  bg-[#f2f2f2]  pl-10 px-4 py-1 mt-1 max-sm:w-[90%]  border border-gray-300 rounded-lg w-[80%]'></input>
             <Link to='/signup' className='w-[80%]  mt-1'>
             <p className='text-[0.8rem] text-start '>ليس لديك حساب؟
             <span className='pr-2 underline text-[0.8rem]'>تسجيل جديد</span>
