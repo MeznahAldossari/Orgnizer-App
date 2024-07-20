@@ -1,7 +1,7 @@
 import React from 'react'
 import Nav from '../components/Nav'
 import { CiCalendar } from "react-icons/ci";
-// import { FaLocationDot } from "react-icons/fa6";
+import { FaLocationDot } from "react-icons/fa6";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaEdit } from "react-icons/fa";
 import { IoMdInformationCircleOutline } from "react-icons/io";
