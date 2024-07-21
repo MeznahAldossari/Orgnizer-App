@@ -15,7 +15,6 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-
 const EventInfo = () => {
   const { eventId } = useParams();
   const [event, setEvent] = useState(null);

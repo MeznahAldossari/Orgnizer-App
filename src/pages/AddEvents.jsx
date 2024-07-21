@@ -150,7 +150,7 @@ const AddEvents = () => {
           <h1 className="font-semibold text-[1.5rem] mr-16 pt-6 pr-1 text-[#5C59C2]">إضافة معرض</h1>
         </div>
 
-      <section dir="rtl" className="max-w-4xl max-sm:w-[95%] p-6 mx-auto bg-white rounded-md shadow-2xl mt-4">
+      <section dir="rtl" className="max-w-4xl h-auto max-sm:w-[95%] p-6 mx-auto bg-white rounded-md shadow-2xl mt-4">
       <form onSubmit={handleSubmit}>
       <div className="grid grid-cols-1 gap-6 mt-4 ">
             <div>
@@ -356,11 +356,11 @@ const AddEvents = () => {
           
             <div>
               <label className="text-black" htmlFor="place">مكان المعرض</label>
-              <div className="relative rounded h-52">
+              <div className="relative rounded h-80">
                
     <LoadScript googleMapsApiKey="AIzaSyANdvQ4iYKHnp9Kt_xvFr1Ze8-cq1ulDM0">
     <GoogleMap
-                  mapContainerStyle={{ height: '400px', width: '100%' }}
+                  mapContainerStyle={{ height: '300px', width: '100%' }}
                   zoom={10}
                   center={position}
                   onClick={onMapClick}
