@@ -1,36 +1,173 @@
-import React from 'react'
+import React, { useEffect,useState } from 'react'
 import Nav from '../components/Nav'
 import Elm from '../assets/elm.png'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
+import { auth, db, storage } from '../config/firebase';
+import { getDoc, doc, collection, getDocs, updateDoc, deleteDoc, setDoc } from 'firebase/firestore';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useLocation } from 'react-router-dom';
 
 
 const DetailsCompanies = () => {
+    // const {id} = useParams()
+    const [applicationInfo, setApplicationInfo] = useState(null);
+
+    const locationValue = useLocation()
+    const {companyID, eventIDs} = locationValue.state
+    const initialButtonState = { text: 'تقديم', color: '#99D2CB' };
+    const getLocal = JSON.parse(localStorage.getItem("loggedIn"));
+    const [company, setCompanyData] = useState({
+        companyName: '',
+        description: '',
+        email: '',
+        Location: '',
+        logo:'',
+        jobPositions: [],
+        EmpList:[]
+    });
+    useEffect(()=>{
+
+        getCompanyInfo()
+        
+
+    }, [])
+
+
+    const getCompanyInfo = async()=>{
+        
+
+
+        const mainCompanyInfo = doc(db, "CompaniesData", companyID);
+        console.log("##########################"+ companyID)
+        const companyDocSnapshot = await getDoc(mainCompanyInfo);
+
+        if (companyDocSnapshot.exists()) {
+            console.log("##########################")
+            
+            const myCompaniesRef = doc(db, `EventDetails/${eventIDs}/myCompanies/${companyID}`);
+            const userDocSnapshot = await getDoc(myCompaniesRef);
+            if (userDocSnapshot.exists()) {
+                const eventJobs = userDocSnapshot.data()
+                console.log("hello in the check ")
+                const companyData = companyDocSnapshot.data();
+                console.log("helloqqqq" + companyData.companyName)
+                setCompanyData({
+                    companyName: companyData.companyName,
+                    description: companyData.description,
+                    email: companyData.email,
+                    Location: companyData.Location,  
+                    logo: companyData.logo,
+                    jobPositions: eventJobs.jobPositions,
+                   
+                });
+
+            }
+            
+           
+         
+        }
+       
+       
+     
+    }
+
+   
+
+    const jobApplied = async (jobName, index) => {
+        try {
+            const myCompaniesRef = doc(db, `users/${getLocal.id}/myEvents/${eventIDs}/appliedCompanies`, companyID);
+            const userDocSnapshot = await getDoc(myCompaniesRef);
+    
+            if (userDocSnapshot.exists()) {
+
+            const applicationInfo = userDocSnapshot.data();
+
+            const positionExists = applicationInfo.allPositions.some(position => position.positionName === jobName);
+
+            if (!positionExists) {
+                const updatedPositions = [
+                    ...applicationInfo.allPositions,
+                    { company: companyID, positionName: jobName, status: "انتظار" }
+                ];
+
+                await updateDoc(myCompaniesRef, {
+                    allPositions: updatedPositions
+                });
+;
+            } else {
+                console.error(`Position '${jobName}' already exists.`);
+            }
+                
+               
+            } else {
+                const parentRef = doc(db, `users/${getLocal.id}/myEvents/${eventIDs}`);
+                const parentDocSnapshot = await getDoc(parentRef);
+    
+                if (parentDocSnapshot.exists()) {
+                    const appliedCompaniesRef = collection(db, `users/${getLocal.id}/myEvents/${eventIDs}/appliedCompanies`);
+                    const docRef = doc(appliedCompaniesRef, companyID);
+    
+                    await setDoc(docRef, {
+                        allPositions: [
+                            { company: companyID, positionName: jobName, status: "انتظار" },
+                        ]
+                    });
+                } else {
+                    console.error(`Parent document 'users/${getLocal.id}/myEvents/${eventIDs}' does not exist.`);
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching or updating document:", error);
+            // Handle error appropriately
+        }
+    }
+
+
+    const checkBtn = async()=>{
+        try {
+            const myCompaniesRef = doc(db, `users/${getLocal.id}/myEvents/${eventIDs}/appliedCompanies`, companyID);
+            const userDocSnapshot = await getDoc(myCompaniesRef);
+
+            if (userDocSnapshot.exists()) {
+                const data = userDocSnapshot.data();
+                setApplicationInfo(data);
+            } else {
+                console.error("Document does not exist.");
+            }
+        } catch (error) {
+            console.error("Error fetching document:", error);
+            // Handle error appropriately
+        
+    }
+    }
+   
   return (
     <>
     <Nav />
+    
 <div className='bg-[#f3f3f3] h-screen w-full flex justify-center '>
    <div className='flex mt-10 flex-col'>
     <div className='flex gap-6 max-sm:flex-col max-sm:items-center'>
         <div className=''>
-            <img className='h-[47vh] w-[25vw] rounded-lg max-sm:w-[88vw]' src={Elm} />
+            <img className='h-[47vh] w-[25vw] rounded-lg max-sm:w-[88vw]' src={company.logo} />
         </div>
         <div className=' bg-white w-[66vw] h-[47vh] rounded-lg max-sm:w-[88vw] '>
-            <h1 className='pt-6 pr-6 font-extrabold text-[#5C59C2] text-[1.5rem]'>شركة علم</h1>
-            <h1 className='pr-6 pt-2 text-[#4b4b4b] text-[1rem]'>تقنية المعلومات</h1>
+            <h1 className='pt-6 pr-6 font-extrabold text-[#5C59C2] text-[1.5rem]'>{company.companyName} </h1>
+            <h1 className='pr-6 pt-2 text-[#4b4b4b] text-[1rem]'></h1>
             <div className='pt-2 pr-5 flex gap-1 '>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5 text-[#99D2CB]">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                 </svg>
-                <p className='text-[gray] text-[0.8rem] '>الرياض - السعودية</p>
+                <p className='text-[gray] text-[0.8rem] '> {company.Location} </p>
             </div>
-            <p className='pr-6 pt-2 text-[#202020] text-[0.9rem]'><span className='font-bold '>التفاصيل:</span> هي شركة مساهمة سعودية مدرجة في السوق المالية السعودية «تداول» ومركزها الرئيسي في العاصمة السعودية الرياض وتتنوع نشاطاتها في تقديم الحلول الرقمية كالمنصات والمنتجات، وتنفيذ المشاريع الرقمية، وحلول إسناد الأعمال المرتبطة بأعمال الشركة، مع تقديم الخدمات الاستشارية الداعمة في المجالات الرقمية ومجالات الأعمال المحيطة بها. </p>
+            <p className='pr-6 pt-2 text-[#202020] text-[0.9rem]'><span className='font-bold '>التفاصيل:</span> {company.description}</p>
             <div className='flex justify-end items-center'>
                 {/* <div className="flex justify-end items-center mt-4 ml-2">
                     <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#99D2CB] hover:bg-[#a5ddd7] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:text-[0.8rem] max-sm:w-[20vw] ">تقديم</p>
                 </div> */}
                 <div className="flex justify-end items-center mt-4 ml-6">
-                    <Link to="/Companies">                    <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#7c7c7c] hover:bg-[#919191] py-2 px-4 rounded-lg cursor-pointer text-center">العودة</p>
+                    <Link to={`/Companies/${eventIDs}`}>                    <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#7c7c7c] hover:bg-[#919191] py-2 px-4 rounded-lg cursor-pointer text-center">العودة</p>
                     </Link>
                 </div>
             </div>
@@ -47,39 +184,43 @@ const DetailsCompanies = () => {
             <tbody>
               <tr className="focus:outline-none h-16 border border-[#99D2CB] bg-[#fafafa] rounded">
               <th className="text-right p-3 px-5">المسمى الوظيفي</th>
-              <th className="text-right p-3 px-5">المسؤوليات </th>
-              <th className="text-right p-3 px-5">المهارات المطلوبة</th>
               <th className="text-right p-3 px-5">التقديم </th>
             </tr>
-                 <tr tabindex="0" className="focus:outline-none h-16 border border-[#99D2CB] rounded">
-                    {/* <td className="">
-                        <div className="flex items-center pl-5">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPk0IrfQt8yu8km4DYRG69OOhe2GQlK5NLvzIk23B3u77AjSRLJ3NLOqK9_W53M8jHV6Y&usqp=CAU" alt="" srcset="" className='w-[7vw] h-[7vh] mr-2' />
-                        </div>
-                    </td> */}
-                    <td className="">
-                        <div className="flex items-center pl-5">
-                            <p className="text-base font-medium leading-none text-gray-700 mr-5">   مطور ويب  </p>
-                        </div>
-                    </td>
-                    <td className="">
-                        <div className="flex items-center pl-5">
-                            <p className="text-base font-medium leading-none text-gray-700 mr-2">  تطوير مواقع الويب وتطبيقات الويب باستخدام جافاسكربت </p>
-                        </div>
-                    </td>
-                    <td className="">
-                        <div className="flex items-center pl-5">
-                            <p className="text-base font-medium leading-none text-gray-700 mr-2"> CSS - HTML - JavaSrcipt -React </p>
-                        </div>
-                    </td> 
-                    <td className="">
-                        <div className="flex items-center pl-5">
-                            <p className="text-base font-medium leading-none text-gray-700 mr-2">  <div className='flex gap-2'>
-                        <span className="bg-[#99D2CB] text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-[#99D2CB] dark:text-yellow-400 border border-[#99D2CB]">تقديم</span>
-                        </div> </p>
-                        </div>
-                    </td>
-                </tr>
+
+            {company.jobPositions && company.jobPositions.length > 0 && (
+             <>
+        {company.jobPositions.map((job, index) => (
+            <tr key={index} tabIndex="0" className="focus:outline-none h-16 border border-[#99D2CB] rounded">
+                {/* 
+                <td className="">
+                    <div className="flex items-center pl-5">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPk0IrfQt8yu8km4DYRG69OOhe2GQlK5NLvzIk23B3u77AjSRLJ3NLOqK9_W53M8jHV6Y&usqp=CAU" alt="" srcSet="" className='w-[7vw] h-[7vh] mr-2' />
+                    </div>
+                </td> 
+                */}
+                <td className="">
+                    <div className="flex items-center pl-5">
+                        <p className="text-base font-medium leading-none text-gray-700 mr-5">{job} </p>
+                    </div>
+                </td>
+                
+                <td className="">
+                    <div className="flex items-center pl-5">
+                        <p className="text-base font-medium leading-none text-gray-700 mr-2">
+                            <div className='flex gap-2'>
+                            
+                            </div>
+                        </p>
+                    </div>
+                </td>
+            </tr>
+        ))}
+    </>
+)}
+
+    
+                    
+                
             </tbody>
         </table>  
 </div>

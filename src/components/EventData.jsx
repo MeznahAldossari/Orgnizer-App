@@ -5,7 +5,7 @@ import CompanyDetails from './CompanyDetails';
 import axios from 'axios';
 
 function EventData() {
-
+    const [cardInfo, setCardInfo] = useState([])
     const [checkRole, setCheckRole] = useState('')
     useEffect(()=>{
         getRole()
@@ -17,6 +17,7 @@ function EventData() {
       
     }
 
+ 
 
   return (
     <div>

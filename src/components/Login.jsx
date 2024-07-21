@@ -47,7 +47,10 @@ function Login() {
         };
         
         localStorage.setItem("loggedIn", JSON.stringify(obj));
+       
         navigate('/');
+        
+      
       } else {
         const companyDocRef = doc(db, "CompaniesData", userInfo.user.uid);
         const companyDocSnapshot = await getDoc(companyDocRef);

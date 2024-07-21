@@ -13,6 +13,7 @@ import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import CompanyDetails from "./components/CompanyDetails";
 import EventData from "./components/EventData";
+
 function Router() {
     const router = createBrowserRouter([
         {
@@ -28,7 +29,7 @@ function Router() {
           element: <SignUp />,
         },
         {
-          path: "/companyInfo",
+          path: "/companyInfo/:id",
           element: <CompanyDetails />,
         },
         {
@@ -50,13 +51,15 @@ function Router() {
             element: <Submissions />,
         },
         {
-            path: "/DetailsCompanies",
+            path: "/DetailsCompanies/",
             element: <DetailsCompanies />,
         },
         {
-            path: "/Companies",
+            path: "/Companies/:id",
             element: <Companies />,
         },
+        
+     
       ]);
     return(
         

@@ -1,16 +1,342 @@
-  import React, {useState} from 'react'
+  import React, {useEffect, useState, useRef} from 'react'
   import Nav from './Nav'
   import '../App.css'
-
+  import { jsPDF } from 'jspdf';
+  // import jsPDF from 'jspdf'
+  import autoTable from 'jspdf-autotable'
+  // import '../Amiri-normal.js'
+  
+ 
+import html2canvas from 'html2canvas';
+import QRCode from 'qrcode.react';
   import deleteStudent from '../assets/delete.png'
+  import close from "../assets/close.png"
+  import { IoIosAddCircle } from "react-icons/io";
+  import MyqrCode from './MyqrCode';
+  import { RiDownload2Fill } from "react-icons/ri";
+
+
+ 
+  import { auth, db, storage } from '../config/firebase';
+  import { getDoc, doc, collection, getDocs, updateDoc, deleteDoc } from 'firebase/firestore';
+  import { signInWithEmailAndPassword } from 'firebase/auth';
+  import { Link, useParams } from 'react-router-dom';
+  import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
 
   function CompanyDetails() {
-      const [activeTab, setActiveTab] = useState('tab1'); // State to keep track of active tab
+    const [qrValue, setQRValue] = useState('');
 
-      // Function to handle tab click
-      const handleTabClick = (tabId) => {
-        setActiveTab(tabId); // Update active tab state
+    const [showNewPositionInput, setShowNewPositionInput] = useState(false); 
+    const [companyData, setCompanyData] = useState({
+      companyName: '',
+      description: '',
+      email: '',
+      Location: '',
+      logo:'',
+      jobPositions: [],
+      EmpList:[]
+  });
+
+  const [companyupdated, setCompanyupdated] = useState({
+    companyName: '',
+    description: '',
+    email: '',
+    Location: '',
+    logo:'',
+    jobPositions: []
+});
+
+  
+
+      const [checkEmp, setCheckEmp] = useState(false)
+      const [checkPosition, setCheckPosition] = useState(false)
+      const getLocal = JSON.parse(localStorage.getItem("loggedIn"));
+      const {id} = useParams()
+      const qrRef = useRef(null);
+      const [pdfUrl, setPdfUrl] = useState('');
+
+
+      useEffect(()=>{
+        getCompanyInfo()
+        checkPositionAndEmp()
+        
+      }, [])
+
+      const fetchData = async () => {
+        const eventDetailsRef = doc(db, 'CompaniesData', getLocal.id);
+        
+        try {
+          const eventDetailsSnapshot = await getDoc(eventDetailsRef);
+          
+          if (!eventDetailsSnapshot.exists()) {
+            console.log('Event details document does not exist');
+            return;
+          }
+      
+          const eventDetailsData = eventDetailsSnapshot.data();
+      
+          const otherDocumentRef = eventDetailsData.companyName; 
+      
+          const qrDataURL = document.getElementById('qr-code').toDataURL();
+          const pdfWidth = 100; 
+          const pdfHeight = 130; 
+          const pdf = new jsPDF({
+              unit: 'mm',
+              format: [pdfWidth, pdfHeight]
+          });
+
+          const qrSize = 20;
+         
+          const qrX = (pdfWidth - qrSize) / 2; // Center QR horizontally
+          const qrY = (pdfHeight - qrSize) / 2; // Center QR vertically
+
+          pdf.setFillColor('#E5D4FF'); 
+
+          pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight(), 'F');
+          pdf.addImage(qrDataURL, 'JPEG', qrX, qrY, qrSize, qrSize);
+          
+          const title = "SAMI"; 
+          pdf.setFontSize(20);
+          pdf.setFont('Amiri', 'Amiri', 'normal');
+          pdf.text(title, pdfWidth / 2, qrY + qrSize + 10, { align: 'center' });
+          pdf.save('myPDFS.pdf');
+          const pdfBlob = pdf.output('blob'); // Convert to Blob for upload
+          uploadPDF(pdfBlob);
+      
+        } catch (error) {
+          console.error('Error fetching document:', error);
+        }
       };
+      
+      const uploadPDF = async(pdfFile) => {
+        // const storageRef = firebase.storage().ref();
+        // const storageRef = ref(storage, 'some-child');
+        const eventDetailsRef = doc(db, 'CompaniesData', getLocal.id);
+        
+        
+          const eventDetailsSnapshot = await getDoc(eventDetailsRef);
+          
+          if (!eventDetailsSnapshot.exists()) {
+            console.log('Event details document does not exist');
+            return;
+          }
+      
+          const eventDetailsData = eventDetailsSnapshot.data();
+      
+          const otherDocumentRef = eventDetailsData.companyName
+          const storageRef = ref(storage, `pdfsQR/myPDFS.pdf`);
+
+        
+        // const pdfRef = storageRef.child('pdfs/myPDF.pdf');
+    
+        uploadBytes(storageRef, pdfFile).then((snapshot) => {
+          console.log('Uploaded a blob or file!');
+        });
+      };
+    
+      const getCompanyInfo = async () => {
+        try {
+            const myCompaniesRef = doc(db, `EventDetails/${id}/myCompanies/${getLocal.id}`);
+            const userDocSnapshot = await getDoc(myCompaniesRef);
+            
+            if (userDocSnapshot.exists()) {
+                const userData = userDocSnapshot.data();
+                
+                const mainCompanyInfo = doc(db, "CompaniesData", getLocal.id);
+                const companyDocSnapshot = await getDoc(mainCompanyInfo);
+    
+                if (companyDocSnapshot.exists()) {
+                    const companyData = companyDocSnapshot.data();
+                    setCompanyData({
+                        companyName: companyData.companyName,
+                        description: companyData.description,
+                        email: companyData.email,
+                        Location: companyData.Location,  // Ensure casing matches Firestore document
+                        logo: companyData.logo,
+                        jobPositions: userData.jobPositions,
+                        EmpList:userData.EmpList
+                    });
+
+                    setCompanyupdated({
+                      companyName: companyData.companyName,
+                      description: companyData.description,
+                      email: companyData.email,
+                      Location: companyData.Location,  // Ensure casing matches Firestore document
+                      logo: companyData.logo,
+                      jobPositions: userData.jobPositions,
+                      EmpList:userData.EmpList
+                  });
+                } else {
+                    console.error("Company data does not exist");
+                }
+            } else {
+                console.error("User document does not exist");
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
+    const handleDescriptionChange = (event) => {
+      setCompanyupdated({ ...companyupdated, description: event.target.value });
+    };
+
+    const handleLocationChange = (event) => {
+      setCompanyupdated({ ...companyupdated, Location: event.target.value });
+    };
+    const handleLogoChange = async (event) => {
+      const file = event.target.files[0];
+    setCompanyupdated({
+      ...companyupdated,
+      logo: file
+    });
+    };
+
+    const handlePositionsChange = (event) => {
+      const positionsInput = event.target.value;
+      const positionsArray = positionsInput.split(',').map(position => position.trim());
+      setCompanyupdated({
+          ...companyupdated,
+          jobPositions: positionsArray
+      });
+    };
+  
+
+    const updateInfo = async (eventID, companyID) => {
+      try {
+        if (
+          companyupdated.description !== "" &&
+          companyupdated.Location !== "" &&
+          companyupdated.logo !== "" &&
+          companyupdated.jobPositions !== "" &&
+          companyupdated.logo !== undefined &&
+          companyupdated.jobPositions !== undefined &&
+          companyupdated.jobPositions.length !== 0 &&
+          companyupdated.description !== undefined &&
+          companyupdated.Location !== undefined
+        ) {
+          const storageRef = ref(storage, `logoFolder/${companyupdated.logo.name}`);
+          await uploadBytes(storageRef, companyupdated.logo);
+    
+          // Get download URL for the uploaded logo
+          const logoURL = await getDownloadURL(storageRef);
+    
+          console.log("Updating company info for company ID: " + companyID);
+          const mainCompanyInfo = doc(db, "CompaniesData", companyID);
+          const companySnapshot = await getDoc(mainCompanyInfo);
+          console.log(companySnapshot);
+    
+          if (companySnapshot.exists()) {
+            await updateDoc(mainCompanyInfo, {
+              description: companyupdated.description,
+              Location: companyupdated.Location,
+              logo: logoURL
+            });
+    
+            // Update event company info
+            const eventDetailsRef = doc(db, 'EventDetails', eventID);
+            const eventDetailsSnapshot = await getDoc(eventDetailsRef);
+    
+            if (eventDetailsSnapshot.exists()) {
+              const myCompaniesRef = collection(eventDetailsRef, 'myCompanies');
+              const myCompanyDocRef = doc(myCompaniesRef, companyID);
+              const myCompanySnapshot = await getDoc(myCompanyDocRef);
+    
+              if (myCompanySnapshot.exists()) {
+                await updateDoc(myCompanyDocRef, {
+                  jobPositions: companyupdated.jobPositions
+                });
+    
+              } else {
+                console.error('No such company document exists.');
+              }
+            } else {
+              console.error('No such event details document exists.');
+            }
+          } else {
+            console.error('No such company document exists for ID:', companyID);
+          }
+        } else {
+          console.error('One or more required fields are missing or invalid.');
+        }
+      } catch (error) {
+        console.error("Error updating company info:", error);
+      }
+    };
+    
+
+
+        const deletePosition =  (positionIndex) => {
+
+          console.log("Deleting position at index:", positionIndex);
+          const updatedPositions = [...companyupdated.jobPositions];
+          updatedPositions.splice(positionIndex, 1);
+          setCompanyupdated({
+            ...companyupdated,
+            jobPositions: updatedPositions
+          });
+         
+        }
+
+    const checkPositionAndEmp= async()=>{
+     try{
+      setCheckPosition(false)
+      setCheckEmp(false)
+      const eventDetailsRef = doc(db, 'EventDetails', id);
+      const eventDetailsSnapshot = await getDoc(eventDetailsRef);
+
+      if (eventDetailsSnapshot.exists()) {
+        const myCompaniesRef = collection(eventDetailsRef, 'myCompanies');
+        const myCompanyDocRef = doc(myCompaniesRef, getLocal.id);
+        const myCompanySnapshot = await getDoc(myCompanyDocRef);
+
+        if (myCompanySnapshot.exists()) {
+          const companyData = myCompanySnapshot.data();
+          if(companyData.jobPositions === undefined || companyData.jobPositions ===null){
+            setCheckPosition(true)
+          } 
+        }
+
+      }
+
+      
+
+     }catch(e){
+      console.log(e)
+
+     }
+    }
+
+    const addPosition = () => {
+      setShowNewPositionInput(true); 
+    };
+  
+    const handleNewPositionChange = (e) => {
+      setNewPosition(e.target.value);
+    };
+  
+    const handleSubmit = () => {
+      if (newPosition.trim() !== '') {
+        const initialJobPositions = companyupdated.jobPositions || [];
+        
+        const updatedPositions = [...initialJobPositions, newPosition];
+        
+        setCompanyupdated({
+          ...companyupdated,
+          jobPositions: updatedPositions
+        });
+        
+        setNewPosition(''); 
+        setShowNewPositionInput(false); 
+      }
+    };
+  
+    const [newPosition, setNewPosition] = useState('');
+
+    const handleInputChange = (event) => {
+      setQRValue(event.target.value);
+    };
+        
 
     return (
       <div>
@@ -23,13 +349,30 @@
               <p className='font-semibold text-[1.5rem] mr-14'> مرحباً <span className='text-[#6e68c4] font-bold'>بكم</span> في معرض التوظيف  </p>
           </div>
           <div className='flex flex-col justify-center items-center'>
-              <div className='flex items-center mt-6 bg-white w-[91%] h-[20vh] rounded-lg'>
-                  <img className='mr-4 rounded-full border-[1.5px] h-[15vh] object-cover w-[7vw] max-sm:w-[20vw] max-sm:h-[10vh]' src='https://cdn.wamda.com/feature-images/6dee4eb29803976.png' />
+           
+              <div className='flex justify-between items-center mt-6 bg-white w-[91%] h-[20vh] rounded-lg'>
+                 <div className='flex items-center '>
+                 <img className='mr-4 rounded-full border-[1.5px] h-[15vh] object-cover w-[7vw] max-sm:w-[20vw] max-sm:h-[10vh]' src={companyData.logo} />
                   <div className='mr-4'>
-                      <p className='font-bold text-[1.3rem]'> شركة علم</p>
-                      {/* <p className='text-[gray] text-[0.9rem]'>معسكر تطوير واجهات المستخدم باسخدام جافاسكربت</p> */}
+                      <p className='font-bold text-[1.3rem]'>  {companyData.companyName}</p>
                   </div>
+                 </div>
+                  
+                 {/* <div className='flex ml-12'>
+                  <RiDownload2Fill size={20} className='cursor-pointer' />
+                </div> */}
+                <div>
+                  {}
+                <QRCode id="qr-code" value={companyData.companyName} className='hidden'></QRCode>
+                <RiDownload2Fill size={20} className='cursor-pointer' onClick={fetchData}/>
               </div>
+
+                {/* Container for PDF generation, hidden from view */}
+                
+              </div>
+              
+
+              
               <div className='grid pb-12  w-[91%]  grid-cols-3 gap-6 max-sm:grid-cols-1'>
                   <div className='mt-6 col-span-2 bg-white  h-[100vh] rounded-lg'>
                       <h1 className='pt-6 pr-6 font-extrabold text-[#6e68c4] text-[1.1rem]'>قائمة المتقدمين</h1>
@@ -40,117 +383,133 @@
       <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white " aria-label="المتقدمون"  defaultChecked/>
       <div role="tabpanel" className="tab-content bg-white border-base-100 rounded-box p-6">
         {/* <p className='text-lg font-bold mb-5' > قائمة الشركات</p> */}
-        <table className="w-[20vw] whitespace-nowrap max-sm:table-xs">
-              <tbody>
-                <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
-                <th className="text-right p-3 px-5"> الأسم</th>
-                <th className="text-right p-3 px-5">المعسكر </th>
-                <th className="text-right p-3 px-5">الأيميل </th>
-                <th className="text-right p-3 px-5">الحالة </th>
-                <th className="text-right p-3 px-5 ">حذف </th>
+        {!checkPosition && !checkEmp ? (
+          <table className="w-[20vw] whitespace-nowrap max-sm:table-xs">
+          <tbody>
+            <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
+            <th className="text-right p-3 px-5"> الأسم</th>
+            <th className="text-right p-3 px-5">المعسكر </th>
+            <th className="text-right p-3 px-5">الأيميل </th>
+            <th className="text-right p-3 px-5">الحالة </th>
+            <th className="text-right p-3 px-5 ">حذف </th>
 
+          </tr>
+              <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded">
+                  {/* <td className="">
+                      <div className="flex items-center pl-5">
+                          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPk0IrfQt8yu8km4DYRG69OOhe2GQlK5NLvzIk23B3u77AjSRLJ3NLOqK9_W53M8jHV6Y&usqp=CAU" alt="" srcset="" className='w-[7vw] h-[7vh] mr-2' />
+                      </div>
+                  </td> */}
+                  <td className="">
+                      <div className="flex items-center pl-5">
+                          <p className="text-base font-medium leading-none text-gray-700 mr-5">   نوره محمد  </p>
+                      </div>
+                  </td>
+                  <td className="">
+                      <div className="flex items-center pl-5">
+                          <p className="text-base font-medium leading-none text-gray-700 mr-2">   معسكر جافاسكربت  </p>
+                      </div>
+                  </td>
+                  <td className="">
+                      <div className="flex items-center pl-5">
+                          <p className="text-base font-medium leading-none text-gray-700 mr-2"> Nora@hotmail.com</p>
+                      </div>
+                  </td>
+                  <td className="">
+                      <div className="flex items-center pl-5">
+                          <p className="text-base px-4 bg-[#f7f8c8] py-1  rounded-md text-[#b9b9b7] font-medium leading-none cursor-pointer mr-2"> بالأنتظار</p>
+                      </div>
+                  </td> 
+
+                  <td className="">
+                      <div className="flex justify-center items-center pl-5">
+                          <img src={deleteStudent} className='w-4 cursor-pointer' onClick={() => { document.getElementById('my_modal_1').showModal()}}/>
+                          <dialog id="my_modal_1" className="modal ">
+                            <div className="modal-box w-[35vw] max-w-5xl" >
+
+                            <p className="py-4 text-[1.1rem]">هل انت متأكد من الغاء الطالب؟</p>
+                            <div className="modal-action">
+                            <form method="dialog" className='gap-6'>
+                           
+                            <button className="btn ml-1 bg-[#99D2CB] text-white" >نعم</button>
+                           
+                           
+                            <button className="btn bg-[#99D2CB] text-white">لا</button>
+                           
+
+                            </form>
+                            </div>
+                            </div>
+                        </dialog>
+                      </div>
+                  </td>
               </tr>
-                  <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded">
-                      {/* <td className="">
-                          <div className="flex items-center pl-5">
-                              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPk0IrfQt8yu8km4DYRG69OOhe2GQlK5NLvzIk23B3u77AjSRLJ3NLOqK9_W53M8jHV6Y&usqp=CAU" alt="" srcset="" className='w-[7vw] h-[7vh] mr-2' />
-                          </div>
-                      </td> */}
-                      <td className="">
-                          <div className="flex items-center pl-5">
-                              <p className="text-base font-medium leading-none text-gray-700 mr-5">   نوره محمد  </p>
-                          </div>
-                      </td>
-                      <td className="">
-                          <div className="flex items-center pl-5">
-                              <p className="text-base font-medium leading-none text-gray-700 mr-2">   معسكر جافاسكربت  </p>
-                          </div>
-                      </td>
-                      <td className="">
-                          <div className="flex items-center pl-5">
-                              <p className="text-base font-medium leading-none text-gray-700 mr-2"> Nora@hotmail.com</p>
-                          </div>
-                      </td>
-                      <td className="">
-                          <div className="flex items-center pl-5">
-                              <p className="text-base px-4 bg-[#f7f8c8] py-1  rounded-md text-[#b9b9b7] font-medium leading-none cursor-pointer mr-2"> بالأنتظار</p>
-                          </div>
-                      </td> 
+          </tbody>
+      </table>
+          
+        ):(
+       
+                  <p className='text-[1.2rem] mt-4 text-red-600 font-medium'> لعرض قائمة المتقدمين, يرجى التأكد من ادخال المسميات الوظيفية المطلوبة و اسماء الموظفين المشاركين</p>
 
-                      <td className="">
-                          <div className="flex justify-center items-center pl-5">
-                              <img src={deleteStudent} className='w-4 cursor-pointer' onClick={() => { document.getElementById('my_modal_4').showModal()}}/>
-                              <dialog id="my_modal_4" className="modal ">
-                                <div className="modal-box w-[35vw] max-w-5xl">
-
-                                <p className="py-4 text-[1.1rem]">هل انت متأكد من الغاء الطالب؟</p>
-                                <div className="modal-action">
-                                <form method="dialog" className='gap-6'>
-                               
-                                <button className="btn ml-1 bg-[#99D2CB] text-white" >نعم</button>
-                               
-                               
-                                <button className="btn bg-[#99D2CB] text-white">لا</button>
-                               
-
-                                </form>
-                                </div>
-                                </div>
-                            </dialog>
-                          </div>
-                      </td>
-                  </tr>
-              </tbody>
-          </table>
+        
+        )}
+        
               </div>
 
       <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white" aria-label="مكتمل" />
       <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6">
       {/* <p className='text-lg font-bold mb-5' > قائمة الطلاب</p> */}
+      {!checkPosition && !checkEmp ? (
+         <table className="w-[48.6vw] whitespace-nowrap max-sm:table-xs">
+         <tbody>
+           <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
+           <th className="text-right p-3 px-5"> الأسم</th>
+           <th className="text-right p-3 px-5">المعسكر </th>
+           <th className="text-right p-3 px-5">الأيميل </th>
+           <th className="text-right p-3 px-5">الحالة </th>
+         </tr>
+             <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded">
+                 {/* <td className="">
+                     <div className="flex items-center pl-5">
+                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPk0IrfQt8yu8km4DYRG69OOhe2GQlK5NLvzIk23B3u77AjSRLJ3NLOqK9_W53M8jHV6Y&usqp=CAU" alt="" srcset="" className='w-[7vw] h-[7vh] mr-2' />
+                     </div>
+                 </td> */}
+                 <td className="">
+                     <div className="flex items-center pl-5">
+                         <p className="text-base font-medium leading-none text-gray-700 mr-5">   نوره محمد  </p>
+                     </div>
+                 </td>
+                 <td className="">
+                     <div className="flex items-center pl-5">
+                         <p className="text-base font-medium leading-none text-gray-700 mr-2">   معسكر جافاسكربت  </p>
+                     </div>
+                 </td>
+                 <td className="">
+                     <div className="flex items-center pl-5">
+                         <p className="text-base font-medium leading-none text-gray-700 mr-2"> Nora@hotmail.com</p>
+                     </div>
+                 </td>
+                 <td className="">
+                     <div className="flex items-center pl-5">
+                         <p className="text-base px-4 bg-[#ceefd4] py-1  rounded-md text-[#b9b9b7] font-medium leading-none  mr-2"> مكتمل</p>
+                     </div>
+                 </td> 
 
-      <table className="w-[48.6vw] whitespace-nowrap max-sm:table-xs">
-              <tbody>
-                <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
-                <th className="text-right p-3 px-5"> الأسم</th>
-                <th className="text-right p-3 px-5">المعسكر </th>
-                <th className="text-right p-3 px-5">الأيميل </th>
-                <th className="text-right p-3 px-5">الحالة </th>
-              </tr>
-                  <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded">
-                      {/* <td className="">
-                          <div className="flex items-center pl-5">
-                              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPk0IrfQt8yu8km4DYRG69OOhe2GQlK5NLvzIk23B3u77AjSRLJ3NLOqK9_W53M8jHV6Y&usqp=CAU" alt="" srcset="" className='w-[7vw] h-[7vh] mr-2' />
-                          </div>
-                      </td> */}
-                      <td className="">
-                          <div className="flex items-center pl-5">
-                              <p className="text-base font-medium leading-none text-gray-700 mr-5">   نوره محمد  </p>
-                          </div>
-                      </td>
-                      <td className="">
-                          <div className="flex items-center pl-5">
-                              <p className="text-base font-medium leading-none text-gray-700 mr-2">   معسكر جافاسكربت  </p>
-                          </div>
-                      </td>
-                      <td className="">
-                          <div className="flex items-center pl-5">
-                              <p className="text-base font-medium leading-none text-gray-700 mr-2"> Nora@hotmail.com</p>
-                          </div>
-                      </td>
-                      <td className="">
-                          <div className="flex items-center pl-5">
-                              <p className="text-base px-4 bg-[#ceefd4] py-1  rounded-md text-[#b9b9b7] font-medium leading-none  mr-2"> مكتمل</p>
-                          </div>
-                      </td> 
+                 {/* <td className="">
+                     <div className="flex items-center pl-5">
+                         <img src={deleteStudent}> </img>
+                     </div>
+                 </td>  */}
+             </tr>
+         </tbody>
+     </table>  
+      ):(
+        
+                  <p className='text-[1.2rem] mt-4 text-red-600 font-medium'> لعرض قائمة المتقدمين, يرجى التأكد من ادخال المسميات الوظيفية المطلوبة و اسماء الموظفين المشاركين</p>
 
-                      {/* <td className="">
-                          <div className="flex items-center pl-5">
-                              <img src={deleteStudent}> </img>
-                          </div>
-                      </td>  */}
-                  </tr>
-              </tbody>
-          </table>  
+        
+        )}
+     
     
                         </div>
     </div>
@@ -163,37 +522,142 @@
                   <div className='mt-6 bg-white h-[100vh] rounded-lg max-sm:h-[50vh] max-sm:w-[90vw]'>
                     <div className='flex items-center justify-between'>
                     <h1 className='pt-6 pr-6 font-extrabold text-[#6e68c4] text-[1.1rem]'>  تفاصيل الشركة </h1>
-                    <button className="mt-6 rounded-lg text-white bg-[#f39e4e] py-1 px-3 ml-6"> تعديل</button>
+                    <button className="btn mt-6 rounded-lg text-white bg-[#f39e4e] py-1 px-3 ml-6" onClick={()=>document.getElementById('my_modal_4').showModal()}> تعديل</button>
+                    <dialog id="my_modal_4" class="modal">
+  <div className="modal-box w-[50vw] max-w-5xl flex flex-col p-4 py-2" style={{ maxHeight: '95vh', overflowY: 'auto' }}>
+    <h3 className="font-bold text-lg py-4 text-[#6e68c4]">تعديل تفاصيل الشركة</h3>
+   
+    <label className="mt-4 font-bold">نبذه عن الشركة</label>
+    <textarea className="py-2 mt-1 rounded-md resize-none overflow-y-auto" rows="8" cols="50" value={companyupdated.description} onChange={handleDescriptionChange}></textarea>
+    <div className="flex items-center">
+    <div className='flex flex-col'>
+    <label className="font-bold  mt-4 mr-0">تحميل شعار الشركة:</label>
+    <input className="py-1 mt-4 rounded-md" type="file" onChange={handleLogoChange}></input>
+    </div>
+      
+    <div className='flex flex-col'>
+    <label className="mt-4 font-bold">المنطقة</label>
+    <input className="py-2 mt-4 w-[12vw] px-2 rounded-md" type="text" value={companyupdated.Location} onChange={handleLocationChange}></input>
+    
+    </div>
+    </div>
+    
+    <div className='flex items-center  justify-between '>
+    <label className="mt-4 font-bold">الوظائف المتاحة</label>
+    <IoIosAddCircle size={23} fill='#6e68c4' className='mt-4 ' onClick={addPosition}/>
 
+
+    </div>
+    <div className='flex flex-wrap gap-4 w-full mt-4 rounded-md bg-slate-400 p-4'>
+      {(companyupdated.jobPositions && companyupdated.jobPositions.length >0) &&(
+        <>
+          {companyupdated.jobPositions.map((positionName, index) => (
+            <div className='rounded-md h-auto mt-2 px-4 flex gap-2 items-center' key={index}>
+              <div className="relative flex items-center">
+                <input
+                  type="text"
+                  className="py-0 mt-2 w-auto flex-shrink-0 px-2 rounded-full pl-4 border-[1.2px] bg-purple-100 pr-8"
+                  style={{ minWidth: '50px' }} // Adjust minimum width as needed
+                  value={positionName}
+                  onChange={(e) => handlePositionsChange(e, index)}
+                  disabled // Assuming you want to disable editing for existing positions
+                />
+                <img
+                  src={close}
+                  className='w-5 h-4 ml-2 cursor-pointer'
+                  onClick={() => deletePosition(index)}
+                  alt="Delete"
+                />
+              </div>
+            </div>
+            
+          ))}
+          </>
+
+      ) }
+
+
+  {showNewPositionInput && (
+    <div className='rounded-md h-auto mt-2 px-4 flex gap-2 items-center'>
+      <input
+        type="text"
+        className="py-0 mt-1 w-auto px-2 rounded-full pl-4 border-[1.2px] bg-purple-100 pr-8"
+        style={{ minWidth: '50px' }} // Adjust minimum width as needed
+        placeholder="عنوان الوظيفة"
+        value={newPosition}
+        onChange={handleNewPositionChange}
+      />
+      <IoIosAddCircle size={23} fill='#6e68c4' className='cursor-pointer' onClick={handleSubmit} />
+    </div>
+  )}
+</div>
+
+    
+    <div className="modal-action mt-4">
+      <button className="btn" onClick={() => updateInfo(id, getLocal.id)}>حفظ</button>
+    </div>
+  </div>
+</dialog>
 
                     </div>
                       <br />
                       <hr className='flex justify-center w-full' />
                       <div className="flex flex-col  justify-center w-full">
                         <p className='mr-6 font-bold mt-6 text-[1.04rem]'>نبذه عن الشركة:</p>
-                        <p className='pr-6 pt-2 text-[#202020] ml-6 text-[0.9rem] text-justify'> هي شركة مساهمة سعودية مدرجة في السوق المالية السعودية «تداول» ومركزها الرئيسي في العاصمة السعودية الرياض وتتنوع نشاطاتها في تقديم الحلول الرقمية كالمنصات والمنتجات، وتنفيذ المشاريع الرقمية، وحلول إسناد الأعمال المرتبطة بأعمال الشركة، مع تقديم الخدمات الاستشارية الداعمة في المجالات الرقمية ومجالات الأعمال المحيطة بها. </p>
+                        <p  className='border-non pr-6 pt-2 text-[#202020] ml-6  text-[0.9rem] text-justify' >{companyData.description}</p>
                         <div className='pt-2 pr-5 flex gap-1 mt-4'>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5 text-[#99D2CB]">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                         </svg>
-                        <p className='text-[gray] text-[0.8rem] '>الرياض - السعودية</p>
+                        <p className='text-[gray] text-[0.8rem] '>{companyData.Location} </p>
                     </div> 
+
+                    <p className='mr-6 font-bold mt-8 text-[1.04rem]'>الموظفين المشاركين:</p>
+                    <div className='flex gap-2 mt-2'>
+                    {
+                      companyData && companyData.EmpList && companyData.EmpList.length > 0 ? (
+                        <>
+                          {companyData.EmpList.map((position, index) => (
+                            <p key={index} className='px-2 mr-6 mt-2 py-1 rounded-full w-fit text-[0.8rem] bg-[#eee6f5]'>
+                              {position}
+                            </p>
+                          ))}
+                        </>
+                      ) : (
+                        <p className='text-[1rem] mr-[1.6rem] mt-2 text-gray-500'>لايوجد</p>
+                      )
+                    }
+                                        
+     
+
+                    </div>
                     <p className='mr-6 font-bold mt-8 text-[1.04rem]'>الشواغر المتاحة:</p>
 
                     <div className='flex gap-2 mt-2'>
-                    <p className='px-2 mr-6  mt-2 py-1 rounded-full w-fit  text-[0.8rem] bg-[#eee6f5]'>مطور برامج</p>
-                    <p className='px-2 py-1 mt-2 rounded-full w-fit  text-[0.8rem] bg-[#eee6f5]'>محلل برامج</p>
-                    <p className='px-2 py-1 mt-2 rounded-full w-fit  text-[0.8rem] bg-[#eee6f5]'> مهندس برمجيات</p>
-
+                    {
+                      companyData && companyData.jobPositions && companyData.jobPositions.length > 0 ? (
+                        <>
+                          {companyData.jobPositions.map((position, index) => (
+                            <p key={index} className='px-2 mr-6 mt-2 py-1 rounded-full w-fit text-[0.8rem] bg-[#eee6f5]'>
+                              {position}
+                            </p>
+                          ))}
+                        </>
+                      ) : (
+                        <p className='text-[1rem] mr-[1.6rem] mt-2 text-gray-500'>لايوجد</p>
+                      )
+                    }
+                     
+     
 
                     </div>
                   
 
 
-
+               </div>
+   
                       </div>
-                  </div>
                   
               </div>
               {/* <div className='mt-12 bg-white w-[91%] h-[25vh] rounded-lg'>
@@ -224,28 +688,6 @@
           </div>
 
       </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
