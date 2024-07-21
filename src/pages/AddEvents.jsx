@@ -11,8 +11,8 @@ import Nav from '../components/Nav';
 import { LoadScript, GoogleMap, Marker } from '@react-google-maps/api';
 import { sendPasswordResetEmail,getAuth } from 'firebase/auth';
 import { MultiSelect } from 'react-multi-select-component';
-import Select from '@oshq/react-select';
-import '@oshq/react-select/index.css';
+// import Select from '@oshq/react-select';
+// import '@oshq/react-select/index.css';
 import { Link } from 'react-router-dom';
 
 const initialPosition = {
