@@ -155,9 +155,11 @@ const getEvents = async () => {
 
 
     const NavToDetails= ()=>{
-        if(!bool){
-            navigate("/EventInfo")
-        }
+       
+            if(!bool){
+                navigate("/EventInfo")
+            }
+        
      
 
     }
@@ -203,9 +205,13 @@ const getEvents = async () => {
                             </div>
                         </div>
                         <div className="flex justify-end items-center mt-4">
-                            <p onClick={NavToDetails} className={`text-[#ffffff] font-bold text-[0.9rem] ${bool ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#99D2CB] hover:bg-[#a5ddd7] cursor-pointer'} py-2 px-4 rounded-lg`}>
+                          <Link to={`/EventInfo/${item.id}`}>
+
+                          <p className={`text-[#ffffff] font-bold text-[0.9rem] ${bool ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#99D2CB] hover:bg-[#a5ddd7] cursor-pointer'} py-2 px-4 rounded-lg`}>
                                 التفاصيل
                             </p>
+                          </Link>
+                           
                         </div>
                     </div>
                 </div>
