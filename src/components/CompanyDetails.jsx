@@ -2,9 +2,9 @@ import React, {useEffect, useState, useRef} from 'react'
 import Nav from './Nav'
 import '../App.css'
 import { jsPDF } from 'jspdf';
-// import jsPDF from 'jspdf'
+import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
-// import '../Amiri-normal.js'
+import '../Amiri-normal.js'
 
 
 import html2canvas from 'html2canvas';
