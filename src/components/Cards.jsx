@@ -4,6 +4,10 @@ import Pic from '../assets/pic1.jpg'
 import Lottie from "lottie-react";
 import { json, Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+//motion 
+import {motion} from'framer-motion'
+//variants
+import {fadeIn} from '../variaants'
 
 import { auth, db } from '../config/firebase';
 import { getDoc, doc, collection, getDocs } from 'firebase/firestore';
@@ -158,21 +162,27 @@ const getEvents = async () => {
 
     }
 
+
+
   return (
-    <div className='flex max-sm:mt-14 flex-col w-full mt-32   bg-[#f7f6f5b3]'>
-      <div className='flex'>
+<div className='flex flex-col w-full bg-[#ffffff]'>
+    <div className='flex'>
       {(getLocal !== undefined && getLocal && getLocal.role === "admin" &&
       <>
        <Link to='/AddEvents'>
-       <button className='px-4 py-1 mt-6 max-sm:mt-0 text-white rounded-lg mr-12 bg-[#f39e4e]'>اضافة معرض</button>
+       <button className='px-4 py-1 mt-6 max-sm:mt-0 text-white rounded-lg mr-12 bg-[#f39e4e] flex'>اضافة معرض
+       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 mt-1 ">
+         <path fillRule="evenodd" d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z" clipRule="evenodd" />
+       </svg>
+       </button>
        </Link>
        </>
        )}
-       
+    </div>
 
-      </div>
-      <div className='flex justify-center mt-4'>
-      <div className='grid mt-12 w-[90%] grid-cols-3 place-items-center max-sm:grid-cols-1 max-sm:gap-6 '>
+    <div className='flex justify-center mt-4'>
+      <div className='grid mt-12 mb-16 w-[90%] grid-cols-3 place-items-center gap-y-16 max-sm:grid-cols-1 max-sm:gap-6 '>
+
       {getLocal ? (
     <>
         {/* {console.log(JSON.stringify(adminCard))} */}
@@ -300,8 +310,9 @@ const getEvents = async () => {
 
          
       </div>
-      </div>
     </div>
+</div>
+
   )}
 
 export default Cards

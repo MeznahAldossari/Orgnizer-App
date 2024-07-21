@@ -38,7 +38,7 @@ function Router() {
         //   errorElement:<ErrorPage/>
         },
         {
-          path: "/EventInfo",
+          path: `/EventInfo/:eventId`,
           element: <EventData />,
         //   errorElement:<ErrorPage/>
         },
