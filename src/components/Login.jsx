@@ -7,6 +7,8 @@ import Logo from '../assets/nazzem-logo.png'
 import { auth, db } from '../config/firebase';
 import { getDoc, doc, collection } from 'firebase/firestore';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+// import BgLogin from '../assets/bg-login.png'
+
 function Login() {
   const [user, setUser] = useState({
     

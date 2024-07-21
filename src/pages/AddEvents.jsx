@@ -13,6 +13,7 @@ import { sendPasswordResetEmail,getAuth } from 'firebase/auth';
 import { MultiSelect } from 'react-multi-select-component';
 import Select from '@oshq/react-select';
 import '@oshq/react-select/index.css';
+import { Link } from 'react-router-dom';
 
 const initialPosition = {
   lat: 24.7136, 
@@ -143,39 +144,63 @@ const AddEvents = () => {
   return (
     <>
     <Nav />
-    <div className='bg-[#F3F6FF] h-max w-full py-14'>
-      <div className='flex justify-start mr-24 max-sm:mr-0'>
-        <h1 className="text-2xl font-bold max-sm:text-center w-full text-black capitalize mb-5">إضافة معرض</h1>
-      </div>
+    
+      <div className='bg-[#ffffff] h-max w-full py-14'>
+        <div className='flex justify-start mr-24 max-sm:mr-0'>
+          <h1 className="font-semibold text-[1.5rem] mr-16 pt-6 pr-1 text-[#5C59C2]">إضافة معرض</h1>
+        </div>
 
-      <section dir="rtl" className="max-w-4xl max-sm:w-[95%] p-6 mx-auto bg-white rounded-md shadow-2xl shadow-black">
-        <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 gap-6 mt-4">
+      <section dir="rtl" className="max-w-4xl max-sm:w-[95%] p-6 mx-auto bg-white rounded-md shadow-2xl mt-4">
+      <form onSubmit={handleSubmit}>
+      <div className="grid grid-cols-1 gap-6 mt-4 ">
             <div>
-              <label className="text-black" htmlFor="eventName">إسم المعرض</label>
+              <label className="text-black" htmlFor="username">اسم المعرض</label>
               <input
                 id="eventName"
                 type="text"
                 value={eventName}
                 onChange={(e) => setEventName(e.target.value)}
-                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring"
-              />
+                className="block w-full px-4 py-2 mt-2 text-gray-700 border border-[#99D2CB] rounded-full focus:outline-none focus:ring"              />
               {errors.eventName && <p className="text-red-500">{errors.eventName}</p>}
             </div>
             <div>
-              <label className="text-black" htmlFor="participants">الفئات المستهدفة</label>
+              <label className="text-black" htmlFor="participants">الفئات المستهدفة </label>
               <MultiSelect
                 options={targetOptions}
                 value={targetParticipants}
                 onChange={setTargetParticipants}
                 labelledBy="اختر الفئات المستهدفة"
+                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-[#99D2CB] rounded-full focus:border-blue-500 focus:outline-none focus:ring"
               />
-              
-              {errors.targetParticipants && <p className="text-red-500">{errors.targetParticipants}</p>}
+             {errors.targetParticipants && <p className="text-red-500">{errors.targetParticipants}</p>}
+
+            </div>
+            <div>
+              <label className="text-black" htmlFor="startDate">تاريخ بداية المعرض</label>
+              <input
+                type="date"
+                id="start-date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-[#99D2CB] rounded-full"              />
+              {errors.startDate && <p className="text-red-500">{errors.startDate}</p>}
+            </div>
+            <div>
+              <label className="text-black" htmlFor="endDate">تاريخ نهاية المعرض</label>
+              <input
+                type="date"
+                id="end-date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="block w-full px-4 py-2 mt-2 text-gray-700 border border-[#99D2CB] rounded-full"              />
+              {errors.endDate && <p className="text-red-500">{errors.endDate}</p>}
             </div>
             <div className="">
-              <label htmlFor="start-time" className="text-black">حدد وقت البداية</label>
-              <select  
+              {/* <div className="flex justify-between">
+                <div className='flex gap-2'> */}
+                
+                <label htmlFor="text-black start-time " className="text-black">حدد وقت البداية</label>
+                <select  
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
                 id="start-time"
@@ -200,10 +225,12 @@ const AddEvents = () => {
                 <option value="23:00">23:00</option>
               </select>
               {errors.startTime && <p className="text-red-500">{errors.startTime}</p>}
-            </div>
-            <div>
-              <label htmlFor="end-time" className="text-black">حدد وقت النهاية</label>
-              <select
+                {/* </div> */}
+                {/* <div className='flex gap-2'> */}
+                </div>
+                <div>
+                <label htmlFor="end-time" className="text-black">حدد وقت النهاية</label>
+                <select
                id="end-time"
                value={endTime}
                onChange={(e) => setEndTime(e.target.value)}
@@ -229,42 +256,21 @@ const AddEvents = () => {
                 <option value="00:00">00:00</option>
               </select>
               {errors.endTime && <p className="text-red-500">{errors.endTime}</p>}
-            </div>
-            <div>
-              <label htmlFor="start-date" className="text-black">تاريخ البداية</label>
-              <input
-                type="date"
-                id="start-date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring"
-              />
-              {errors.startDate && <p className="text-red-500">{errors.startDate}</p>}
-            </div>
-            <div>
-              <label htmlFor="end-date" className="text-black">تاريخ النهاية</label>
-              <input
-                type="date"
-                id="end-date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring"
-              />
-              {errors.endDate && <p className="text-red-500">{errors.endDate}</p>}
-            </div>
+                </div>
+              {/* </div> */}
+            {/* </div> */}
             <div>
               <label className="text-black" htmlFor="details">التفاصيل</label>
               <textarea
                 id="details"
                 value={details}
                 onChange={(e) => setDetails(e.target.value)}
-                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring"
-              ></textarea>
+                className="block h-20 w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-[#99D2CB] rounded-md "              ></textarea>
               {errors.details && <p className="text-red-500">{errors.details}</p>}
             </div>
             <div>
-              <label className="text-black" htmlFor="companies">الشركات</label>
-                <Stack spacing={3} sx={{ marginTop: "10px", width: 410, backgroundColor: 'white' }} className='max-sm:w-[50%] w-full '>
+              <label className="text-black" htmlFor="username"> الشركات</label>
+              <Stack spacing={3} sx={{ marginTop: "10px", width: 410, backgroundColor: 'white' }} className='max-sm:w-[50%] w-full '>
                   <Autocomplete
                     multiple
                     id="tags-filled"
@@ -335,19 +341,23 @@ const AddEvents = () => {
                   
                 </Stack>
               {errors.selectedCompanies && <p className="text-red-500">{errors.selectedCompanies}</p>}
+        
             </div>
             <div>
-              <label className="text-black" htmlFor="image">إضافة صورة</label>
+              <label className="text-black">صورة المؤتمر</label>
               <input
                 type="file"
                 id="image"
                 onChange={(e) => setImage(e.target.files[0])}
-                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring"
+                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-[#99D2CB] rounded-full focus:border-blue-500 focus:outline-none focus:ring"
               />
               {errors.image && <p className="text-red-500">{errors.image}</p>}
             </div>
+          
             <div>
-        
+              <label className="text-black" htmlFor="place">مكان المعرض</label>
+              <div className="relative rounded h-52">
+               
     <LoadScript googleMapsApiKey="AIzaSyANdvQ4iYKHnp9Kt_xvFr1Ze8-cq1ulDM0">
     <GoogleMap
                   mapContainerStyle={{ height: '400px', width: '100%' }}
@@ -358,15 +368,12 @@ const AddEvents = () => {
                   <Marker position={position} />
                 </GoogleMap>
               </LoadScript>
+              </div>
             </div>
-            <div className="flex justify-end mt-6">
-              <button
-                type="submit"
-                className="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-blue-700 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-gray-600"
-              >
-                إضافة المعرض
-              </button>
-            </div>
+          </div>
+          <div className="flex justify-end mt-6 gap-2">
+            <button type="submit"className="px-6 py-2 w-24 leading-5 text-white bg-[#f39e4e] hover:bg-[#ffb36c] rounded-md shadow-md ">اضافة</button>
+            <Link to='/'><button className="px-6 py-2 w-24 leading-5 text-white bg-[#999999] hover:bg-[#b1b1b1] rounded-md shadow-md ">عودة</button></Link>
           </div>
         </form>
       </section>
