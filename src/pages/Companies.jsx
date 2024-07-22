@@ -153,7 +153,7 @@ const Companies = () => {
 
                 <div className='bg-white w-full h-full rounded-lg'>
                     <div className='flex flex-wrap justify-start items-end w-full h-auto p-4'>
-                        <p className='font-semibold text-[1.3rem] mt-12 mr-4 pt-1 pr-1 text-[#5C59C2] mb-7 max-sm:text-[1rem] max-sm:text-center'>
+                        <p className='font-semibold text-[1.6rem] mt-12 mr-4 pt-1 pr-1 text-[#5C59C2] mb-7 max-sm:text-[1rem] max-sm:text-center'>
                             قائمة الشركات ذات الاهتمام بمجال تخصصك
                         </p>
                         <div className='flex gap-2 w-full sm:w-[10vw] h-auto mt-6 mr-6'>
@@ -173,8 +173,8 @@ const Companies = () => {
                                     <div key={index} className='w-80 overflow-hidden rounded-md bg-[#fafafa] shadow-[0_0_1rem_rgb(0,0,0,0.1)]'>
                                         <div className='card_cover'></div>
                                         <div className='flex flex-col items-center justify-center gap-2'>
-                                            <div className='mt-[3.5rem] flex flex-col items-center justify-center px-8 py-4 pt-0 '>
-                                                <div className='absolute mb-12 h-[6rem] w-[6rem] overflow-hidden rounded-full border-4 border-[3px_soild_#fafafa] shadow-[0_0_1rem_rgba(0,0,0,0.2)]'>
+                                            <div className='mt-[1rem] bg-white flex flex-col items-center justify-center px-8 py-4 pt-0 '>
+                                                <div className='absolute bg-white mb-12 h-[6rem] w-[6rem] overflow-hidden rounded-full border-4 border-[3px_soild_#fafafa] shadow-[0_0_1rem_rgba(0,0,0,0.2)]'>
                                                     <img className='h-full w-full object-cover' src={item.logo} alt="Company Logo" />
                                                 </div>
                                             </div>

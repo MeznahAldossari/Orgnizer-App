@@ -16,6 +16,9 @@ const DetailsCompanies = () => {
        const {companyID, eventIDs} = locationValue.state
        const initialButtonState = { text: 'تقديم', color: '#99D2CB' };
        const getLocal = JSON.parse(localStorage.getItem("loggedIn"));
+       const [checkAppliedJob, setCheckAppliedJob] = useState([])
+       const [hisApplication, setHisApplication] = useState([])
+       const [applied, setApplied] = useState(false);
        const [company, setCompanyData] = useState({
            companyName: '',
            description: '',
@@ -23,14 +26,19 @@ const DetailsCompanies = () => {
            Location: '',
            logo:'',
            jobPositions: [],
-           EmpList:[]
+           endDate:'',
+           startDate:'',
+           startTime:'',
+           endTime:''
        });
        useEffect(()=>{
    
            getCompanyInfo()
+           chechPositions()
+           hisapplicationList()
            
    
-       }, [])
+       }, [applied])
    
    
        const getCompanyInfo = async()=>{
@@ -58,6 +66,10 @@ const DetailsCompanies = () => {
                        Location: companyData.Location,  
                        logo: companyData.logo,
                        jobPositions: eventJobs.jobPositions,
+                       endDate:companyData.endDate,
+                       startDate:companyData.startDate,
+                       startTime:companyData.startTime,
+                       endTime:companyData.endTime
                       
                    });
    
@@ -74,6 +86,21 @@ const DetailsCompanies = () => {
       
    
        const jobApplied = async (jobName, index) => {
+        setApplied(false)
+        const currentDate = new Date();
+
+        const options = {
+            timeZone: 'Asia/Riyadh',  // Middle East timezone, adjust as per your specific location
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        };
+        const localDate = currentDate.toLocaleString('en-US', options);
+        
+
            try {
                const myCompaniesRef = doc(db, `users/${getLocal.id}/myEvents/${eventIDs}/appliedCompanies`, companyID);
                const userDocSnapshot = await getDoc(myCompaniesRef);
@@ -85,18 +112,17 @@ const DetailsCompanies = () => {
                const positionExists = applicationInfo.allPositions.some(position => position.positionName === jobName);
    
                if (!positionExists) {
-                   const updatedPositions = [
-                       ...applicationInfo.allPositions,
-                       { company: companyID, positionName: jobName, status: "انتظار" }
-                   ];
-   
-                   await updateDoc(myCompaniesRef, {
-                       allPositions: updatedPositions
-                   });
-   ;
-               } else {
-                   console.error(`Position '${jobName}' already exists.`);
-               }
+                const updatedPositions = [
+                    { indexNo: index, company: companyID, positionName: jobName, status: "انتظار", appliedDate: localDate },
+                    ...applicationInfo.allPositions  // Keep existing positions after the new one
+                ];
+
+                await updateDoc(myCompaniesRef, { allPositions: updatedPositions });
+                setApplied(true);
+            } else {
+                console.error(`Position '${jobName}' already exists.`);
+                setApplied(true);
+            }
                    
                   
                } else {
@@ -109,37 +135,124 @@ const DetailsCompanies = () => {
        
                        await setDoc(docRef, {
                            allPositions: [
-                               { company: companyID, positionName: jobName, status: "انتظار" },
+                               {indexNo: index, company: companyID, positionName: jobName, status: "انتظار", appliedDate: localDate},
                            ]
                        });
+                       setApplied(true)
+
                    } else {
                        console.error(`Parent document 'users/${getLocal.id}/myEvents/${eventIDs}' does not exist.`);
-                   }
+                       setApplied(true)
+                    }
                }
+
+               
            } catch (error) {
                console.error("Error fetching or updating document:", error);
                // Handle error appropriately
            }
        }
-   
-   
-       const checkBtn = async()=>{
-           try {
-               const myCompaniesRef = doc(db, `users/${getLocal.id}/myEvents/${eventIDs}/appliedCompanies`, companyID);
-               const userDocSnapshot = await getDoc(myCompaniesRef);
-   
-               if (userDocSnapshot.exists()) {
-                   const data = userDocSnapshot.data();
-                   setApplicationInfo(data);
-               } else {
-                   console.error("Document does not exist.");
-               }
-           } catch (error) {
-               console.error("Error fetching document:", error);
-               // Handle error appropriately
-           
+
+       const chechPositions = async()=>{
+        try{
+            
+            const myCompaniesRef = doc(db, `users/${getLocal.id}/myEvents/${eventIDs}/appliedCompanies`, companyID);
+            const userDocSnapshot = await getDoc(myCompaniesRef);
+    
+            if (userDocSnapshot.exists()) {
+                const applicationInfo = userDocSnapshot.data();
+                if(applicationInfo.allPositions){
+
+                    const lists = applicationInfo.allPositions
+                    let arr = []
+                    lists.forEach(position => {
+                       
+                        arr.push({
+                           company: position.company,
+                           positionName: position.positionName,
+                           status: position.status,
+                           indexNo:arr.length
+                        })
+                        console.log("hhhhhhhhhhhhhi")
+        
+        
+                        console.log(`Status of job: ${JSON.stringify(arr)}`);
+                    });
+    
+                    setCheckAppliedJob(arr)
+    
+
+                }
+               
+            }
+
+        }catch{
+
+        }
+      
+
        }
+
+       const hisapplicationList =  async()=>{
+
+        const myCompaniesRef = doc(db, `users/${getLocal.id}/myEvents/${eventIDs}/appliedCompanies`, companyID);
+            const userDocSnapshot = await getDoc(myCompaniesRef);
+    
+            if (userDocSnapshot.exists()) {
+
+                const applicationInfo = userDocSnapshot.data();
+                if(applicationInfo.allPositions){
+
+                    const lists = applicationInfo.allPositions
+                    let arr = []
+                    lists.forEach(position => {
+
+                       
+                        arr.push({
+                           company: position.company,
+                           positionName: position.positionName,
+                           status: position.status,
+                           indexNo: arr.length
+                        })
+                        console.log("hhhhhhhhhhhhhi")
+        
+        
+                        console.log(`Status of job: ${JSON.stringify(arr)}`);
+                    });
+
+                    setHisApplication(arr)
+
+                }}
+
+
        }
+
+       const removeApplication = async(job, index)=>{
+        console.log(job)
+       
+        const myCompaniesRef = doc(db, `users/${getLocal.id}/myEvents/${eventIDs}/appliedCompanies`, companyID);
+            const userDocSnapshot = await getDoc(myCompaniesRef);
+    
+            if (userDocSnapshot.exists()) {
+                const applicationInfo = userDocSnapshot.data();
+                if(applicationInfo.allPositions){
+
+                    const updatedPositions = applicationInfo.allPositions.filter(position => position.positionName !== job);
+                
+                await updateDoc(myCompaniesRef, {
+                    allPositions: updatedPositions
+                })
+
+                hisapplicationList()
+                chechPositions()
+                
+
+
+
+
+       }}}
+   
+
   return (
     <>
 <Nav />
@@ -197,10 +310,24 @@ const DetailsCompanies = () => {
                 </td>
                 <td className="p-3 px-5 max-sm:p-1">
                     <div className="flex flex-wrap">
-                        <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[10ch] break-words max-sm:w-[10ch]">
-                            <div className='flex gap-2'>
-                                <span onClick={()=> jobApplied(job,index)} className="bg-[#99D2CB] text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-[#99D2CB] dark:text-yellow-400 border border-[#99D2CB]">تقديم</span>
-                            </div>
+                        <p className=" text-black text-xs font-medium me-2 px-4 py-1.5 rounded-full">
+                        <span    onClick={()=> jobApplied(job,index)}
+                        className=' text-gray-800 rounded-full text-xs font-medium me-2 px-4 py-0.5'
+                        style={{
+                        backgroundColor: checkAppliedJob.find((e)=> e.positionName === job && e.status) ? '#fce4b0' : 'blue', // Change color based on applied state
+                        color: 'black',
+                       
+                        cursor: checkAppliedJob.find((e)=> e.positionName === job && e.status =="مرفوض")? 'not-allowed' : 'pointer', // Change cursor based on applied state
+                        }}
+                         // Disable button after first click
+                         
+                        >
+                          {console.log(applied)}  
+                          {checkAppliedJob.find((e)=> e.positionName === job && e.status)? 'تم التقديم' : 'تقديم'}
+
+                            
+                        
+                        </span>
                         </p>
                     </div>
                 </td>
@@ -227,46 +354,50 @@ const DetailsCompanies = () => {
               <th className="text-right p-3 px-5 max-sm:p-1"> الترتيب </th>
               <th className="text-right p-3 px-5 max-sm:p-1"> انسحاب </th>
             </tr>
-            <tr className="focus:outline-none h-16 border border-[#e4e6e6] rounded">
-                    {/* <td className="">
-                        <div className="flex items-center pl-5">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPk0IrfQt8yu8km4DYRG69OOhe2GQlK5NLvzIk23B3u77AjSRLJ3NLOqK9_W53M8jHV6Y&usqp=CAU" alt="" srcset="" className='w-[7vw] h-[7vh] mr-2' />
-                        </div>
-                    </td> */}
-                    <td className="p-3 px-5 max-sm:p-1">
-                        <div className="flex flex-wrap">
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[10ch] break-words max-sm:w-[10ch]">   مطور ويب  </p>
-                        </div>
-                    </td>
-                    
-                    <td className="p-3 px-5 max-sm:p-1">
-                        <div className="flex flex-wrap">
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[10ch] break-words max-sm:w-[10ch]">  
-                                <div className='flex gap-2'>
-                                    <span className="bg-[#99D2CB] text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-[#99D2CB] dark:text-yellow-400 border border-[#99D2CB]">انتظار</span>
-                                </div> 
-                            </p>
-                        </div>
-                    </td>
-                    <td className="p-3 px-5 max-sm:p-1">
-                        <div className="flex flex-wrap">
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[10ch] break-words max-sm:w-[10ch]"> 10 </p>
-                        </div>
-                    </td>
-                    <td className="p-3 px-5 max-sm:p-1">
-                        <div className="flex flex-wrap">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 text-[#c71919]">
-                            <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
-                            </svg>
-                        </div>
-                    </td>
-                    {/* <td className="">
-                        <div className="flex items-center ">
-                            <button>
-                            </button>
-                    </div>
-                    </td> */}
-                </tr>
+            {hisApplication.map((job, index) => (
+                   <tr className="focus:outline-none h-16 border border-[#e4e6e6] rounded">
+                   {/* <td className="">
+                       <div className="flex items-center pl-5">
+                           <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPk0IrfQt8yu8km4DYRG69OOhe2GQlK5NLvzIk23B3u77AjSRLJ3NLOqK9_W53M8jHV6Y&usqp=CAU" alt="" srcset="" className='w-[7vw] h-[7vh] mr-2' />
+                       </div>
+                   </td> */}
+                   <td className="p-3 px-5 max-sm:p-1">
+                       <div className="flex flex-wrap">
+                           <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[10ch] break-words max-sm:w-[10ch]">    {job.positionName}  </p>
+                       </div>
+                   </td>
+                   
+                   <td className="p-3 px-5 max-sm:p-1">
+                       <div className="flex flex-wrap">
+                           <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[10ch] break-words max-sm:w-[10ch]">  
+                               <div className='flex gap-2'>
+                                   <span className="bg-[#fce4b0] text-black text-xs font-medium me-2 px-4 py-1.5 rounded-full">{job.status}</span>
+                               </div> 
+                           </p>
+                       </div>
+                   </td>
+                   <td className="p-3 px-5 max-sm:p-1">
+                       <div className="flex flex-wrap">
+                           <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[10ch] break-words max-sm:w-[10ch]"> - </p>
+                       </div>
+                   </td>
+                   <td className="p-3 px-5 max-sm:p-1">
+                       <div className="flex flex-wrap">
+                           <svg onClick={(()=>removeApplication(job.positionName, job.indexNo))} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 text-[#c71919] cursor-pointer">
+                           <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
+                           </svg>
+                       </div>
+                   </td>
+                   {/* <td className="">
+                       <div className="flex items-center ">
+                           <button>
+                           </button>
+                   </div>
+                   </td> */}
+               </tr>
+
+            ))}
+         
             </tbody>
         </table>  
     </div>

@@ -13,9 +13,9 @@ import {fadeIn} from '../variaants'
 
 const Hero = () => {
   return (
-    <div className='h-[90vh] bg-[#f7f6f5b3] max-sm:h-[50vh] flex justify-center'>
-      <div className='mainHero bg-[#f7f6f5b3] max-sm:h-[50vh] border-none relative w-full'>
-        <div className='h-[90vh] max-sm:h-[50vh] border-none relative overflow-hidden '>
+    <div className='h-[90vh] border-b-none bg-[#f7f6f5b3] max-sm:h-[50vh] flex justify-center'>
+      <div className='mainHero border-b-none bg-[#f7f6f5b3] max-sm:h-[50vh] border-none relative w-full'>
+        <div className='h-[90vh] border-b-none max-sm:h-[50vh] border-none relative overflow-hidden '>
             <video className='absolute top-0 left-0 border-none min-w-full min-h-full object-cover' autoPlay muted loop>
                 <source src={heroVideo} type="video/mp4" />
             </video>
