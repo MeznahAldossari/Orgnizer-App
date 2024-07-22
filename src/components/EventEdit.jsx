@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Autocomplete, Chip, Stack, TextField } from '@mui/material';
-import { LoadScript, GoogleMap, Marker } from '@react-google-maps/api';
 import { getDocs, collection } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { MultiSelect } from 'react-multi-select-component';
+import { LoadScript, GoogleMap, Marker, Autocomplete as GoogleAutocomplete } from '@react-google-maps/api';
+
 
 
 
@@ -19,6 +20,11 @@ const EditEventModal = ({ event, onClose, onSave }) => {
   const [selectedCompanies, setSelectedCompanies] = useState([]);
 //   const [companies, setCompanies] = useState([]);
 const [position, setPosition] = useState(event.position || { lat: 0, lng: 0 });
+const [autocomplete, setAutocomplete] = useState(null);
+const [startTime, setStartTime] = useState('');
+const [endTime, setEndTime] = useState('');
+
+
 const [errors, setErrors] = useState({});
   useEffect(() => {
     if (image) {
@@ -41,6 +47,15 @@ const [errors, setErrors] = useState({});
     if (!editEvent.endTime) newErrors.endTime = 'وقت النهاية مطلوب';
     if (!editEvent.details) newErrors.details = 'التفاصيل مطلوبة';
     if (!editEvent.position.lat || !editEvent.position.lng) newErrors.position = 'الموقع مطلوب';
+    if (editEvent.startTime && editEvent.endTime && editEvent.endTime <= editEvent.startTime) {
+      newErrors.startTime = 'وقت البداية يجب أن يكون قبل وقت النهاية';
+      newErrors.endTime = 'وقت النهاية يجب أن يكون بعد وقت البداية';
+    }
+  
+    if (editEvent.startDate && editEvent.endDate && new Date(editEvent.endDate) < new Date(editEvent.startDate)) {
+      newErrors.startDate = 'تاريخ البداية يجب أن يكون قبل تاريخ النهاية';
+      newErrors.endDate = 'تاريخ النهاية يجب أن يكون بعد تاريخ البداية';
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -56,6 +71,19 @@ const [errors, setErrors] = useState({});
     const latLng = e.latLng.toJSON();
     setPosition(latLng);
     setEditEvent({ ...editEvent, position: latLng });
+  };
+
+
+  const handlePlaceChanged = () => {
+    if (autocomplete) {
+      const place = autocomplete.getPlace();
+      if (place.geometry) {
+        setPosition({
+          lat: place.geometry.location.lat(),
+          lng: place.geometry.location.lng()
+        });
+      }
+    }
   };
   
 //   useEffect(() => {
@@ -172,7 +200,6 @@ const toDateString = (date) => {
                 <option value="21:00">21:00</option>
                 <option value="22:00">22:00</option>
                 <option value="23:00">23:00</option>
-                <option value="00:00">00:00</option>
               </select>
               {errors.endTime && <span className="text-red-500">{errors.endTime}</span>}
             </div>
@@ -286,16 +313,40 @@ const toDateString = (date) => {
         <div className="text-black mt-4">
         <label className="text-black" htmlFor="companies">الموقع</label>
 
-        <LoadScript googleMapsApiKey="AIzaSyANdvQ4iYKHnp9Kt_xvFr1Ze8-cq1ulDM0">
-            <GoogleMap
-              mapContainerStyle={{ height: '400px', width: '100%' }}
-              zoom={10}
-              center={position} 
-              onClick={onMapClick}
-            >
-              <Marker position={position} />
-            </GoogleMap>
-          </LoadScript>
+        <LoadScript googleMapsApiKey="AIzaSyANdvQ4iYKHnp9Kt_xvFr1Ze8-cq1ulDM0"                
+       libraries={['places']}     >
+    <GoogleMap
+                  mapContainerStyle={{ height: '300px', width: '100%' }}
+                  zoom={15}
+                  center={position}
+                  onClick={onMapClick}
+                >
+             <div className="flex justify-center">
+
+                  <Marker position={position} />
+                  
+                  <GoogleAutocomplete
+                      onLoad={autocomplete => setAutocomplete(autocomplete)}
+                      onPlaceChanged={handlePlaceChanged}
+                    >
+        <TextField
+          id="autocomplete"
+          variant="outlined"
+          className="bg-white mt-5 text"
+          placeholder="البحث عن موقع"
+          style={{ 
+            backgroundColor: 'white', 
+            marginTop: '8px', 
+            width: '50%', 
+            textAlign: 'center',
+          }}
+
+        />
+                    </GoogleAutocomplete>
+                    </div>
+
+                </GoogleMap>
+              </LoadScript>
           {errors.position && <span className="text-red-500">{errors.position}</span>}
         </div>
 

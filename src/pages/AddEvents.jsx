@@ -1,4 +1,4 @@
-import React, { useState,useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { db, storage, auth } from '../config/firebase';
 import { collection, getDocs, addDoc, doc, setDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -8,17 +8,18 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Nav from '../components/Nav';
-import { LoadScript, GoogleMap, Marker } from '@react-google-maps/api';
+import { LoadScript, GoogleMap, Marker, Autocomplete as GoogleAutocomplete } from '@react-google-maps/api';
 import { sendPasswordResetEmail,getAuth } from 'firebase/auth';
 import { MultiSelect } from 'react-multi-select-component';
-import Select from '@oshq/react-select';
-import '@oshq/react-select/index.css';
+// import Select from '@oshq/react-select';
+// import '@oshq/react-select/index.css';
 import { Link } from 'react-router-dom';
 
 const initialPosition = {
   lat: 24.7136, 
   lng: 46.6753
 };
+
 const AddEvents = () => {
   const [position, setPosition] = useState(initialPosition);
   const [selectedCompanies, setSelectedCompanies] = useState([]);
@@ -32,13 +33,18 @@ const AddEvents = () => {
   const [details, setDetails] = useState('');
   const [image, setImage] = useState(null);
   const [errors, setErrors] = useState({});
+  const [autocomplete, setAutocomplete] = useState(null);
+  const [placeName, setPlaceName] = useState('');
+  const autocompleteRef = useRef(null);
+
+  
 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const snapshot = await getDocs(collection(db, 'CompaniesData'));
-        const companiesData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })); // Include document ID
+        const companiesData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })); 
         setCompanies(companiesData);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -61,6 +67,37 @@ const AddEvents = () => {
     });
   }, []);
 
+  const handlePlaceChanged = () => {
+    if (autocomplete) {
+      const place = autocomplete.getPlace();
+      if (place.geometry) {
+        setPosition({
+          lat: place.geometry.location.lat(),
+          lng: place.geometry.location.lng()
+        });
+        setPlaceName(place.name || 'غير محدد'); 
+      }
+    }
+  };
+  
+  useEffect(() => {
+    if (autocompleteRef.current) {
+      const autocomplete = new window.google.maps.places.Autocomplete(autocompleteRef.current);
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        setPlaceName(place.name || 'غير محدد'); 
+        if (place.geometry) {
+          setPosition({
+            lat: place.geometry.location.lat(),
+            lng: place.geometry.location.lng()
+          });
+        }
+      });
+      setAutocomplete(autocomplete);
+    }
+  }, [autocompleteRef]);
+  
+
   const validateForm = () => {
     const newErrors = {};
     if (!eventName) newErrors.eventName = 'إسم المعرض مطلوب';
@@ -72,6 +109,15 @@ const AddEvents = () => {
     if (!details) newErrors.details = 'التفاصيل مطلوبة';
     if (!selectedCompanies.length) newErrors.selectedCompanies = 'الشركات مطلوبة';
     if (!image) newErrors.image = 'صورة المعرض مطلوبة';
+    if (startTime && endTime && endTime <= startTime) {
+      newErrors.startTime = 'وقت البداية يجب أن يكون قبل وقت النهاية';
+      newErrors.endTime = 'وقت النهاية يجب أن يكون بعد وقت البداية';
+    }
+  
+    if (startDate && endDate && new Date(endDate) < new Date(startDate)) {
+      newErrors.startDate = 'تاريخ البداية يجب أن يكون قبل تاريخ النهاية';
+      newErrors.endDate = 'تاريخ النهاية يجب أن يكون بعد تاريخ البداية';
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -88,7 +134,8 @@ const AddEvents = () => {
         startDate,
         endDate,
         details,
-        position
+        position, 
+        placename:placeName
       });
 
       let imageUrl = '';
@@ -358,14 +405,36 @@ const AddEvents = () => {
               <label className="text-black" htmlFor="place">مكان المعرض</label>
               <div className="relative rounded h-80">
                
-    <LoadScript googleMapsApiKey="AIzaSyANdvQ4iYKHnp9Kt_xvFr1Ze8-cq1ulDM0">
+    <LoadScript googleMapsApiKey="AIzaSyANdvQ4iYKHnp9Kt_xvFr1Ze8-cq1ulDM0"                
+       libraries={['places']}     >
     <GoogleMap
                   mapContainerStyle={{ height: '300px', width: '100%' }}
-                  zoom={10}
+                  zoom={13}
                   center={position}
                   onClick={onMapClick}
                 >
+                                        <div className="flex justify-center">
+
                   <Marker position={position} />
+                  <GoogleAutocomplete
+                      onLoad={autocomplete => setAutocomplete(autocomplete)}
+                      onPlaceChanged={handlePlaceChanged}
+                    >
+        <TextField
+          id="autocomplete"
+          variant="outlined"
+          className="bg-white mt-5 w-96 text"
+          placeholder="البحث عن موقع"
+          style={{ 
+            backgroundColor: 'white', 
+            marginTop: '5px', 
+            textAlign: 'center' 
+          }}
+
+        />
+                    </GoogleAutocomplete>
+                    </div>
+
                 </GoogleMap>
               </LoadScript>
               </div>

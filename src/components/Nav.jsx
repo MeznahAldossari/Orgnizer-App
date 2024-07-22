@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import logOutIcon from '../assets/logoutbutton.png'
 import { useNavigate } from 'react-router-dom';
 
+
 import Logo from '../assets/nazzem-logo.png'
 
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -23,6 +24,7 @@ const Nav = () => {
 
   }
 
+  
   return (
     <>
 <nav className='h-16 shadow-md w-full max-sm:mb-0 max-sm:overflow-x-hidden'>
@@ -70,7 +72,7 @@ const Nav = () => {
         </Link>
       </li>
       <li className="rounded-lg mt-4 flex items-center text-[1.5rem] text-white py-1 px-3 ml-4">
-        <Link to="/StudentProfile">
+        <Link to={`/StudentProfile/${getLocal.id}`}>
           الملف الشخصي
         </Link>
       </li>
@@ -120,7 +122,7 @@ const Nav = () => {
 
        </div>
        <div className=''>
-          <Link to="/StudentProfile"> <p className="rounded-lg text-[#6e68c4] hover:text-[#f39e4e] py-1 px-3 ml-4"> الملف الشخصي</p>
+          <Link     to={`/StudentProfile/${getLocal.id}`} > <p className="rounded-lg text-[#6e68c4] hover:text-[#f39e4e] py-1 px-3 ml-4"> الملف الشخصي</p>
           </Link>
         </div>
        

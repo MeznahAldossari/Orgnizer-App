@@ -21,6 +21,7 @@ const EventInfo = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [companies, setCompanies] = useState([]);
   const navigate = useNavigate()
+  const today = new Date();
 
   
   useEffect(() => {
@@ -75,35 +76,33 @@ const EventInfo = () => {
       console.error('Error updating event:', error);
     }
   };
+  const eventEndDate = new Date(event.endDate);
   
+
   const handleDelete = async () => {
-    const confirmDelete = window.confirm('هل تريد حذف هذا المعرض ؟');
-    if (confirmDelete) {
-      try {
-        const eventDocRef = doc(db, 'EventDetails', eventId);
-        console.log('Attempting to delete document with ID:', eventId);
-        await deleteDoc(eventDocRef);
-        console.log('Document deleted successfully');
-        alert('Document deleted successfully');
-        navigate('/'); 
-      } catch (error) {
-        console.error('Error deleting event:', error);
-      }
+    try {
+      const eventDocRef = doc(db, 'EventDetails', eventId);
+      console.log('Attempting to delete document with ID:', eventId);
+      await deleteDoc(eventDocRef);
+      console.log('Document deleted successfully');
+      alert('Document deleted successfully');
+      navigate('/');
+    } catch (error) {
+      console.error('Error deleting event:', error);
     }
   };
+
   const handleDeleteCompany = async (companyId) => {
-    const confirmDelete = window.confirm('هل تريد حذف هذه الشركة؟');
-    if (confirmDelete) {
-      try {
-        const companyDocRef = doc(db, 'EventDetails', eventId, 'myCompanies', companyId);
-        await deleteDoc(companyDocRef);
-        setCompanies(companies.filter(company => company.id !== companyId));
-        console.log('Company deleted successfully');
-      } catch (error) {
-        console.error('Error deleting company:', error);
-      }
+    try {
+      const companyDocRef = doc(db, 'EventDetails', eventId, 'myCompanies', companyId);
+      await deleteDoc(companyDocRef);
+      setCompanies(companies.filter(company => company.id !== companyId));
+      console.log('Company deleted successfully');
+    } catch (error) {
+      console.error('Error deleting company:', error);
     }
   };
+  
 
   return (
     <>
@@ -129,7 +128,7 @@ const EventInfo = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                 </svg>
-                <p className='text-base font-medium'>{  JSON.stringify(event.position)}</p>
+                <p className='text-base font-medium'>{event.placename}</p>
                 </div>
             <div className='flex gap-1'>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5 text-[#99D2CB]">
@@ -149,16 +148,55 @@ const EventInfo = () => {
     {event.mainCategory.map((category, index) => (
       <p key={index} className='bg-gray-100 p-2 rounded'>{category}</p>
     ))}
-  </div>        </div>
-        <div className='flex mt-7 gap-4'>
-        <button onClick={() => setIsModalOpen(true)}>
-            <FaEdit style={{ color: 'black', fontSize: '28px' }} />
-          </button>
+  </div>  
+  </div>
 
-          <button onClick={handleDelete}>
-                <RiDeleteBin6Line style={{ color: 'red', fontSize: '28px' }} />
+  <div className='mt-4'>
+
+  <p className='text-lg  font-semibold'>حالة المعرض  :</p>
+  <div className='flex flex-wrap gap-2'>
+
+  {today > eventEndDate ? <p className='bg-gray-100 p-2 rounded'>منتهي</p>
+ :   <p className='bg-gray-100 p-2 rounded'>متاح</p>
+ 
+            }
+              </div>  
+
+          </div>
+
+        <div className='flex mt-3 gap-4'>
+   
+          <button onClick={() => setIsModalOpen(true)} disabled={today > eventEndDate}>
+                <FaEdit style={{ color: today > eventEndDate ? 'gray' : 'black', fontSize: '28px' }} />
               </button>
+
+        
+              <td className="p-3 px-5 max-sm:p-1">
+                  
+                  <button disabled={today > eventEndDate} onClick={() => {
+document.getElementById('my_modal_8').showModal();
+}}>
+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 text-[#d33232]">
+                      <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
+                      </svg>
+</button>
+<dialog id="my_modal_8" className="modal modal-bottom sm:modal-middle">
+<div className="modal-box">
+  <div className='flex flex-col justify-center items-center gap-4'>
+    <h3 className="font-bold text-[1.3rem]">هل انت متأكد من حذف المعرض</h3>
+  </div>
+  <div className="modal-action">
+    <form method="dialog" className='flex justify-center w-full gap-2'>
+      <button className="btn w-[5vw]" onClick={handleDelete}>نعم</button>
+      <button className="btn w-[5vw]">لا</button>
+    </form>
+  </div>
+</div>
+</dialog>
+           
+          </td>
         </div>
+ 
       </div>
     </div>
     {isModalOpen && (
@@ -205,17 +243,28 @@ const EventInfo = () => {
                 </div>
             </td>
          
-      
             <td className="p-3 px-5 max-sm:p-1">
-                <div className="flex items-center ">
-                    <button onClick={() => handleDeleteCompany(company.id)}>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 text-[#d33232]">
-                        <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
-                        </svg>
-                    </button>
-             
-                </div>
-            </td>
+      <button disabled={today > eventEndDate} onClick={() => {
+        document.getElementById(`my_modal_9_${company.id}`).showModal();
+      }}>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 text-[#d33232]">
+          <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
+        </svg>
+      </button>
+      <dialog id={`my_modal_9_${company.id}`} className="modal modal-bottom sm:modal-middle">
+        <div className="modal-box">
+          <div className='flex flex-col justify-center items-center gap-4'>
+            <h3 className="font-bold text-[1.3rem]">هل انت متأكد من حذف الشركة</h3>
+          </div>
+          <div className="modal-action">
+            <form method="dialog" className='flex justify-center w-full gap-2'>
+              <button type="button" className="btn w-[5vw]" onClick={() => handleDeleteCompany(company.id)}>نعم</button>
+              <button type="button" className="btn w-[5vw]" onClick={() => document.getElementById(`my_modal_9_${company.id}`).close()}>لا</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
+    </td>
         </tr>
                           ))}
 
@@ -268,7 +317,7 @@ const EventInfo = () => {
                     {/* </td> */}
                     <td className="p-3 px-5 max-sm:p-1">
                         <div className="flex items-center pl-5">
-                            <button onClick={() => { document.getElementById('my_modal_4').showModal()}}>
+                            <button onClick={() => { document.getElementById('my_modal_4').showModal()}} disabled={today > eventEndDate}>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 text-[#d33232]">
                                 <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
                                 </svg>  
