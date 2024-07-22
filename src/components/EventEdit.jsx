@@ -19,6 +19,7 @@ const EditEventModal = ({ event, onClose, onSave }) => {
   const [selectedCompanies, setSelectedCompanies] = useState([]);
 //   const [companies, setCompanies] = useState([]);
 const [position, setPosition] = useState(event.position || { lat: 0, lng: 0 });
+const [errors, setErrors] = useState({});
   useEffect(() => {
     if (image) {
       const reader = new FileReader();
@@ -31,6 +32,21 @@ const [position, setPosition] = useState(event.position || { lat: 0, lng: 0 });
 
   const handleSave = () => {
     // const updatedEvent = { ...editEvent, companies: selectedCompanies, position };
+    const newErrors = {};
+    if (!editEvent.eventName) newErrors.eventName = 'اسم المعرض مطلوب';
+    if (!editEvent.mainCategory.length) newErrors.mainCategory = 'الفئات المستهدفة مطلوبة';
+    if (!editEvent.startDate) newErrors.startDate = 'تاريخ البداية مطلوب';
+    if (!editEvent.endDate) newErrors.endDate = 'تاريخ النهاية مطلوب';
+    if (!editEvent.startTime) newErrors.startTime = 'وقت البداية مطلوب';
+    if (!editEvent.endTime) newErrors.endTime = 'وقت النهاية مطلوب';
+    if (!editEvent.details) newErrors.details = 'التفاصيل مطلوبة';
+    if (!editEvent.position.lat || !editEvent.position.lng) newErrors.position = 'الموقع مطلوب';
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     const updatedEvent = { ...editEvent, position };
     onSave(updatedEvent);
     onClose();
@@ -83,8 +99,8 @@ const toDateString = (date) => {
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md h-[90vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">تعديل المعرض</h2>
-
-        <label className="block mb-2">
+<div>
+<label className="block ">
 اسم المعرض :          <input
             type="text"
             className="border rounded w-full py-2 px-3"
@@ -92,6 +108,9 @@ const toDateString = (date) => {
             onChange={(e) => setEditEvent({ ...editEvent, eventName: e.target.value })}
           />
         </label>
+        {errors.eventName && <span className="text-red-500">{errors.eventName}</span>}
+</div>
+
         <label className="text-black" htmlFor="participants">الفئات المستهدفة</label>
         <MultiSelect
           options={targetOptions}
@@ -99,6 +118,7 @@ const toDateString = (date) => {
           onChange={handleParticipantsChange}
           labelledBy="اختر الفئات المستهدفة"
         />
+                {errors.mainCategory && <span className="text-red-500">{errors.mainCategory}</span>}
  <div className="">
               <label htmlFor="start-time" className="text-black">حدد وقت البداية</label>
               <select  
@@ -125,6 +145,7 @@ const toDateString = (date) => {
                 <option value="22:00">22:00</option>
                 <option value="23:00">23:00</option>
               </select>
+              {errors.startTime && <span className="text-red-500">{errors.startTime}</span>}
             </div>
             <div>
               <label htmlFor="end-time" className="text-black">حدد وقت النهاية</label>
@@ -153,6 +174,7 @@ const toDateString = (date) => {
                 <option value="23:00">23:00</option>
                 <option value="00:00">00:00</option>
               </select>
+              {errors.endTime && <span className="text-red-500">{errors.endTime}</span>}
             </div>
           
         <label className="block mb-2">
@@ -163,7 +185,7 @@ const toDateString = (date) => {
             onChange={(e) => handleDateChange('startDate', e.target.value)}
           />
         </label>
-
+        {errors.startDate && <span className="text-red-500">{errors.startDate}</span>}
         <label className="block mb-2">
         تاريخ نهاية المعرض :          <input
             type="date"
@@ -172,7 +194,7 @@ const toDateString = (date) => {
             onChange={(e) => handleDateChange('endDate', e.target.value)}
           />
         </label>
-
+        {errors.endDate && <span className="text-red-500">{errors.endDate}</span>}
         <label className="block mb-2">
           صورة المعرض:
           <input
@@ -190,6 +212,7 @@ const toDateString = (date) => {
             value={editEvent.details}
             onChange={(e) => setEditEvent({ ...editEvent, details: e.target.value })}
           />
+                    {errors.details && <span className="text-red-500">{errors.details}</span>}
         </label>
 
         {/* <label className="text-black" htmlFor="companies">الشركات</label>
@@ -273,6 +296,7 @@ const toDateString = (date) => {
               <Marker position={position} />
             </GoogleMap>
           </LoadScript>
+          {errors.position && <span className="text-red-500">{errors.position}</span>}
         </div>
 
         <div className="flex justify-end mt-4">
