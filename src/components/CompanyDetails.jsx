@@ -367,56 +367,60 @@ const [companyupdated, setCompanyupdated] = useState({
 
             
             <div className='grid pb-12  w-[91%]  grid-cols-3 gap-6 max-sm:grid-cols-1'>
-                <div className='mt-6 col-span-2 bg-white  h-[100vh] rounded-lg'>
+                <div className='mt-6 col-span-2 bg-white  h-[100vh] rounded-lg max-sm:h-[70vh]'>
                     <h1 className='pt-6 pr-6 font-extrabold text-[#6e68c4] text-[1.1rem]'>قائمة المتقدمين</h1>
                     <br />
                     <hr className='flex justify-center w-full' />
-                    <div className='flex justify-center bg-[#F3F6FF] w-[93%] mt-4 mr-10'>
+                    <div className='flex justify-center bg-[#F3F6FF] w-[93%] mt-4 mr-10 max-sm:mr-0 max-sm:w-full max-sm:bg-white'>
   <div role="tablist" className="tabs w-[90vw] tabs-lifted bg-white max-sm:w-[80vw]">
-    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white " aria-label="المتقدمون"  defaultChecked/>
-    <div role="tabpanel" className="tab-content bg-white border-base-100 rounded-box p-6">
-      {/* <p className='text-lg font-bold mb-5' > قائمة الشركات</p> */}
-      {!checkPosition ? (
-        <table className="w-[20vw] whitespace-nowrap max-sm:table-xs">
-        <tbody>
-          <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
-          <th className="text-right p-3 px-5"> الأسم</th>
-          <th className="text-right p-3 px-5">المعسكر </th>
-          <th className="text-right p-3 px-5">الأيميل </th>
-          <th className="text-right p-3 px-5">الحالة </th>
-          <th className="text-right p-3 px-5 ">حذف </th>
 
-        </tr>
-            <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded">
-                {/* <td className="">
-                    <div className="flex items-center pl-5">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPk0IrfQt8yu8km4DYRG69OOhe2GQlK5NLvzIk23B3u77AjSRLJ3NLOqK9_W53M8jHV6Y&usqp=CAU" alt="" srcset="" className='w-[7vw] h-[7vh] mr-2' />
-                    </div>
-                </td> */}
-                <td className="">
-                    <div className="flex items-center pl-5">
-                        <p className="text-base font-medium leading-none text-gray-700 mr-5">   نوره محمد  </p>
-                    </div>
-                </td>
-                <td className="">
-                    <div className="flex items-center pl-5">
-                        <p className="text-base font-medium leading-none text-gray-700 mr-2">   معسكر جافاسكربت  </p>
-                    </div>
-                </td>
-                <td className="">
-                    <div className="flex items-center pl-5">
-                        <p className="text-base font-medium leading-none text-gray-700 mr-2"> Nora@hotmail.com</p>
-                    </div>
-                </td>
-                <td className="">
-                    <div className="flex items-center pl-5">
-                        <p className="text-base px-4 bg-[#f7f8c8] py-1  rounded-md text-[#b9b9b7] font-medium leading-none cursor-pointer mr-2"> بالأنتظار</p>
-                    </div>
-                </td> 
+    {/* المتقدمون */}
+    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white" aria-label="المتقدمين" />
+    <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6 h-[18vw] overflow-y-auto custom-scrollbar max-sm:h-[28vh] ">
+    {/* <p className='text-lg font-bold mb-5' > قائمة الطلاب</p> */}
+    {!checkPosition? (
+       <table className="w-full h-full max-sm:table-xs">
+       <tbody>
+         <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
+         <th className="text-center p-3 px-5 max-sm:p-1"> الاسم</th>
+         <th className="text-center p-3 px-5 max-sm:p-1">المجال الوظيفي </th>
+         <th className="text-center p-3 px-5 max-sm:p-1">السيرة الذاتية </th>
+         <th className="text-center p-3 px-5 max-sm:p-1">الحالة </th>
+         <th className="text-center p-3 px-5 max-sm:p-1 ">حذف </th>
 
-                <td className="">
-                    <div className="flex justify-center items-center pl-5">
-                        <img src={deleteStudent} className='w-4 cursor-pointer' onClick={() => { document.getElementById('my_modal_1').showModal()}}/>
+       </tr>
+           <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded ">
+               <td className="p-3 px-5 max-sm:p-1">
+                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">   نوره محمد  </p>
+                   </div>
+               </td>
+               <td className="p-3 px-5 max-sm:p-1">
+                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[15ch] text-center break-words max-sm:w-[10ch]"> معسكر جافاسكربت  </p>
+                   </div>
+               </td>
+               <td className="p-3 px-5 max-sm:p-1">
+                <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                  <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[20ch] text-center break-words max-sm:w-[10ch]">
+                    Nora1998@hotmail.com
+                  </p>
+                </div>
+              </td>
+
+              <td className="pb-2 px-5 max-sm:p-1 ">
+                   <div className="flex flex-wrap justify-center">
+                       <p className="text-base px-4 bg-[#fccd69] py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold">  انتظار</p>
+                   </div>
+               </td>
+               <td className="p-3 px-5 max-sm:p-1">
+                    <div className="flex flex-wrap justify-center">
+                        {/* <img src={deleteStudent} className='w-4 cursor-pointer' onClick={() => { document.getElementById('my_modal_1').showModal()}}/> */}
+                        <button className='flex justify-center w-6 mb-2 cursor-pointer' onClick={() => { document.getElementById('my_modal_1').showModal()}} >
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-7 text-[#d33232]">
+                          <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
+                          </svg>
+                        </button>
                         <dialog id="my_modal_1" className="modal ">
                           <div className="modal-box w-[35vw] max-w-5xl" >
 
@@ -436,58 +440,6 @@ const [companyupdated, setCompanyupdated] = useState({
                       </dialog>
                     </div>
                 </td>
-            </tr>
-        </tbody>
-    </table>
-        
-      ):(
-     
-                <p className='text-[1.2rem] mt-4 text-red-600 font-medium'> لعرض قائمة المتقدمين, يرجى التأكد من ادخال المسميات الوظيفية المطلوبة و اسماء الموظفين المشاركين</p>
-
-      
-      )}
-      
-            </div>
-
-    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white" aria-label="مكتمل" />
-    <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6">
-    {/* <p className='text-lg font-bold mb-5' > قائمة الطلاب</p> */}
-    {!checkPosition? (
-       <table className="w-[48.6vw] whitespace-nowrap max-sm:table-xs">
-       <tbody>
-         <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
-         <th className="text-right p-3 px-5"> الأسم</th>
-         <th className="text-right p-3 px-5">المعسكر </th>
-         <th className="text-right p-3 px-5">الأيميل </th>
-         <th className="text-right p-3 px-5">الحالة </th>
-       </tr>
-           <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded">
-               {/* <td className="">
-                   <div className="flex items-center pl-5">
-                       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPk0IrfQt8yu8km4DYRG69OOhe2GQlK5NLvzIk23B3u77AjSRLJ3NLOqK9_W53M8jHV6Y&usqp=CAU" alt="" srcset="" className='w-[7vw] h-[7vh] mr-2' />
-                   </div>
-               </td> */}
-               <td className="">
-                   <div className="flex items-center pl-5">
-                       <p className="text-base font-medium leading-none text-gray-700 mr-5">   نوره محمد  </p>
-                   </div>
-               </td>
-               <td className="">
-                   <div className="flex items-center pl-5">
-                       <p className="text-base font-medium leading-none text-gray-700 mr-2">   معسكر جافاسكربت  </p>
-                   </div>
-               </td>
-               <td className="">
-                   <div className="flex items-center pl-5">
-                       <p className="text-base font-medium leading-none text-gray-700 mr-2"> Nora@hotmail.com</p>
-                   </div>
-               </td>
-               <td className="">
-                   <div className="flex items-center pl-5">
-                       <p className="text-base px-4 bg-[#ceefd4] py-1  rounded-md text-[#b9b9b7] font-medium leading-none  mr-2"> مكتمل</p>
-                   </div>
-               </td> 
-
                {/* <td className="">
                    <div className="flex items-center pl-5">
                        <img src={deleteStudent}> </img>
@@ -497,14 +449,271 @@ const [companyupdated, setCompanyupdated] = useState({
        </tbody>
    </table>  
     ):(
-      
-                <p className='text-[1.2rem] mt-4 text-red-600 font-medium'> لعرض قائمة المتقدمين, يرجى التأكد من ادخال المسميات الوظيفية المطلوبة و اسماء الموظفين المشاركين</p>
-
-      
+      <p className='text-[1.2rem] mt-4 text-red-600 font-medium'> لعرض قائمة المتقدمين, يرجى التأكد من ادخال المسميات الوظيفية المطلوبة و اسماء الموظفين المشاركين</p>
       )}
-   
-  
-                      </div>
+      </div>
+
+    {/* بالطابور  */}
+
+    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white" aria-label="الطابور" />
+    <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6 h-[18vw] overflow-y-auto custom-scrollbar max-sm:h-[28vh] ">
+    {/* <p className='text-lg font-bold mb-5' > قائمة الطلاب</p> */}
+    {!checkPosition? (
+       <table className="w-full h-full max-sm:table-xs">
+       <tbody>
+         <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
+         <th className="text-center p-3 px-5 max-sm:p-1"> الاسم</th>
+         <th className="text-center p-3 px-5 max-sm:p-1">المسمى الوظيفي </th>
+         <th className="text-center p-3 px-5 max-sm:p-1">السيرة الذاتية </th>
+         <th className="text-center p-3 px-5 max-sm:p-1">الحالة </th>
+         <th className="text-center p-3 px-5 max-sm:p-1 ">حذف </th>
+
+       </tr>
+           <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded ">
+               <td className="p-3 px-5 max-sm:p-1">
+                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">   نوره محمد  </p>
+                   </div>
+               </td>
+               <td className="p-3 px-5 max-sm:p-1">
+                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[15ch] text-center break-words max-sm:w-[10ch]"> معسكر جافاسكربت  </p>
+                   </div>
+               </td>
+               <td className="p-3 px-5 max-sm:p-1">
+                <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                  <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[20ch] text-center break-words max-sm:w-[10ch]">
+                    Nora1998@hotmail.com
+                  </p>
+                </div>
+              </td>
+
+               <td className="pb-2 px-5 max-sm:p-1 ">
+                   <div className="flex flex-wrap justify-center">
+                       <p className="text-base  px-4 bg-[#74a7df] py-1  rounded-md text-white font-medium mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold text-center">  يجري مقابلة</p>
+                   </div>
+               </td> 
+
+               <td className="p-3 px-5 max-sm:p-1">
+                    <div className="flex flex-wrap justify-center">
+                        {/* <img src={deleteStudent} className='w-4 cursor-pointer' onClick={() => { document.getElementById('my_modal_2').showModal()}}/> */}
+                        <button className='flex justify-center w-6 mb-2 cursor-pointer' onClick={() => { document.getElementById('my_modal_2').showModal()}} >
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-7 text-[#d33232]">
+                          <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
+                          </svg>
+                        </button>
+                        <dialog id="my_modal_2" className="modal ">
+                          <div className="modal-box w-[35vw] max-w-5xl" >
+
+                          <p className="py-4 text-[1.1rem]">هل انت متأكد من حذف الطالب؟</p>
+                          <div className="modal-action">
+                          <form method="dialog" className='gap-6'>
+                         
+                          <button className="btn ml-1 bg-[#99D2CB] text-white" >نعم</button>
+                         
+                         
+                          <button className="btn bg-[#99D2CB] text-white">لا</button>
+                         
+
+                          </form>
+                          </div>
+                          </div>
+                      </dialog>
+                    </div>
+                </td>
+               {/* <td className="">
+                   <div className="flex items-center pl-5">
+                       <img src={deleteStudent}> </img>
+                   </div>
+               </td>  */}
+           </tr>
+       </tbody>
+   </table>  
+    ):(
+      <p className='text-[1.2rem] mt-4 text-red-600 font-medium'> لعرض قائمة المتقدمين, يرجى التأكد من ادخال المسميات الوظيفية المطلوبة و اسماء الموظفين المشاركين</p>
+      )}
+      </div>
+
+    {/* مكتمل   */}
+
+    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white" aria-label="مكتمل" />
+    <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6 h-[18vw] overflow-y-auto custom-scrollbar max-sm:h-[28vh] ">
+    {/* <p className='text-lg font-bold mb-5' > قائمة الطلاب</p> */}
+    {!checkPosition? (
+       <table className="w-full h-full max-sm:table-xs">
+       <tbody>
+        <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
+          <th className="text-center p-3 px-5 max-sm:p-1"> الاسم</th>
+          <th className="text-center p-3 px-5 max-sm:p-1">المجال الوظيفي </th>
+          <th className="text-center p-3 px-5 max-sm:p-1">السيرة الذاتية </th>
+          <th className="text-center p-3 px-5 max-sm:p-1">الحالة </th>
+        </tr>
+           <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded ">
+               <td className="p-3 px-5 max-sm:p-1">
+                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">   نوره محمد  </p>
+                   </div>
+               </td>
+               <td className="p-3 px-5 max-sm:p-1">
+                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[15ch] text-center break-words max-sm:w-[10ch]"> معسكر جافاسكربت  </p>
+                   </div>
+               </td>
+               <td className="p-3 px-5 max-sm:p-1">
+                <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                  <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[20ch] text-center break-words max-sm:w-[10ch]">
+                    Nora1998@hotmail.com
+                  </p>
+                </div>
+              </td>
+
+               <td className="pb-2 px-5 max-sm:p-1 ">
+                   <div className="flex flex-wrap justify-center">
+                       <p className="text-base px-4 bg-[#7ed191] py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold">  مكتمل</p>
+                   </div>
+               </td> 
+
+               {/* <td className="">
+                   <div className="flex items-center pl-5">
+                       <img src={deleteStudent}> </img>
+                   </div>
+               </td>  */}
+           </tr>
+
+           <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded ">
+               <td className="p-3 px-5 max-sm:p-1">
+                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">   نوره محمد  </p>
+                   </div>
+               </td>
+               <td className="p-3 px-5 max-sm:p-1">
+                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[15ch] text-center break-words max-sm:w-[10ch]"> معسكر جافاسكربت  </p>
+                   </div>
+               </td>
+               <td className="p-3 px-5 max-sm:p-1">
+                <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                  <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[20ch] text-center break-words max-sm:w-[10ch]">
+                    Nora1998@hotmail.com
+                  </p>
+                </div>
+              </td>
+
+               <td className="pb-2 px-5 max-sm:p-1 ">
+                   <div className="flex flex-wrap justify-center">
+                       <p className="text-base px-4 bg-[#7ed191] py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold">  مكتمل</p>
+                   </div>
+               </td> 
+
+               {/* <td className="">
+                   <div className="flex items-center pl-5">
+                       <img src={deleteStudent}> </img>
+                   </div>
+               </td>  */}
+           </tr>
+
+           <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded ">
+               <td className="p-3 px-5 max-sm:p-1">
+                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">   نوره محمد  </p>
+                   </div>
+               </td>
+               <td className="p-3 px-5 max-sm:p-1">
+                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[15ch] text-center break-words max-sm:w-[10ch]"> معسكر جافاسكربت  </p>
+                   </div>
+               </td>
+               <td className="p-3 px-5 max-sm:p-1">
+                <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                  <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[20ch] text-center break-words max-sm:w-[10ch]">
+                    Nora1998@hotmail.com
+                  </p>
+                </div>
+              </td>
+
+               <td className="pb-2 px-5 max-sm:p-1 ">
+                   <div className="flex flex-wrap justify-center">
+                       <p className="text-base px-4 bg-[#7ed191] py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold">  مكتمل</p>
+                   </div>
+               </td> 
+
+               {/* <td className="">
+                   <div className="flex items-center pl-5">
+                       <img src={deleteStudent}> </img>
+                   </div>
+               </td>  */}
+           </tr>
+
+           <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded ">
+               <td className="p-3 px-5 max-sm:p-1">
+                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">   نوره محمد  </p>
+                   </div>
+               </td>
+               <td className="p-3 px-5 max-sm:p-1">
+                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[15ch] text-center break-words max-sm:w-[10ch]"> معسكر جافاسكربت  </p>
+                   </div>
+               </td>
+               <td className="p-3 px-5 max-sm:p-1">
+                <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                  <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[20ch] text-center break-words max-sm:w-[10ch]">
+                    Nora1998@hotmail.com
+                  </p>
+                </div>
+              </td>
+
+               <td className="pb-2 px-5 max-sm:p-1 ">
+                   <div className="flex flex-wrap justify-center">
+                       <p className="text-base px-4 bg-[#7ed191] py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold">  مكتمل</p>
+                   </div>
+               </td> 
+
+               {/* <td className="">
+                   <div className="flex items-center pl-5">
+                       <img src={deleteStudent}> </img>
+                   </div>
+               </td>  */}
+           </tr>
+
+           <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded ">
+               <td className="p-3 px-5 max-sm:p-1">
+                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">   نوره محمد  </p>
+                   </div>
+               </td>
+               <td className="p-3 px-5 max-sm:p-1">
+                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[15ch] text-center break-words max-sm:w-[10ch]"> معسكر جافاسكربت  </p>
+                   </div>
+               </td>
+               <td className="p-3 px-5 max-sm:p-1">
+                <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
+                  <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[20ch] text-center break-words max-sm:w-[10ch]">
+                    Nora1998@hotmail.com
+                  </p>
+                </div>
+              </td>
+
+               <td className="pb-2 px-5 max-sm:p-1 ">
+                   <div className="flex flex-wrap justify-center">
+                       <p className="text-base px-4 bg-[#7ed191] py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold">  مكتمل</p>
+                   </div>
+               </td> 
+
+               {/* <td className="">
+                   <div className="flex items-center pl-5">
+                       <img src={deleteStudent}> </img>
+                   </div>
+               </td>  */}
+           </tr>
+
+       </tbody>
+   </table>  
+    ):(
+      <p className='text-[1.2rem] mt-4 text-red-600 font-medium'> لعرض قائمة المتقدمين, يرجى التأكد من ادخال المسميات الوظيفية المطلوبة و اسماء الموظفين المشاركين</p>
+      )}
+      </div>
   </div>
   </div>
                     
@@ -517,39 +726,39 @@ const [companyupdated, setCompanyupdated] = useState({
                   <h1 className='pt-6 pr-6 font-extrabold text-[#6e68c4] text-[1.1rem]'>  تفاصيل الشركة </h1>
                   <button className="btn mt-6 rounded-lg text-white bg-[#f39e4e] py-1 px-3 ml-6" onClick={()=>document.getElementById('my_modal_4').showModal()}> تعديل</button>
                   <dialog id="my_modal_4" class="modal">
-<div className="modal-box w-[50vw] max-w-5xl flex flex-col p-4 py-2" style={{ maxHeight: '95vh', overflowY: 'auto' }}>
+<div className="modal-box w-[50vw] max-w-5xl flex flex-col p-4 py-2 max-sm:w-[90vw]" style={{ maxHeight: '95vh', overflowY: 'auto' }}>
   <h3 className="font-bold text-lg py-4 text-[#6e68c4]">تعديل تفاصيل الشركة</h3>
  
   <label className="mt-4 font-bold">نبذه عن الشركة</label>
   <textarea className="py-2 mt-1 rounded-md resize-none overflow-y-auto" rows="8" cols="50" value={companyupdated.description} onChange={handleDescriptionChange}></textarea>
   <div className="flex items-center">
   <div className='flex flex-col'>
-  <label className="font-bold  mt-4 mr-0">تحميل شعار الشركة:</label>
+  <label className="font-bold  mt-4 mr-0">تحميل شعار الشركة</label>
   <input className="py-1 mt-4 rounded-md" type="file" onChange={handleLogoChange}></input>
   </div>
     
   <div className='flex flex-col'>
   <label className="mt-4 font-bold">المنطقة</label>
-  <input className="py-2 mt-4 w-[12vw] px-2 rounded-md" type="text" value={companyupdated.Location} onChange={handleLocationChange}></input>
+  <input className="py-2 mt-4 w-[12vw] px-2 rounded-md max-sm:" type="text" value={companyupdated.Location} onChange={handleLocationChange}></input>
   
   </div>
   </div>
   
   <div className='flex items-center  justify-between '>
   <label className="mt-4 font-bold">الوظائف المتاحة</label>
-  <IoIosAddCircle size={23} fill='#6e68c4' className='mt-4 ' onClick={addPosition}/>
+  <IoIosAddCircle size={30} fill='#5ab35f' className='mt-4 ' onClick={addPosition}/>
 
 
   </div>
-  <div className='flex flex-wrap gap-4 w-full mt-4 rounded-md bg-slate-400 p-4'>
+  <div className='flex flex-wrap gap-4 w-full mt-4 rounded-md bg-white p-4'>
     {(companyupdated.jobPositions && companyupdated.jobPositions.length >0) &&(
       <>
         {companyupdated.jobPositions.map((positionName, index) => (
           <div className='rounded-md h-auto mt-2 px-4 flex gap-2 items-center' key={index}>
-            <div className="relative flex items-center">
+            <div className="relative flex items-center ">
               <input
                 type="text"
-                className="py-0 mt-2 w-auto flex-shrink-0 px-2 rounded-full pl-4 border-[1.2px] bg-purple-100 pr-8"
+                className="py-0 mt-2 w-auto flex-shrink-0 px-2 rounded-full pl-4 border-[1.2px] bg-gray-100 pr-8"
                 style={{ minWidth: '50px' }} // Adjust minimum width as needed
                 value={positionName}
                 onChange={(e) => handlePositionsChange(e, index)}
@@ -557,7 +766,7 @@ const [companyupdated, setCompanyupdated] = useState({
               />
               <img
                 src={close}
-                className='w-5 h-4 ml-2 cursor-pointer'
+                className='w-5 h-5 ml-2 mt-2 cursor-pointer'
                 onClick={() => deletePosition(index)}
                 alt="Delete"
               />
@@ -574,20 +783,38 @@ const [companyupdated, setCompanyupdated] = useState({
   <div className='rounded-md h-auto mt-2 px-4 flex gap-2 items-center'>
     <input
       type="text"
-      className="py-0 mt-1 w-auto px-2 rounded-full pl-4 border-[1.2px] bg-purple-100 pr-8"
+      className="py-0 mt-1 w-auto px-2 rounded-full pl-4 border-[1.2px] bg-gray-100 pr-8"
       style={{ minWidth: '50px' }} // Adjust minimum width as needed
       placeholder="عنوان الوظيفة"
       value={newPosition}
       onChange={handleNewPositionChange}
     />
-    <IoIosAddCircle size={23} fill='#6e68c4' className='cursor-pointer' onClick={handleSubmit} />
+    <IoIosAddCircle size={25} fill='#5ab35f' className='cursor-pointer mt-1' onClick={handleSubmit} />
   </div>
 )}
 </div>
 
   
   <div className="modal-action mt-4">
-    <button className="btn" onClick={() => updateInfo(id, getLocal.id)}>حفظ</button>
+    <button className="btn mt-6 rounded-lg text-white bg-[#f39e4e] hover:bg-[#ffb977] py-1 px-3 " onClick={() => {
+    updateInfo(id, getLocal.id)
+    document.getElementById('my_modal_5').showModal();
+    }}>حفظ</button>
+    <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle ">
+        <div className="modal-box">
+        <div className='flex flex-col justify-center items-center gap-4'>
+          <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 512 512">
+          <path fill="#32BEA6" d="M504.1,256C504.1,119,393,7.9,256,7.9C119,7.9,7.9,119,7.9,256C7.9,393,119,504.1,256,504.1C393,504.1,504.1,393,504.1,256z"></path><path fill="#FFF" d="M392.6,172.9c-5.8-15.1-17.7-12.7-30.6-10.1c-7.7,1.6-42,11.6-96.1,68.8c-22.5,23.7-37.3,42.6-47.1,57c-6-7.3-12.8-15.2-20-22.3C176.7,244.2,152,229,151,228.4c-10.3-6.3-23.8-3.1-30.2,7.3c-6.3,10.3-3.1,23.8,7.2,30.2c0.2,0.1,21.4,13.2,39.6,31.5c18.6,18.6,35.5,43.8,35.7,44.1c4.1,6.2,11,9.8,18.3,9.8c1.2,0,2.5-0.1,3.8-0.3c8.6-1.5,15.4-7.9,17.5-16.3c0.1-0.2,8.8-24.3,54.7-72.7c37-39.1,61.7-51.5,70.3-54.9c0.1,0,0.1,0,0.3,0c0,0,0.3-0.1,0.8-0.4c1.5-0.6,2.3-0.8,2.3-0.8c-0.4,0.1-0.6,0.1-0.6,0.1l0-0.1c4-1.7,11.4-4.9,11.5-5C393.3,196.1,397,184.1,392.6,172.9z"></path>
+          </svg>
+          <h3 className="font-bold text-lg">تم الحفظ بنجاح</h3>
+        </div>
+        <div className="modal-action">
+          <form method="dialog">
+          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+          </form>
+        </div>
+      </div>
+    </dialog>
   </div>
 </div>
 </dialog>
@@ -597,24 +824,24 @@ const [companyupdated, setCompanyupdated] = useState({
                     <hr className='flex justify-center w-full' />
                     <div className="flex flex-col  justify-center w-full">
                       <p className='mr-6 font-bold mt-6 text-[1.04rem]'>نبذه عن الشركة:</p>
-                      <p  className='border-non pr-6 pt-2 text-[#202020] ml-6  text-[0.9rem] text-justify' >{companyData.description}</p>
+                      <p  className='border-non pr-6 pt-2 text-[#202020] ml-6  text-[0.9rem] text-justify ' >{companyData.description}</p>
                       <div className='pt-2 pr-5 flex gap-1 mt-4'>
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5 text-[#99D2CB]">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                       </svg>
-                      <p className='text-[gray] text-[0.8rem] '>{companyData.Location} </p>
+                      <p className='text-[gray] text-[0.8rem]'>{companyData.Location} </p>
                   </div> 
 
                 
                   <p className='mr-6 font-bold mt-8 text-[1.04rem]'>الشواغر المتاحة:</p>
 
-                  <div className='flex gap-2 mt-2'>
+                  <div className='flex mt-2 flex-wrap'>
                   {
                     companyData && companyData.jobPositions && companyData.jobPositions.length > 0 ? (
                       <>
                         {companyData.jobPositions.map((position, index) => (
-                          <p key={index} className='px-2 mr-6 mt-2 py-1 rounded-full w-fit text-[0.8rem] bg-[#eee6f5]'>
+                          <p key={index} className='px-2 mr-5 mt-2 py-1 rounded-full w-fit text-[0.8rem] bg-[#eee6f5]'>
                             {position}
                           </p>
                         ))}
