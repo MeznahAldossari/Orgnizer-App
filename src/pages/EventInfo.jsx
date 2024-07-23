@@ -8,7 +8,7 @@ import { IoMdInformationCircleOutline } from "react-icons/io";
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { db } from '../config/firebase';
-import { doc, getDoc, collection, query, where, getDocs,deleteDoc  } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, getDocs,deleteDoc,onSnapshot   } from 'firebase/firestore';
 import EditEventModal from '../components/EventEdit';
 import { updateDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
@@ -24,6 +24,7 @@ const EventInfo = () => {
   const [companies, setCompanies] = useState([]);
   const navigate = useNavigate()
   const today = new Date();
+  const [students, setStudents] = useState([]);
 
   
   useEffect(() => {
@@ -58,11 +59,39 @@ const EventInfo = () => {
         console.error('Error fetching companies:', error);
       }
     };
+    const fetchStudents = async () => {
+      try {
+        const studentsArray = [];
+        const usersRef = collection(db, 'users');
+        const usersSnap = await getDocs(usersRef);
 
+        for (const userDoc of usersSnap.docs) {
+          const myEventsRef = collection(db, `users/${userDoc.id}/myEvents`);
+          const myEventsSnap = await getDocs(myEventsRef);
+
+          for (const eventDoc of myEventsSnap.docs) {
+            if (eventDoc.id === eventId) {
+              const studentData = userDoc.data();
+              studentsArray.push({
+                id: userDoc.id,
+                ...studentData
+              });
+            }
+          }
+        }
+
+        setStudents(studentsArray);
+      } catch (error) {
+        console.error('Error fetching students:', error);
+      }
+    };
+
+    fetchStudents();
     fetchEvent();
     fetchCompanies();
   }, [eventId]);
-
+ 
+  
 
 
   if (!event) {
@@ -116,7 +145,9 @@ const EventInfo = () => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Companies");
     XLSX.writeFile(workbook, "Companies.xlsx");
   }
-
+  const handleOpenCV = (cvUrl) => {
+    window.open(cvUrl, '_blank');
+  };
   return (
     <>
 <Nav/>
@@ -293,175 +324,49 @@ document.getElementById('my_modal_8').showModal();
     <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white hover:text-[#5C59C2]" aria-label="الطلاب" defaultChecked />
     <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6 ">
     <p className='text-lg mb-5 font-extrabold text-[#5C59C2] text-[1.1rem]' > قائمة الطلاب</p>
-
     <table className="w-full text-md bg-white shadow-md rounded mb-4  max-sm:text-xs max-sm:table-xs overflow-y-auto">
-        <tbody>
-            <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
-              <th className="text-right p-3 px-5 max-sm:p-1 ">الاسم</th>
-              <th className="text-right p-3 px-5 max-sm:p-1">المعسكر</th>
-              <th className="text-right p-3 px-5 max-sm:p-1">الإيميل</th>
-              <th className="text-right p-3 px-5 max-sm:p-1">الحالة</th>
-              <th className='text-right p-3 px-5 max-sm:p-1'>حذف</th>
-            </tr>
-                <tr className='focus:outline-none h-16 border border-[#e4e6e6] rounded'>
-                
-                    <td className="p-3 px-5 max-sm:p-1">
-                        <div className='flex flex-wrap'>
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[10ch]">زياد الصاعدي </p>
+                <tbody>
+                  <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
+                    <th className="text-right p-3 px-5 max-sm:p-1 ">الاسم</th>
+                    <th className="text-right p-3 px-5 max-sm:p-1">السيرة الذاتية</th>
+                    <th className="text-right p-3 px-5 max-sm:p-1">الإيميل</th>
+                    <th className="text-right p-3 px-5 max-sm:p-1">المدينة</th>
+                  </tr>
+                  {students.map((student) => (
+                    <tr  className="focus:outline-none h-16 border border-[#e4e6e6] rounded">
+                      <td className="p-3 px-5 max-sm:p-1">
+                        <div className="flex flex-wrap">
+                          <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[10ch]">
+                            {student.Fname}
+                          </p>
                         </div>
-                    </td>
-                    <td className="p-3 px-5 max-sm:p-1">
-                        <div className='flex flex-wrap'>
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[10ch]">معسكر تصميم واجهات  </p>
+                      </td>
+                      <td className="p-3 px-5 max-sm:p-1">
+                        <div className="flex flex-wrap">
+                          <button    onClick={() => handleOpenCV(student.CV)}  value={student.CV} className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[10ch]">
+                            {student.cvFileName}
+                          </button>
                         </div>
-                    </td>
-                    <td className="p-3 px-5 max-sm:p-1">
-                        <div className='flex flex-wrap'>
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[9ch]">ziad@gmail.com</p>
+                      </td>
+                      <td className="p-3 px-5 max-sm:p-1">
+                        <div className="flex flex-wrap">
+                          <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[9ch]">
+                            {student.email}
+                          </p>
                         </div>
-                    </td>
-                    <td className="p-3 px-5 max-sm:p-1">
-                        <div className='flex flex-wrap'>
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[6ch]">مقبول</p>
+                      </td>
+                      <td className="p-3 px-5 max-sm:p-1">
+                        <div className="flex flex-wrap">
+                          <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[6ch]">
+                            {student.city}
+                          </p>
                         </div>
-                    </td>
-                    {/* <td className="p-3 px-5 flex max-sm:mt-3 justify-evenly max-sm:p-1"> */}
-                        {/* <div className="flex items-center "> */}
-                        {/* <button>
-                        <IoMdInformationCircleOutline style={{ color: 'black', fontSize: '20px' }} />                                   
-                        </button> */}
-
-                        {/* </div> */}
-                    {/* </td> */}
-                    <td className="p-3 px-5 max-sm:p-1">
-                        <div className="flex items-center pl-5">
-                            <button onClick={() => { document.getElementById('my_modal_4').showModal()}} disabled={today > eventEndDate}>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 text-[#d33232]">
-                                <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
-                                </svg>  
-                            </button>
-                            <dialog id="my_modal_4" className="modal ">
-                                <div className="modal-box w-[35vw] max-w-5xl">
-                                    <p className="py-4 text-[1.1rem]">هل انت متأكد من حذف الطالب؟</p>
-                                    <div className="modal-action">
-                                        <form method="dialog" className='gap-6'>
-                                            <button className="btn ml-1 bg-[#99D2CB] text-white" >نعم</button>
-                                            <button className="btn bg-[#99D2CB] text-white">لا</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </dialog>
-                        </div>
-                    </td>
-                </tr>
-
-                <tr className='focus:outline-none h-16 border border-[#e4e6e6] rounded'>
-                
-                    <td className="p-3 px-5 max-sm:p-1">
-                        <div className='flex flex-wrap'>
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[10ch]">زياد الصاعدي </p>
-                        </div>
-                    </td>
-                    <td className="p-3 px-5 max-sm:p-1">
-                        <div className='flex flex-wrap'>
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[10ch]">معسكر تصميم واجهات  </p>
-                        </div>
-                    </td>
-                    <td className="p-3 px-5 max-sm:p-1">
-                        <div className='flex flex-wrap'>
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[9ch]">ziad@gmail.com</p>
-                        </div>
-                    </td>
-                    <td className="p-3 px-5 max-sm:p-1">
-                        <div className='flex flex-wrap'>
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[6ch]">مقبول</p>
-                        </div>
-                    </td>
-                    {/* <td className="p-3 px-5 flex max-sm:mt-3 justify-evenly max-sm:p-1"> */}
-                        {/* <div className="flex items-center "> */}
-                        {/* <button>
-                        <IoMdInformationCircleOutline style={{ color: 'black', fontSize: '20px' }} />                                   
-                        </button> */}
-
-                        {/* </div> */}
-                    {/* </td> */}
-                    <td className="p-3 px-5 max-sm:p-1">
-                        <div className="flex items-center pl-5">
-                            <button onClick={() => { document.getElementById('my_modal_4').showModal()}}>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 text-[#d33232]">
-                                <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
-                                </svg>  
-                            </button>
-                            <dialog id="my_modal_4" className="modal ">
-                                <div className="modal-box w-[35vw] max-w-5xl">
-                                    <p className="py-4 text-[1.1rem]">هل انت متأكد من حذف الطالب؟</p>
-                                    <div className="modal-action">
-                                        <form method="dialog" className='gap-6'>
-                                            <button className="btn ml-1 bg-[#99D2CB] text-white" >نعم</button>
-                                            <button className="btn bg-[#99D2CB] text-white">لا</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </dialog>
-                        </div>
-                    </td>
-                </tr>
-
-                <tr className='focus:outline-none h-16 border border-[#e4e6e6] rounded'>
-                
-                    <td className="p-3 px-5 max-sm:p-1">
-                        <div className='flex flex-wrap'>
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[10ch]">زياد الصاعدي </p>
-                        </div>
-                    </td>
-                    <td className="p-3 px-5 max-sm:p-1">
-                        <div className='flex flex-wrap'>
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[10ch]">معسكر تصميم واجهات  </p>
-                        </div>
-                    </td>
-                    <td className="p-3 px-5 max-sm:p-1">
-                        <div className='flex flex-wrap'>
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[9ch]">ziad@gmail.com</p>
-                        </div>
-                    </td>
-                    <td className="p-3 px-5 max-sm:p-1">
-                        <div className='flex flex-wrap'>
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[6ch]">مقبول</p>
-                        </div>
-                    </td>
-                    {/* <td className="p-3 px-5 flex max-sm:mt-3 justify-evenly max-sm:p-1"> */}
-                        {/* <div className="flex items-center "> */}
-                        {/* <button>
-                        <IoMdInformationCircleOutline style={{ color: 'black', fontSize: '20px' }} />                                   
-                        </button> */}
-
-                        {/* </div> */}
-                    {/* </td> */}
-                    <td className="p-3 px-5 max-sm:p-1">
-                        <div className="flex items-center pl-5">
-                            <button onClick={() => { document.getElementById('my_modal_4').showModal()}}>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 text-[#d33232]">
-                                <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
-                                </svg>  
-                            </button>
-                            <dialog id="my_modal_4" className="modal ">
-                                <div className="modal-box w-[35vw] max-w-5xl">
-                                    <p className="py-4 text-[1.1rem]">هل انت متأكد من حذف الطالب؟</p>
-                                    <div className="modal-action">
-                                        <form method="dialog" className='gap-6'>
-                                            <button className="btn ml-1 bg-[#99D2CB] text-white" >نعم</button>
-                                            <button className="btn bg-[#99D2CB] text-white">لا</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </dialog>
-                        </div>
-                    </td>
-                </tr>
-
-
-             </tbody>
-       </table>  
+                      </td>
+                  
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
     </div>
   </div>
 </div>
