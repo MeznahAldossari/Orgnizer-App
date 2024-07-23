@@ -207,7 +207,14 @@ const DetailsCompanies = () => {
                                     <h3 className="font-bold text-lg">هل انت متأكد من التقديم؟</h3>
                                     <div className="modal-action">
                                     <form method="dialog" className='flex justify-center items-center gap-2 w-full '>
-                                        <button onClick={()=>document.getElementById('my_modal_2').showModal()} className="rounded-lg bg-[#7ed191] text-white hover:bg-[#94e6a7] w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh]">نعم</button>
+                                        <button onClick={() => {
+                                            const modal = document.getElementById('my_modal_2');
+                                            modal.showModal();
+
+                                            setTimeout(() => {
+                                                modal.close();
+                                            }, 2000);
+                                            }} className="rounded-lg bg-[#7ed191] text-white hover:bg-[#94e6a7] w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh]">نعم</button>
                                         <dialog id="my_modal_2" className="modal modal-bottom sm:modal-middle ">
                                             <div className="modal-box">
                                             <div className='flex flex-col justify-center items-center gap-4'>
@@ -218,7 +225,7 @@ const DetailsCompanies = () => {
                                             </div>
                                             <div className="modal-action">
                                             <form method="dialog">
-                                            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                                            {/* <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button> */}
                                             </form>
                                             </div>
                                         </div>
@@ -278,10 +285,10 @@ const DetailsCompanies = () => {
                     </td>
                     <td className="p-3 px-5 max-sm:p-1 text-center">
                         <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-12">
-                            <svg className="size-6 text-[#c71919] cursor-pointer" onClick={()=>document.getElementById('my_modal_3').showModal()} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" >
+                            <svg className="size-6 text-[#c71919] cursor-pointer" onClick={()=>document.getElementById('my_modal_5').showModal()} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" >
                             <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
                             </svg>
-                            <dialog id="my_modal_3" className="modal modal-bottom sm:modal-middle">
+                            <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
                                 <div className="modal-box">
                                     <h3 className="font-bold text-lg">هل انت متأكد من الانسحاب؟</h3>
                                     <div className="modal-action">

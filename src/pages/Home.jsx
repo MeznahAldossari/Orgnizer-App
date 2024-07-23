@@ -3,7 +3,7 @@ import Nav from '../components/Nav'
 import Hero from '../components/Hero'
 import Cards from '../components/Cards'
 import Footer from '../components/Footer'
-
+import PartnersSection from '../components/PartnersSection'
 
 
 
@@ -14,6 +14,7 @@ const Home = () => {
     <Nav />
     <Hero />
     <Cards />
+    <PartnersSection />
     <Footer />
     </>
 

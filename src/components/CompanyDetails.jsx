@@ -421,23 +421,38 @@ const [companyupdated, setCompanyupdated] = useState({
                           <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
                           </svg>
                         </button>
-                        <dialog id="my_modal_1" className="modal ">
-                          <div className="modal-box w-[35vw] max-w-5xl" >
-
-                          <p className="py-4 text-[1.1rem]">هل انت متأكد من الغاء الطالب؟</p>
-                          <div className="modal-action">
-                          <form method="dialog" className='gap-6'>
-                         
-                          <button className="btn ml-1 bg-[#99D2CB] text-white" >نعم</button>
-                         
-                         
-                          <button className="btn bg-[#99D2CB] text-white">لا</button>
-                         
-
-                          </form>
-                          </div>
-                          </div>
-                      </dialog>
+                        <dialog id="my_modal_1" className="modal modal-bottom sm:modal-middle">
+                                <div className="modal-box">
+                                    <h3 className="font-bold text-lg flex justify-center ">هل انت متأكد من حذف الطالب؟</h3>
+                                    <div className="modal-action">
+                                    <form method="dialog" className='flex justify-center items-center gap-2 w-full '>
+                                        <button onClick={() => {
+                                            const modal = document.getElementById('my_modal_2');
+                                            modal.showModal();
+                                            setTimeout(() => {
+                                              modal.close();
+                                            }, 2000);
+                                          }} className="rounded-lg bg-red-600 text-white hover:bg-red-500 w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh]">نعم</button>
+                                        <dialog id="my_modal_2" className="modal modal-bottom sm:modal-middle ">
+                                            <div className="modal-box">
+                                                <div className='flex flex-col justify-center items-center gap-4'>
+                                                  <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 512 512">
+                                                  <path fill="#32BEA6" d="M504.1,256C504.1,119,393,7.9,256,7.9C119,7.9,7.9,119,7.9,256C7.9,393,119,504.1,256,504.1C393,504.1,504.1,393,504.1,256z"></path><path fill="#FFF" d="M392.6,172.9c-5.8-15.1-17.7-12.7-30.6-10.1c-7.7,1.6-42,11.6-96.1,68.8c-22.5,23.7-37.3,42.6-47.1,57c-6-7.3-12.8-15.2-20-22.3C176.7,244.2,152,229,151,228.4c-10.3-6.3-23.8-3.1-30.2,7.3c-6.3,10.3-3.1,23.8,7.2,30.2c0.2,0.1,21.4,13.2,39.6,31.5c18.6,18.6,35.5,43.8,35.7,44.1c4.1,6.2,11,9.8,18.3,9.8c1.2,0,2.5-0.1,3.8-0.3c8.6-1.5,15.4-7.9,17.5-16.3c0.1-0.2,8.8-24.3,54.7-72.7c37-39.1,61.7-51.5,70.3-54.9c0.1,0,0.1,0,0.3,0c0,0,0.3-0.1,0.8-0.4c1.5-0.6,2.3-0.8,2.3-0.8c-0.4,0.1-0.6,0.1-0.6,0.1l0-0.1c4-1.7,11.4-4.9,11.5-5C393.3,196.1,397,184.1,392.6,172.9z"></path>
+                                                  </svg>
+                                                  <h3 className="font-bold text-lg">تم حذف الطالب بنجاح</h3>
+                                                </div>
+                                              <div className="modal-action">
+                                                <form method="dialog">
+                                                {/* <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button> */}
+                                                </form>
+                                              </div>
+                                            </div>
+                                        </dialog>
+                                        <button className="rounded-lg  text-black border border-[#a3a3a3] hover:bg-[#f0f0f0] w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh] ">لا</button>
+                                    </form>
+                                    </div>
+                                </div>
+                        </dialog>
                     </div>
                 </td>
                {/* <td className="">
@@ -497,28 +512,43 @@ const [companyupdated, setCompanyupdated] = useState({
                <td className="p-3 px-5 max-sm:p-1">
                     <div className="flex flex-wrap justify-center">
                         {/* <img src={deleteStudent} className='w-4 cursor-pointer' onClick={() => { document.getElementById('my_modal_2').showModal()}}/> */}
-                        <button className='flex justify-center w-6 mb-2 cursor-pointer' onClick={() => { document.getElementById('my_modal_2').showModal()}} >
+                        <button className='flex justify-center w-6 mb-2 cursor-pointer' onClick={() => { document.getElementById('my_modal_3').showModal()}} >
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-7 text-[#d33232]">
                           <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
                           </svg>
                         </button>
-                        <dialog id="my_modal_2" className="modal ">
-                          <div className="modal-box w-[35vw] max-w-5xl" >
-
-                          <p className="py-4 text-[1.1rem]">هل انت متأكد من حذف الطالب؟</p>
-                          <div className="modal-action">
-                          <form method="dialog" className='gap-6'>
-                         
-                          <button className="btn ml-1 bg-[#99D2CB] text-white" >نعم</button>
-                         
-                         
-                          <button className="btn bg-[#99D2CB] text-white">لا</button>
-                         
-
-                          </form>
-                          </div>
-                          </div>
-                      </dialog>
+                        <dialog id="my_modal_3" className="modal modal-bottom sm:modal-middle">
+                                <div className="modal-box">
+                                    <h3 className="font-bold text-lg flex justify-center ">هل انت متأكد من حذف الطالب؟</h3>
+                                    <div className="modal-action">
+                                    <form method="dialog" className='flex justify-center items-center gap-2 w-full '>
+                                        <button onClick={() => {
+                                            const modal = document.getElementById('my_modal_4');
+                                            modal.showModal();
+                                            setTimeout(() => {
+                                              modal.close();
+                                            }, 2000);
+                                          }} className="rounded-lg bg-red-600 text-white hover:bg-red-500 w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh]">نعم</button>
+                                        <dialog id="my_modal_4" className="modal modal-bottom sm:modal-middle ">
+                                            <div className="modal-box">
+                                                <div className='flex flex-col justify-center items-center gap-4'>
+                                                  <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 512 512">
+                                                  <path fill="#32BEA6" d="M504.1,256C504.1,119,393,7.9,256,7.9C119,7.9,7.9,119,7.9,256C7.9,393,119,504.1,256,504.1C393,504.1,504.1,393,504.1,256z"></path><path fill="#FFF" d="M392.6,172.9c-5.8-15.1-17.7-12.7-30.6-10.1c-7.7,1.6-42,11.6-96.1,68.8c-22.5,23.7-37.3,42.6-47.1,57c-6-7.3-12.8-15.2-20-22.3C176.7,244.2,152,229,151,228.4c-10.3-6.3-23.8-3.1-30.2,7.3c-6.3,10.3-3.1,23.8,7.2,30.2c0.2,0.1,21.4,13.2,39.6,31.5c18.6,18.6,35.5,43.8,35.7,44.1c4.1,6.2,11,9.8,18.3,9.8c1.2,0,2.5-0.1,3.8-0.3c8.6-1.5,15.4-7.9,17.5-16.3c0.1-0.2,8.8-24.3,54.7-72.7c37-39.1,61.7-51.5,70.3-54.9c0.1,0,0.1,0,0.3,0c0,0,0.3-0.1,0.8-0.4c1.5-0.6,2.3-0.8,2.3-0.8c-0.4,0.1-0.6,0.1-0.6,0.1l0-0.1c4-1.7,11.4-4.9,11.5-5C393.3,196.1,397,184.1,392.6,172.9z"></path>
+                                                  </svg>
+                                                  <h3 className="font-bold text-lg">تم حذف الطالب بنجاح</h3>
+                                                </div>
+                                              <div className="modal-action">
+                                                <form method="dialog">
+                                                {/* <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button> */}
+                                                </form>
+                                              </div>
+                                            </div>
+                                        </dialog>
+                                        <button className="rounded-lg  text-black border border-[#a3a3a3] hover:bg-[#f0f0f0] w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh] ">لا</button>
+                                    </form>
+                                    </div>
+                                </div>
+                        </dialog>
                     </div>
                 </td>
                {/* <td className="">
@@ -724,8 +754,8 @@ const [companyupdated, setCompanyupdated] = useState({
                 <div className='mt-6 bg-white h-[100vh] rounded-lg max-sm:h-[50vh] max-sm:w-[90vw]'>
                   <div className='flex items-center justify-between'>
                   <h1 className='pt-6 pr-6 font-extrabold text-[#6e68c4] text-[1.1rem]'>  تفاصيل الشركة </h1>
-                  <button className="btn mt-6 rounded-lg text-white bg-[#f39e4e] py-1 px-3 ml-6" onClick={()=>document.getElementById('my_modal_4').showModal()}> تعديل</button>
-                  <dialog id="my_modal_4" class="modal">
+                  <button className="btn mt-6 rounded-lg text-white bg-[#f39e4e] py-1 px-3 ml-6" onClick={()=>document.getElementById('my_modal_5').showModal()}> تعديل</button>
+                  <dialog id="my_modal_5" class="modal">
 <div className="modal-box w-[50vw] max-w-5xl flex flex-col p-4 py-2 max-sm:w-[90vw]" style={{ maxHeight: '95vh', overflowY: 'auto' }}>
   <h3 className="font-bold text-lg py-4 text-[#6e68c4]">تعديل تفاصيل الشركة</h3>
  
@@ -795,12 +825,17 @@ const [companyupdated, setCompanyupdated] = useState({
 </div>
 
   
-  <div className="modal-action mt-4">
+  <div className="modal-action mt-4 flex gap-2">
     <button className="btn mt-6 rounded-lg text-white bg-[#f39e4e] hover:bg-[#ffb977] py-1 px-3 " onClick={() => {
     updateInfo(id, getLocal.id)
-    document.getElementById('my_modal_5').showModal();
+    const modal = document.getElementById('my_modal_6');
+                  modal.showModal();
+
+                  setTimeout(() => {
+                    modal.close();
+                  }, 2000);
     }}>حفظ</button>
-    <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle ">
+    <dialog id="my_modal_6" className="modal modal-bottom sm:modal-middle ">
         <div className="modal-box">
         <div className='flex flex-col justify-center items-center gap-4'>
           <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 512 512">
@@ -810,11 +845,12 @@ const [companyupdated, setCompanyupdated] = useState({
         </div>
         <div className="modal-action">
           <form method="dialog">
-          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+          {/* <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button> */}
           </form>
         </div>
       </div>
     </dialog>
+    <button className="btn mt-6 rounded-lg text-white bg-[#999999] hover:bg-[#b1b1b1] py-1 px-3 ">إلغاء</button>
   </div>
 </div>
 </dialog>
