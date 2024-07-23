@@ -12,6 +12,8 @@ import { doc, getDoc, collection, query, where, getDocs,deleteDoc  } from 'fireb
 import EditEventModal from '../components/EventEdit';
 import { updateDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import * as XLSX from 'xlsx';
+
 
 
 
@@ -102,7 +104,18 @@ const EventInfo = () => {
       console.error('Error deleting company:', error);
     }
   };
-  
+  const exportToExcel = () => {
+    const filteredCompanies = companies.map(({ companyName,Location, description, email }) => ({
+      Location,
+      companyName,
+      description,
+      email
+  }));
+    const worksheet = XLSX.utils.json_to_sheet(filteredCompanies);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Companies");
+    XLSX.writeFile(workbook, "Companies.xlsx");
+  }
 
   return (
     <>
@@ -213,7 +226,12 @@ document.getElementById('my_modal_8').showModal();
 <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white hover:text-[#5C59C2] " aria-label="الشركات" defaultChecked/>
 <div role="tabpanel" className="tab-content bg-white border-base-100 rounded-box p-6">
 <p className='text-lg mb-5 font-extrabold text-[#5C59C2] ' > قائمة الشركات</p>
-
+<button
+            className="flex justify-center rounded-md bg-green-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+            onClick={exportToExcel}
+          >
+            Export 
+          </button>
 <table className="w-full text-md bg-white shadow-md rounded mb-4 max-sm:text-xs max-sm:table-xs">
     <tbody>
         <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
