@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import Logo from '../assets/nazzem-logo.png'
 
 import { GiHamburgerMenu } from "react-icons/gi";
+import { RiLogoutCircleLine } from "react-icons/ri";
+
 const Nav = () => {
   const getLocal = JSON.parse(localStorage.getItem("loggedIn"));
   const [bool ,setBool] = useState(false)
@@ -131,12 +133,34 @@ const Nav = () => {
         
         )}
 
-{getLocal !== null  && (
-    <li onClick={removeLocal} className="rounded-lg flex items-center cursor-pointer text-[1.2rem] text-[#6e68c4] hover:text-[#f39e4e] py-1 px-3 ml-4 ">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-7">
-      <path fillRule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM6.166 5.106a.75.75 0 0 1 0 1.06 8.25 8.25 0 1 0 11.668 0 .75.75 0 1 1 1.06-1.06c3.808 3.807 3.808 9.98 0 13.788-3.807 3.808-9.98 3.808-13.788 0-3.808-3.807-3.808-9.98 0-13.788a.75.75 0 0 1 1.06 0Z" clipRule="evenodd" />
-    </svg>
-    </li>
+{getLocal !== null && (
+  <li
+    onClick={() => document.getElementById('my_modal_10').showModal()}
+    className="rounded-lg flex items-center cursor-pointer text-[1.2rem] text-black py-1 px-3 ml-4"
+  >
+    <RiLogoutCircleLine fill='#6e68c4' size={23} className='mb-1 cursor-pointer' />
+    <dialog id="my_modal_10" className="modal modal-bottom sm:modal-middle">
+      <div className="modal-box flex flex-col justify-center items-center h-[25vh] ">
+        <h3 className="font-bold text-lg">هل انت متأكد من تسجيل الخروج؟</h3>
+        <div className="modal-action">
+          <form method="dialog" className='flex justify-center items-center gap-2 w-full '>
+            <button
+              type="button"
+              onClick={() => {
+                removeLocal();
+                document.getElementById('my_modal_10').close();
+              }}
+              className="rounded-lg bg-red-600 text-white hover:bg-red-500 w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh]"
+            >
+              نعم
+            </button>
+            <button className="rounded-lg  text-black border border-[#a3a3a3] hover:bg-[#f0f0f0] w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh]">لا</button>
+
+          </form>
+        </div>
+      </div>
+    </dialog>
+  </li>
   )}
         
         

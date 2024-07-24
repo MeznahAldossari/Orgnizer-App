@@ -85,21 +85,19 @@ function Login() {
     
     <img className='fixed hidden lg:block inset-0 h-full w-full ' src={BgLogin} />
 	<div className='w-full h-screen flex flex-col  justify-center items-center'>
-    <div className='relative flex flex-col items-center justify-center w-[30%] bg-white rounded-lg shadow-lg h-[70vh] max-sm:w-[90%]'>
-      <img className="w-40" src={Logo} />
-      <h2 className='my-6 font-bold text-3xl text-gray-700 text-center'>مرحبا بكم</h2>
+    <div className='relative flex flex-col mt-6 items-center gap-3 w-[35%] bg-white rounded-lg shadow-lg h-[75vh] max-sm:w-[90%]'>
+      <img className="w-[20vw] mt-6 " src={Logo} />
       <div className='w-[80%] flex justify-center '>
         <i className='fa fa-user  text-purple-800 text-lg'></i>
           <input type='email' value={user.email} onChange={changeName} placeholder='البريد الالكتروني' className='pr-1 w-[90%] border-b-2 focus:outline-none focus:border-[#99d2cb]  ' />
       </div>
-      <div className=' mt-8 w-[80%] flex justify-center'>
+      <div className=' mt-4 w-[80%] flex justify-center'>
         <i className='fa fa-lock  text-purple-800 text-lg'></i>
           <input type='password' value={user.password} onChange={changePassword} placeholder='كلمة المرور' className='pr-1 border-b-2 w-[90%] focus:outline-none focus:border-[#99d2cb] ' />
       </div>
       <div className='flex justify-end w-[20vw] max-sm:w-[65vw]'>
-      <p className='self-end mt-4 text-gray-600 font-bold'>نسيت كلمة المرور؟</p>
       </div>
-      <button onClick={loginData} className='py-3 px-20 bg-[#99d2cb] rounded-lg text-white font-bold uppercase text-lg mt-4 transform hover:translate-y-1 transition-all duration-500'> تسجيل دخول</button>
+      <button onClick={loginData} className='py-3 px-20 bg-[#99d2cb] rounded-lg text-white font-bold uppercase text-lg mt-6 transform hover:translate-y-1 transition-all duration-500'> تسجيل دخول</button>
     </div>
   </div>
 

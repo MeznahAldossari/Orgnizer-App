@@ -30,7 +30,7 @@ const HeroStudent = () => {
         viewport={{once:false, amount: 0.7}}
         className="absolute inset-0 flex flex-col justify-end items-center md:flex-row max-sm:items-end ">
             <div className="flex flex-col items-center justify-start ml-28 md:w-1/2 mb-4 md:mb-2 max-sm:text-center max-sm:w-[70vw] max-sm:h-[27vh]">
-                <h1 className="text-[#ffffff] font-bold text-4xl md:text-4xl leading-tight mb-2 max-sm:text-3xl ">مرحباً بك في معرض <span className='text-[#99dccb] font-extrabold'>طويق</span> للتوظيف</h1>
+                <h1 className="text-[#ffffff] font-bold text-4xl md:text-4xl leading-tight mb-2 max-sm:text-3xl ">مرحباً بك في معرض <span className='text-[#99dccb] font-extrabold'></span>التوظيف</h1>
                 <p className="text-[#ffffff] text-center font-regular text-xl mb-8 mt-4 w-[30vw] max-sm:w-[45vw] max-sm:text-base ">اكتشف فرص عمل جديدة وتابع طلباتك بفعالية وابحث عن أبرز الشركات بمجال اهتمامك</p>
             </div>
         </motion.div>

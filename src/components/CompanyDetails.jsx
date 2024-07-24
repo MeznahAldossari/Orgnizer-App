@@ -5,6 +5,7 @@ import { jsPDF } from 'jspdf';
 // import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 // import '../Amiri-normal.js'
+import { RiDownload2Fill } from "react-icons/ri"
 
 
 import html2canvas from 'html2canvas';
@@ -13,19 +14,22 @@ import deleteStudent from '../assets/delete.png'
 import close from "../assets/close.png"
 import { IoIosAddCircle } from "react-icons/io";
 import MyqrCode from './MyqrCode';
-import { RiDownload2Fill } from "react-icons/ri";
 
 import '../App.css'
 
 import { auth, db, storage } from '../config/firebase';
 import { getDoc, doc, collection, getDocs, updateDoc, deleteDoc } from 'firebase/firestore';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { Link, useParams } from 'react-router-dom';
+import { json, Link, useParams } from 'react-router-dom';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import Footer from '../components/Footer';
 
 
 function CompanyDetails() {
   const [qrValue, setQRValue] = useState('');
+  const [completedApplication, setCompletedApplication] = useState([])
+  const [inProgress, setInProgress] = useState([])
+  const [inWaiting, setInWaiting] = useState([])
 
   const [showNewPositionInput, setShowNewPositionInput] = useState(false); 
   const [companyData, setCompanyData] = useState({
@@ -50,6 +54,10 @@ const [companyupdated, setCompanyupdated] = useState({
 
 
     const [checkEmp, setCheckEmp] = useState(false)
+    const [checkjobStatus, setCheckjobStatus] = useState({
+      name:'',
+      boolStatue:false
+    })
     const [checkPosition, setCheckPosition] = useState(false)
     const getLocal = JSON.parse(localStorage.getItem("loggedIn"));
     const {id} = useParams()
@@ -57,25 +65,33 @@ const [companyupdated, setCompanyupdated] = useState({
     const [pdfUrl, setPdfUrl] = useState('');
     const [companyStudents, setCompanyStudents] = useState([])
     const [firstTwoStudents, setFirstTwoStudents] = useState([])
+    const [inLineStudents, setInLineStudents] = useState([])
+    const [inLine, setInLine] = useState([])
+
+    const [checkJobStatus, setCheckJobStatus] = useState(false)
 
 
     useEffect(()=>{
       getCompanyInfo()
       checkPositionAndEmp()
       getAppliedStudents()
+      console.log(getLocal.id);
+      
 
      
-      // studentinLine()
+      
+
+    
       
     }, [])
 
     // useEffect(()=>{
-    //   if(companyStudents && companyStudents !==undefined){
-    //     studentinLine(companyStudents)
-    //   }
 
+    //   getAppliedStudents()
+      
     // },[companyStudents])
 
+    
     const fetchData = async () => {
       const eventDetailsRef = doc(db, 'CompaniesData', getLocal.id);
       
@@ -178,7 +194,7 @@ const [companyupdated, setCompanyupdated] = useState({
                     Location: companyData.Location,  // Ensure casing matches Firestore document
                     logo: companyData.logo,
                     jobPositions: userData.jobPositions,
-                    EmpList:userData.EmpList
+                    
                 });
               } else {
                   console.error("Company data does not exist");
@@ -296,6 +312,7 @@ const [companyupdated, setCompanyupdated] = useState({
     setCheckPosition(false)
     setCheckEmp(false)
     const eventDetailsRef = doc(db, 'EventDetails', id);
+    console.log(id)
     const eventDetailsSnapshot = await getDoc(eventDetailsRef);
 
     if (eventDetailsSnapshot.exists()) {
@@ -351,120 +368,143 @@ const [companyupdated, setCompanyupdated] = useState({
   };
 
 
-//   const getAppliedStudents = async()=>{
 
-//     const studentsListRef = collection(db, "users");
-//     const studentsSnapshot = await getDocs(studentsListRef);
-//     let usersData = [];
-  
-//     if (!studentsSnapshot.empty) {
-//       for (const studentDoc of studentsSnapshot.docs) {
-//         const studentId = studentDoc.id;
-//         const hisEventsRef = doc(db, `users/${studentId}/myEvents/${id}`);
-//         const eventsSnapshot = await getDoc(hisEventsRef);
-  
-//         if (eventsSnapshot.exists()) {
-//           const eventData = eventsSnapshot.data();
-//           console.log("3333333333")
-          
-//           // Iterate through applied companies under this event
-//           for (const companyId in eventData.appliedCompanies) {
-//             const companyRef = doc(db, `users/${studentId}/myEvents/${id}/appliedCompanies/${companyId}`);
-//             const companySnapshot = await getDoc(companyRef);
-//             console.log("###########")
-  
-//             if (companySnapshot.exists()) {
-//               const companyData = companySnapshot.data();
-  
-//               // Fetch allPositions array from company data
-//               const allPositionsRef = doc(db, `users/${studentId}/myEvents/${id}/appliedCompanies/${getLocal.id}/allPositions`);
-//               const allPositionsSnapshot = await getDoc(allPositionsRef);
-  
-//               if (allPositionsSnapshot.exists()) {
-//                 const allPositionsData = allPositionsSnapshot.data();
-//                 console.log("HIIIIIIIIIIIIIIIIII"+allPositionsData)
-  
-//                 // Construct user object with desired data
-//                 const userData = {
-//                   userId: studentId,
-//                   Fname: studentDoc.data().Fname,
-//                   Lname: studentDoc.data().Lname,
-//                   allPositions: allPositionsData,
-//                   event: id, // Optionally include event data
-//                   company: companyData // Optionally include company data
-//                 };
-  
-//                 // Push user object into array
-//                 usersData.push(userData);
-//               } else {
-//                 console.log(`No allPositions found for company ${companyId}`);
-//               }
-//             } else {
-//               console.log(`No company data found for company ${companyId}`);
-//             }
-//           }
-//         } else {
-//           console.log(`No events found for student ${studentId}`);
-//         }
-//       }
-//     } else {
-//       console.log(`No students found in the database.`);
-//     }
-  
-//     // Use state to store usersData
-//     setCompanyStudents(usersData)
-//     console.log(usersData); 
+  const getAppliedStudents = async () => {
 
-//  }
+        const companyStudentList = doc(db, `CompaniesData/${getLocal.id}`);
+        const companySnapshot = await getDoc(companyStudentList);
+  
+        if (companySnapshot.exists()) {
+
+          const itsData = companySnapshot.data()
+         
+          const candidates = itsData.candidates || [];
 
 
-const getAppliedStudents = async()=>{
-  const studentsListRef = collection(db, "users");
-  const studentsSnapshot = await getDocs(studentsListRef);
-  let arr = [];
+            const userPromises = [];
 
-  if (!studentsSnapshot.empty) {
-    for (const studentDoc of studentsSnapshot.docs) {
-      const studentId = studentDoc.id;
-      const hisEventsRef = doc(db, `users/${studentId}/myEvents/${id}`);
-      const eventsSnapshot = await getDoc(hisEventsRef);
+        // Fetch user info for each candidate
+        candidates.forEach(candidate => {
+            const userId = candidate.studentID;
+            const userRef = doc(db, 'users', userId);
+            const userPromise = getDoc(userRef).then(userDoc => {
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    candidate.studentName = userData.Fname +" "+userData.Lname; // Assign user's name to candidate object
+                } 
+            }).catch(error => {
+                console.error('Error fetching user info:', error);
+                candidate.studentName = "Error"; // Handle error case
+            });
+            userPromises.push(userPromise);
+        });
 
-      if (eventsSnapshot.exists()) {
-        const eventRef = doc(db, `users/${studentId}/myEvents/${id}/appliedCompanies/${getLocal.id}`);
-        const companiesSnapshot = await getDoc(eventRef);
+        // Wait for all user info promises to resolve
+        await Promise.all(userPromises);
+        const filteredCandidates = candidates.filter(candidate => candidate.status !== "تمت المقابلة" && candidate.status !=="ملغي");
+        const completed = candidates.filter(candidate => candidate.status === "تمت المقابلة");
+        setCompletedApplication(completed)
 
-        if (companiesSnapshot.exists()) {
-          const allPositionsData = companiesSnapshot.data().allPositions;
-          console.log(JSON.stringify(allPositionsData))
+        filteredCandidates.sort((a, b) => {
+          const dateA = new Date(a.appliedDate);
+          const dateB = new Date(b.appliedDate);
+          return dateA - dateB;
+      });
 
-          // Check if allPositionsData is an array and not empty
-          if (Array.isArray(allPositionsData) && allPositionsData.length > 0) {
-            // Construct user object with desired data
-            const userData = {
-              userId: studentId,
-              Fname: studentDoc.data().Fname,
-              Lname: studentDoc.data().Lname,
-              allPositions: allPositionsData,
-              event: id, // Optionally include event data
-              company: getLocal.id // Optionally include company data
-            };
-            arr.push(userData);
-          }
-        } else {
-          console.log(`No applied companies found for event ${id} in student ${studentId}`);
+      const filteredObjects = filteredCandidates.filter(obj => obj.eventId === id);
+
+
+      setCompanyStudents(filteredObjects)
+
+
+   
+
+    
+            console.log("Sorted Student List:", candidates)
+
+      
+           
+
         }
-      } else {
-        console.log(`No events found for student ${studentId}`);
-      }
-    }
-  } else {
-    console.log("No students found in the database.");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //   const studentsListRef = collection(db, "users");
+  //   const studentsSnapshot = await getDocs(studentsListRef);
+  //   let arr = [];
+  
+  //   if (!studentsSnapshot.empty) {
+  //     for (const studentDoc of studentsSnapshot.docs) {
+  //       // console.log(studentDoc.data())
+  //       const studentId = studentDoc.id;
+  //       const hisEventsRef = doc(db, `users/${studentId}/myEvents/${id}`);
+  //       const eventsSnapshot = await getDoc(hisEventsRef);
+  //       console.log(eventsSnapshot)
+  //       if (eventsSnapshot.exists()) {
+  //         const eventRef = doc(db, `users/${studentId}/myEvents/${id}/appliedCompanies/${getLocal.id}`);
+  //         const companiesSnapshot = await getDoc(eventRef);
+  //         // console.log(companiesSnapshot.data())
+  //         if (companiesSnapshot.exists()) {
+  //           const allPositionsData = companiesSnapshot.data().allPositions;
+  
+  //           // Check if allPositionsData is an array and not empty
+  //           if (Array.isArray(allPositionsData) && allPositionsData.length > 0) {
+  //             // Filter objects where status === 'wait'
+  //             // const filteredPositions = allPositionsData.filter(position => position.status === 'انتظار');
+  
+  //             // Construct user object with desired data and updated status
+  //             if (allPositionsData.length > 0) {
+  //               // Construct user object with desired data and updated status
+  //               const userData = {
+  //                 userId: studentId,
+  //                 Fname: studentDoc.data().Fname,
+  //                 Lname: studentDoc.data().Lname,
+  //                 allPositions: allPositionsData,
+  //                 event: id, // Optionally include event data
+  //                 company: getLocal.id // Optionally include company data
+  //               };
+  //               arr.push(userData);
+  //             }
+              
+  //           }
+  //         } else {
+  //           console.log(`No applied companies found for event ${id} in student ${studentId}`);
+  //         }
+  //       } else {
+  //         console.log(`No events found for student ${studentId}`);
+  //       }
+  //     }
+  //   } else {
+  //     console.log("No students found in the database.");
+  //   }
+  //   console.log(arr)
+  
+  //   // Assuming orderApplications function exists and sorts arr as needed
+  //  await orderApplications(arr);
   }
-
-  // Assuming orderApplications function exists and sorts arr as needed
-  orderApplications(arr);
-
-}
+  
 
 
 const orderApplications = async (arr) => {
@@ -475,13 +515,42 @@ const orderApplications = async (arr) => {
     return dateTimeA - dateTimeB;
   });
 
+  // const updatedPositions = positions.map((item, index) => {
+  //   if (index < 2) {
+  //     const updatedAllPositions = item.allPositions.map(pos => {
+  //       if (pos.status !== "تمت المقابلة") {
+  //         return {
+  //           ...pos,
+  //           status: ""
+  //         };
+  //       } else {
+  //         return pos; // Return unchanged if status is "تمت المقابلة"
+  //       }
+  //     });
+  //     return {
+  //       ...item,
+  //       allPositions: updatedAllPositions
+  //     };
+  //   }
+  //   return item;
+  // });
+  
+  // setPositions(updatedPositions);
+
+
   setCompanyStudents(sortedStudents);
-  studentinLine(sortedStudents)
+  console.log(JSON.stringify(companyStudents))
+  // HERE
+  
+ 
+    
+  
+  
+  // studentinLine(sortedStudents)
   // console.log("hello"+sortedStudents)
 }
 
 const parseEarliestAppliedDate = (student) => {
-  const allPositions = student.allPositions;
 
   const earliestAppliedDate = allPositions.map(position => position.appliedDate)
     .sort((a, b) => new Date(a) - new Date(b))[0];
@@ -490,127 +559,354 @@ const parseEarliestAppliedDate = (student) => {
     return new Date(earliestAppliedDate);
 }
 
-const studentinLine = async (students) => {
-  if (students.length >= 2) {
-    const studentsListRef = collection(db, "users");
+const getInLineStudents = async()=>{
+
+  const studentsListRef = collection(db, "users");
     const studentsSnapshot = await getDocs(studentsListRef);
-    
-    const allStudents = studentsSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    let arr = [];
   
-    const updatedFirstTwo = students.slice(0, 2).map(student => {
-      const updatedPositions = student.allPositions.map(position => {
-        if (position.status === "انتظار") {
-          return {
-            ...position,
-            status: "في الطابور"
-          };
-        } else {
-          return position; // Return unchanged position if status is not "انتظار"
-        }
-      });
+    if (!studentsSnapshot.empty) {
+      for (const studentDoc of studentsSnapshot.docs) {
+        const studentId = studentDoc.id;
+        const hisEventsRef = doc(db, `users/${studentId}/myEvents/${id}`);
+        const eventsSnapshot = await getDoc(hisEventsRef);
   
-      return {
-        ...student,
-        allPositions: updatedPositions
-      };
-    });
+        if (eventsSnapshot.exists()) {
+          const eventRef = doc(db, `users/${studentId}/myEvents/${id}/appliedCompanies/${getLocal.id}`);
+          const companiesSnapshot = await getDoc(eventRef);
   
-    console.log("Updated First Two Students:", updatedFirstTwo);
-    
-    await Promise.all(updatedFirstTwo.map(async (updatedStudent) => {
-      const { userId, event, company, allPositions } = updatedStudent;
-
-      const eventId = event; 
-      const companyId = company; 
-
-      const userRef = doc(db, "users", userId);
-      const userDoc = await getDoc(userRef);
-
-      if (userDoc.exists()) {
-        const { myEvents } = userDoc.data();
-
-        const eventRef = doc(db, `users/${userId}/myEvents/${eventId}/appliedCompanies/${companyId}`);
-        const eventDoc = await getDoc(eventRef);
-
-        if (eventDoc.exists()) {
-          const { allPositions: existingPositions } = eventDoc.data();
-
-          // Update positions with new status
-          const updatedPositions = existingPositions.map(pos => {
-            const matchingPosition = allPositions.find(ap => ap.company === pos.company && ap.positionName === pos.positionName);
-            if (matchingPosition) {
-              return {
-                ...pos,
-                status: matchingPosition.status // Update status based on the updatedStudent data
-              };
-            } else {
-              return pos;
+          if (companiesSnapshot.exists()) {
+            const allPositionsData = companiesSnapshot.data().allPositions;
+  
+            // Check if allPositionsData is an array and not empty
+            if (Array.isArray(allPositionsData) && allPositionsData.length > 0) {
+              // Filter objects where status === 'wait'
+              const filteredPositions = allPositionsData.filter(position => position.status === 'انتظار');
+  
+              // Construct user object with desired data and updated status
+              if (filteredPositions.length > 0) {
+                // Construct user object with desired data and updated status
+                const userData = {
+                  userId: studentId,
+                  Fname: studentDoc.data().Fname,
+                  Lname: studentDoc.data().Lname,
+                  allPositions: filteredPositions,
+                  event: id, // Optionally include event data
+                  company: getLocal.id // Optionally include company data
+                };
+                arr.push(userData);
+              }
             }
-          });
-
-          // Update Firestore document with new positions
-          await updateDoc(eventRef, { allPositions: updatedPositions });
+          } else {
+            console.log(`No applied companies found for event ${id} in student ${studentId}`);
+          }
+        } else {
+          console.log(`No events found for student ${studentId}`);
         }
       }
-    }));
-
-
-   
-
-    // Set state or do further processing with updatedFirstTwo
-
-      setFirstTwoStudents(updatedFirstTwo);
-
-      const remainingStudents = students.slice(2);
-      setCompanyStudents(remainingStudents);
+    } else {
+      console.log("No students found in the database.");
+    }
   
+    // Assuming orderApplications function exists and sorts arr as needed
+    ordering(arr);
+ 
   
+
+}
+
+const ordering = async (arr) => {
+  const sortedStudents = [...arr].sort((a, b) => {
+    const dateTimeA = parseEarliestAppliedDate(a);
+    const dateTimeB = parseEarliestAppliedDate(b);
+    return dateTimeA - dateTimeB;
+  });
+
+  let arr2 = [];
+
+  if (inLineStudents === null || inLineStudents === undefined || inLineStudents.length === 0 || (inLineStudents.length === 1 && companyStudents.length >= 2)) {
+    for (let i = 0; i < Math.min(2, sortedStudents.length); i++) {
+      const student = sortedStudents[i];
+      const updatedPositions = student.allPositions.map(position => {
+        if (position.status === 'انتظار') {
+          return { ...position, status: 'في الطابور' };
+        } else {
+          return position;
+        }
+      });
+
+      const userData = {
+        userId: student.userId,
+        Fname: student.Fname,
+        Lname: student.Lname,
+        allPositions: updatedPositions,
+        event: student.event,
+        company: student.company
+      };
+
+      arr2.push(userData);
+    }
+
   }
+  setInLineStudents(prevInLineStudents => [...prevInLineStudents, ...arr2]);
 
+
+  const remainingStudents = companyStudents.filter(student => {
+    return !arr2.some(updatedStudent => (
+      student.userId === updatedStudent.userId &&
+      student.event === updatedStudent.event &&
+      student.company === updatedStudent.company
+    ));
+  });
+
+  console.log(remainingStudents);
+  setCompanyStudents(remainingStudents);
+
+  // Update inLineStudents state
+
+  // Process arr2 asynchronously
+  for (const userData of arr2) {
+    const { userId, event, company, allPositions } = userData;
+    const eventRef = doc(db, `users/${userId}/myEvents/${event}/appliedCompanies/${company}`);
+    const docSnapshot = await getDoc(eventRef);
+
+    if (docSnapshot.exists()) {
+      const existingData = docSnapshot.data();
+      const updatedPositions = allPositions.map(position => {
+        const existingPosition = existingData.allPositions.find(p => p.id === position.id);
+        return existingPosition ? { ...existingPosition, status: position.status } : position;
+      });
+
+      await updateDoc(eventRef, { allPositions: updatedPositions });
+    } else {
+      console.log(`Document does not exist for ${userId}, ${event}, ${company}`);
+    }
   
+}
 
+
+
+  // const remainingStudents = companyStudents.filter(student => {
+  //   for (let i = 0; i < arr2.length; i++) {
+  //     if (student.userId === arr2[i].userId && student.event === arr2[i].event && student.company === arr2[i].company) {
+  //       return false; // Do not include this studen}t in remainingStudents
+  //     }
+  //   }
+  //   return true; // Include this student in remainingStudents
+  // });
+  // console.log(remainingStudents)
+
+  // // Update companyStudents with remaining students
+  // setCompanyStudents(remainingStudents);
+
+  // studentinLine(sortedStudents)
+  // console.log("hello"+sortedStudents)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const studentinLine = async (students) => {
+//   if (students.length >= 2) {
+//     const studentsListRef = collection(db, "users");
+//     const studentsSnapshot = await getDocs(studentsListRef);
+    
+//     const allStudents = studentsSnapshot.docs.map(doc => ({
+//       id: doc.id,
+//       ...doc.data()
+//     }));
   
+//     const updatedFirstTwo = students.slice(0, 2).map(student => {
+//       const updatedPositions = student.allPositions.map(position => {
+//         if (position.status === "انتظار") {
+//           return {
+//             ...position,
+//             status: "في الطابور"
+//           };
+//         } else {
+//           return position; // Return unchanged position if status is not "انتظار"
+//         }
+//       });
+  
+//       return {
+//         ...student,
+//         allPositions: updatedPositions
+//       };
+//     });
+  
+//     console.log("Updated First Two Students:", updatedFirstTwo);
+    
+//     await Promise.all(updatedFirstTwo.map(async (updatedStudent) => {
+//       const { userId, event, company, allPositions } = updatedStudent;
 
+//       const eventId = event; 
+//       const companyId = company; 
+
+//       const userRef = doc(db, "users", userId);
+//       const userDoc = await getDoc(userRef);
+
+//       if (userDoc.exists()) {
+//         const { myEvents } = userDoc.data();
+
+//         const eventRef = doc(db, `users/${userId}/myEvents/${eventId}/appliedCompanies/${companyId}`);
+//         const eventDoc = await getDoc(eventRef);
+
+//         if (eventDoc.exists()) {
+//           const { allPositions: existingPositions } = eventDoc.data();
+
+//           // Update positions with new status
+//           const updatedPositions = existingPositions.map(pos => {
+//             const matchingPosition = allPositions.find(ap => ap.company === pos.company && ap.positionName === pos.positionName);
+//             if (matchingPosition) {
+//               return {
+//                 ...pos,
+//                 status: matchingPosition.status // Update status based on the updatedStudent data
+//               };
+//             } else {
+//               return pos;
+//             }
+//           });
+
+//           // Update Firestore document with new positions
+//           await updateDoc(eventRef, { allPositions: updatedPositions });
+//         }
+//       }
+//     }));
+
+//     setFirstTwoStudents(updatedFirstTwo);
+//     console.log(JSON.stringify(updatedFirstTwo))
+
+//     const remainingStudents = companyStudents.slice(2);
+//     setCompanyStudents(remainingStudents);
+
+//   }}
+
+
+const resetStatus = async (userID, events, companys, setCompanyStudents) => {
+  const companyStudentList = doc(db, `CompaniesData/${getLocal.id}`);
+  const companySnapshot = await getDoc(companyStudentList);
+
+if (companySnapshot.exists()) {
+    const itsData = companySnapshot.data();
+    let candidates = itsData.candidates || [];
+
+    // Iterate through candidates array and update status based on conditions
+    candidates = candidates.map(item => {
+        if (item.studentID === userID && item.eventId === events && item.company === companys) {
+            if (item.status === "انتظار") {
+                return {
+                    ...item,
+                    status: "مقابلة" // Update status to "مقابلة" for matching conditions
+                };
+            } else if (item.status === "مقابلة") {
+                return {
+                    ...item,
+                    status: "تمت المقابلة" // Update status to "تمت المقابلة" for matching conditions
+                };
+            }
+        }
+        return item; // Return unchanged item if conditions do not match
+    });
+
+    // Update Firestore document with modified candidates array
+    await updateDoc(companyStudentList, { candidates });
+    getAppliedStudents()
+
+
+    // const updatedPositions = appliedCompaniesData.allPositions.map((item) => {
+    //   if (item.company === company && item.status === "انتظار") {
+       
+    //     return {
+    //       ...item,
+    //       status: "مقابلة" 
+    //     };
+    //   } else if(item.company === company && item.status === "مقابلة"){
+    //     return {
+    //       ...item,
+    //       status: "تمت المقابلة" 
+    //     };
+    //   }
+      
+    //   else {
+    //     return item; 
+    //   }
+    // });
+
+    // await updateDoc(appliedCompaniesRef, {
+    //   allPositions: updatedPositions
+    // });
+
+    // console.log(`Status updated for position '${hisposition}' in company '${company}'.`);
+
+    // // Fetch the updated document again to get the latest data
+    // const updatedAppliedCompaniesSnapshot = await getDoc(appliedCompaniesRef);
+    // const updatedAppliedCompaniesData = updatedAppliedCompaniesSnapshot.data();
+
+    // // Update useState with new data, changing status for all "انتظار" items
+    // const updatedParentArray = companyStudents.map(parent => {
+    //   if (parent.company === company) {
+    //     let arrs = []
+       
+    //     return {
+    //       ...parent,
+    //       allPositions: updatedAppliedCompaniesData.allPositions
+    //     };
+    //   } else {
+    //     return parent;
+    //   }
+    // });
+
+
+
+
+    // // Logging to indicate status update
+    // console.log("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
+    //   setCompanyStudents(updatedParentArray);
    
+    // // Update state with the modified array
+    
+  }
+};
 
+const removeStudent = async(studentIDs, events, jobCompany)=>{
+  const companyStudentList = doc(db, `CompaniesData/${getLocal.id}`);
+  const companySnapshot = await getDoc(companyStudentList);
+  
+  if (companySnapshot.exists()) {
+   
+  const itsData = companySnapshot.data();
+    let candidates = itsData.candidates || [];
 
-  // if (students.length >= 2) {
-  //   const updatedFirstTwo = students.slice(0, 2).map(student => {
-  //     const updatedPositions = student.allPositions.allPositions.map(position => ({
-  //       ...position,
-  //       status: "في الطابور"
-  //     }));
+    // Iterate through candidates array and update status based on conditions
+    candidates = candidates.map(item => {
+        if (item.studentID === studentIDs && item.eventId === events && item.company === jobCompany) {
+                return {
+                    ...item,
+                    status: "ملغي" // Update status to "مقابلة" for matching conditions
+                };
+           
+            
+        }
+        return item; // Return unchanged item if conditions do not match
+    });
 
-  //     return {
-  //       ...student,
-  //       allPositions: {
-  //         ...student.allPositions,
-  //         allPositions: updatedPositions
-  //       }
-  //     };
-  //   });
+    // Update Firestore document with modified candidates array
+    await updateDoc(companyStudentList, { candidates });
+    getAppliedStudents(companyStudents.filter(e=>e.status !== "ملغي"))
 
-  //   setFirstTwoStudents(updatedFirstTwo);
-
-  //   const remainingStudents = students.slice(2);
-  //   setCompanyStudents(remainingStudents);
-
-  //   console.log("First Two Students:", updatedFirstTwo);
-  //   console.log("Remaining Students:", remainingStudents);
-  // } else {
-  //   console.warn("Array has fewer than 2 students.");
-  // }
-  } 
-
-  const showModal = () => {
-    modal.showModal();
-    setTimeout(() => {
-      modal.close();
-    }, 10000); // Close modal after 10 seconds (10000 milliseconds)
-  };
+  }
+}
 
   return (
     <div>
@@ -656,42 +952,46 @@ const studentinLine = async (students) => {
   <div role="tablist" className="tabs w-[90vw] tabs-lifted bg-white max-sm:w-[80vw]">
     {/* المتقدمون */}
     <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white " aria-label="المتقدمون"  defaultChecked/>
-    <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6  h-auto overflow-y-auto custom-scrollbar max-sm:h-[28vh]">
+    <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6  h-auto overflow-y-auto overflow-x-hidden custom-scrollbar max-sm:h-[28vh]">
       {/* <p className='text-lg font-bold mb-5' > قائمة الشركات</p> */}
       {!checkPosition ? (
         <table className="w-full h-full max-sm:table-xs">
         <tbody>
           <tr className="focus:outline-none  border border-[#e4e6e6] bg-[#fafafa] rounded py-6">
           <th className="text-center  p-3 py-6 px-5 max-sm:p-1"> الاسم</th>
-          <th className="text-center p-3 py-6 px-5 max-sm:p-1">المجال الوظيفي </th>
           <th className="text-center p-3 py-6 px-5 max-sm:p-1">السيرة الذاتية </th>
+          <th className="text-center p-3 py-6 px-5 max-sm:p-1">المجال الوظيفي </th>
           <th className="text-center p-3 py-6 px-5 max-sm:p-1">الحالة </th>
           <th className="text-center p-3 py-6 px-5 max-sm:p-1 ">حذف </th>
  
         </tr>
         {companyStudents?(
-          companyStudents.map((item, index)=>(
+           
+           companyStudents.map((item, index)=>(
+           
+          
 
             <tr tabindex="0" className="focus:outline-none border py-16 h-auto border-[#e4e6e6] rounded" key={index}>
             <td className=" px-5 max-sm:p-1  py-6 ">
                 <div className="flex flex-wrap justify-center max-sm:h-10">
-                    <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">    {item.Fname} {item.Lname} </p>
+                    <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]"> {item.studentName} </p>
                 </div>
             </td>
 
             
-            <td className=" px-5 max-sm:p-1  py-6 ">
-                    <div className="flex flex-wrap justify-center overflow-y-auto  max-sm:h-10">
-                        <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[15ch] text-center break-words max-sm:w-[10ch]">   </p>
+               <td className=" px-5 max-sm:p-1  py-6 ">
+                    <div className="flex  justify-center   max-sm:h-10">
+                        <p className="text-base flex justify-center font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-full  text-center break-words "> <RiDownload2Fill size={20} fill='#6e68c4'  className='cursor-pointer m-6 '/>
+                        </p>
                     </div>
                 </td>
-                <td className="px-5 max-sm:p-1  py-6">
-                  {console.log("#"+ item.allPositions)}
-                  {item.allPositions && (
-                    item.allPositions.map((position, index) => (
+                <td className="px-5 max-sm:p-1 py-6">
+                  {console.log("#"+ item.positionName)}
+                  {item.positionName && (
+                    item.positionName.map((position, index) => (
                       <div key={index}>
                         <div className="flex flex-wrap justify-center px-2   max-sm:h-10">
-                          <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[20ch] text-center break-words max-sm:w-[10ch]">{position.positionName}</p>
+                          <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[20ch] text-center break-words max-sm:w-[10ch]">{position}</p>
                       
                         </div>
                         {/* Add other fields you want to display */}
@@ -700,11 +1000,12 @@ const studentinLine = async (students) => {
                   )}
                     
                 </td>
-              {item.allPositions && item.allPositions.length > 0 && (
+           
                 <div className="flex justify-center items-center h-full">
-                <p onClick={()=>changeStudentStatus(item.userId)} className="text-base px-4 bg-[#fccd69] py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold">{item.allPositions[0].status}</p>
+                <p  className="text-base px-4 bg-[#fccd69] py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold cursor-pointer" onClick={()=>{resetStatus(item.studentID, item.eventId, item.company, item.positionName)}}>{item.status}</p>
+
                 </div>
-              )}
+             
 
 <td className="p-3 px-5 max-sm:p-1">
                     <div className="flex flex-wrap justify-center">
@@ -717,17 +1018,12 @@ const studentinLine = async (students) => {
                         <dialog id="my_modal_1" className="modal ">
                           <div className="modal-box w-[35vw] max-w-5xl" >
 
-                          <p className="py-4 text-[1.1rem]">هل انت متأكد من الغاء الطالب؟</p>
+                          <p className="py-4 flex justify-center text-[1.1rem]">هل انت متأكد من الغاء الطالب؟</p>
                           <div className="modal-action">
-                          <form method="dialog" className='gap-6'>
-                         
-                          <button className="btn ml-1 bg-[#99D2CB] text-white" >نعم</button>
-                         
-                         
-                          <button className="btn bg-[#99D2CB] text-white">لا</button>
-                         
-
-                          </form>
+                          <form method="dialog" className='flex justify-center items-center gap-2 w-full '>
+                                        <button className="rounded-lg bg-red-600 text-white hover:bg-red-500 w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh]" onClick={()=>removeApplication(job.positionName, job.indexNo)}>نعم</button>
+                                        <button className="rounded-lg  text-black border border-[#a3a3a3] hover:bg-[#f0f0f0] w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh] ">لا</button>
+                                    </form>
                           </div>
                           </div>
                       </dialog>
@@ -757,7 +1053,7 @@ const studentinLine = async (students) => {
             </div>
 
 
-            <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white" aria-label="في الطابور" />
+            <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white" aria-label="مكتمل" />
             <div role="tabpanel" className="tab-content  overflow-y-auto custom-scrollbar bg-white border-base-100 rounded-box p-6">
     {/* <p className='text-lg font-bold mb-5' > قائمة الطلاب</p> */}
     {!checkPosition? (
@@ -765,38 +1061,39 @@ const studentinLine = async (students) => {
        <tbody className=''>
          <tr className="focus:outline-none  border border-[#e4e6e6] bg-[#fafafa] rounded py-6">
          <th className="text-center p-3 py-6 px-5 max-sm:p-1"> الأسم</th>
-         <th className="text-center p-3 py-6 px-5 max-sm:p-1">المعسكر </th>
-         <th className="text-center p-3 py-6 px-5 max-sm:p-1">الأيميل </th>
+         <th className="text-center p-3 py-6 px-5 max-sm:p-1">السيرة الذاتية </th>
+          <th className="text-center p-3 py-6 px-5 max-sm:p-1">المجال الوظيفي </th>
          <th className="ttext-center p-3 py-6 px-5 max-sm:p-1">الحالة </th>
-         <th className="ttext-center p-3 py-6 px-5 max-sm:p-1">الحذف </th>
+         {/* <th className="ttext-center p-3 py-6 px-5 max-sm:p-1">الحذف </th> */}
 
        </tr>
-       {firstTwoStudents?(
-          firstTwoStudents.map((item, index)=>(
+       {completedApplication?(
+          completedApplication.map((item, index)=>(
             <>
 
             <tr tabindex="0" className="focus:outline-none border py-16 h-auto border-[#e4e6e6] rounded">
             <td className="px-5 max-sm:p-1  py-6">
                 <div className="flex flex-wrap justify-center max-sm:h-10  ">
-                    <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">    {item.Fname} {item.Lname} </p>
+                    <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">   {item.studentName} </p>
                 
                 </div>
             </td>
 
             
-            <td className="px-5 max-sm:p-1  py-6">
-                    <div className="flex items-center pl-5">
-                        <p className="ttext-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">   </p>
+            <td className=" px-5 max-sm:p-1  py-6 ">
+                    <div className="flex  justify-center   max-sm:h-10">
+                        <p className="text-base flex justify-center font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-full  text-center break-words max-sm:w-[10ch]"> <RiDownload2Fill size={20} fill='#6e68c4'  className='cursor-pointer m-6 '/>
+                        </p>
                     </div>
                 </td>
                 <td className="px-5 max-sm:p-1  py-6">
-                  {console.log("#"+ item.allPositions)}
-                  {item.allPositions && (
-                    item.allPositions.map((position, index) => (
+                {console.log("#"+ item.positionName)}
+                  {item.positionName && (
+                    item.positionName.map((position, index) => (
                       <div key={index}>
                         <div className="flex flex-wrap justify-center px-2   max-sm:h-10">
-                          <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[20ch] text-center break-words max-sm:w-[10ch]">{position.positionName}</p>
-                        
+                          <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[20ch] text-center break-words max-sm:w-[10ch]">{position}</p>
+                      
                         </div>
                         {/* Add other fields you want to display */}
                       </div>
@@ -804,40 +1101,13 @@ const studentinLine = async (students) => {
                   )}
                     
                 </td>
-              {item.allPositions && item.allPositions.length > 0 && (
-                <div className="flex mt-6  items-center pl-5">
-                <p className="text-base cursor-pointer bg-orange-300 rounded-md px-2 py-1 font-medium leading-none text-gray-700 mr-2">{item.allPositions[0].status}</p>
+                <div className="flex justify-center items-center text-center h-full w-[8vw]">
+                <p  className="text-[0.9rem] px-4 bg-[#7ed191] py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold cursor-pointer" onClick={()=>{resetStatus(item.studentID, item.eventId, item.company, item.positionName)}}>{item.status}</p>
+
                 </div>
-              )}
 
-<td className="p-3 px-5 max-sm:p-1">
-                    <div className="flex flex-wrap justify-center">
-                        {/* <img src={deleteStudent} className='w-4 cursor-pointer' onClick={() => { document.getElementById('my_modal_1').showModal()}}/> */}
-                        <button className='flex justify-center w-6 mb-2 cursor-pointer' onClick={() => { document.getElementById('my_modal_1').showModal()}} >
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-7 text-[#d33232]">
-                          <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
-                          </svg>
-                        </button>
-                        <dialog id="my_modal_1" className="modal ">
-                          <div className="modal-box w-[35vw] max-w-5xl" >
 
-                          <p className="py-4 text-[1.1rem]">هل انت متأكد من الغاء الطالب؟</p>
-                          <div className="modal-action">
-                          <form method="dialog" className='gap-6'>
-                         
-                          <button className="btn ml-1 bg-[#99D2CB] text-white" >نعم</button>
-                         
-                         
-                          <button className="btn bg-[#99D2CB] text-white">لا</button>
-                         
-
-                          </form>
-                          </div>
-                          </div>
-                      </dialog>
-                    </div>
-                </td>
-              
+            
               
            </tr>
 
@@ -867,62 +1137,7 @@ const studentinLine = async (students) => {
 
             {/*  */}
 
-    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white" aria-label="مكتمل" />
-    <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6">
-    {/* <p className='text-lg font-bold mb-5' > قائمة الطلاب</p> */}
-    {!checkPosition? (
-       <table className="w-[48.6vw] whitespace-nowrap max-sm:table-xs">
-       <tbody>
-         <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
-         <th className="text-right p-3 px-5"> الأسم</th>
-         <th className="text-right p-3 px-5">المعسكر </th>
-         <th className="text-right p-3 px-5">الأيميل </th>
-         <th className="text-right p-3 px-5">الحالة </th>
-       </tr>
-           <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded">
-               {/* <td className="">
-                   <div className="flex items-center pl-5">
-                       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPk0IrfQt8yu8km4DYRG69OOhe2GQlK5NLvzIk23B3u77AjSRLJ3NLOqK9_W53M8jHV6Y&usqp=CAU" alt="" srcset="" className='w-[7vw] h-[7vh] mr-2' />
-                   </div>
-               </td> */}
-               <td className="">
-                   <div className="flex items-center pl-5">
-                       <p className="text-base font-medium leading-none text-gray-700 mr-5">   نوره محمد  </p>
-                   </div>
-               </td>
-               <td className="">
-                   <div className="flex items-center pl-5">
-                       <p className="text-base font-medium leading-none text-gray-700 mr-2">   معسكر جافاسكربت  </p>
-                   </div>
-               </td>
-               <td className="">
-                   <div className="flex items-center pl-5">
-                       <p className="text-base font-medium leading-none text-gray-700 mr-2"> Nora@hotmail.com</p>
-                   </div>
-               </td>
-               <td className="">
-                   <div className="flex items-center pl-5">
-                       <p className="text-base px-4 bg-[#ceefd4] py-1  rounded-md text-[#b9b9b7] font-medium leading-none  mr-2"> مكتمل</p>
-                   </div>
-               </td> 
-
-               {/* <td className="">
-                   <div className="flex items-center pl-5">
-                       <img src={deleteStudent}> </img>
-                   </div>
-               </td>  */}
-           </tr>
-       </tbody>
-   </table>  
-    ):(
-      
-                <p className='text-[1.2rem] mt-4 text-red-600 font-medium'> لعرض قائمة المتقدمين, يرجى التأكد من ادخال المسميات الوظيفية المطلوبة و اسماء الموظفين المشاركين</p>
-
-      
-      )}
-   
-  
-                      </div>
+    
   </div>
   </div>
                     
@@ -933,13 +1148,13 @@ const studentinLine = async (students) => {
                 <div className='mt-6 bg-white h-[100vh] rounded-lg max-sm:h-[50vh] max-sm:w-[90vw]'>
                   <div className='flex items-center justify-between'>
                   <h1 className='pt-6 pr-6 font-extrabold text-[#6e68c4] text-[1.1rem]'>  تفاصيل الشركة </h1>
-                  <button className="btn mt-6 rounded-lg text-white bg-[#f39e4e] py-1 px-3 ml-6" onClick={()=>document.getElementById('my_modal_4').showModal()}> تعديل</button>
+                  <button className="btn mt-6 rounded-lg text-white bg-[#f39e4e] w-[7vw] text-[1.1rem] px-3 ml-6 max-sm:w-16" onClick={()=>document.getElementById('my_modal_4').showModal()}> تعديل</button>
                   <dialog id="my_modal_4" class="modal">
-<div className="modal-box w-[50vw] max-w-5xl flex flex-col p-4 py-2" style={{ maxHeight: '95vh', overflowY: 'auto' }}>
+<div className="modal-box w-[50vw] max-w-5xl flex flex-col p-4 py-2 custom-scrollbar" style={{ maxHeight: '95vh', overflowY: 'auto' }}>
   <h3 className="font-bold text-lg py-4 text-[#6e68c4]">تعديل تفاصيل الشركة</h3>
  
   <label className="mt-4 font-bold">نبذه عن الشركة</label>
-  <textarea className="py-2 mt-1 rounded-md resize-none overflow-y-auto" rows="8" cols="50" value={companyupdated.description} onChange={handleDescriptionChange}></textarea>
+  <textarea className="py-2 mt-1 min-h-[20vh] rounded-md resize-none custom-scrollbar overflow-y-auto" rows="8" cols="50" value={companyupdated.description} onChange={handleDescriptionChange}></textarea>
   <div className="flex items-center">
   <div className='flex flex-col'>
   <label className="font-bold  mt-4 mr-0">تحميل شعار الشركة</label>
@@ -1004,10 +1219,21 @@ const studentinLine = async (students) => {
 </div>
 
   
-  <div className="modal-action pb-4 mt-4">
+  <div className="modal-action pb-4 mt-4 flex gap-2">
+  <button onClick={()=>document.getElementById('my_modal_4').close()} className="btn mt-6 rounded-lg text-white bg-[#999999] hover:bg-[#b1b1b1] py-1 px-3 ">إلغاء</button>
+
   <button className="btn mt-6 rounded-lg text-white bg-[#f39e4e] hover:bg-[#ffb977] py-1 px-3 " onClick={() => {
     updateInfo(id, getLocal.id)
-    document.getElementById('my_modal_5').showModal();
+    document.getElementById('my_modal_4').close()
+    // document.getElementById('my_modal_5').showModal();
+    const modal = document.getElementById('my_modal_5');
+    modal.showModal();
+
+    setTimeout(() => {
+      modal.close();
+    }, 2000);
+  
+    
     }}>حفظ</button>
 
 <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle ">
@@ -1021,11 +1247,12 @@ const studentinLine = async (students) => {
         <div className="modal-action">
           <form method="dialog">
             {/* if there is a button in form, it will close the modal */}
-            <button className="btn">عودة</button>
+            
           </form>
         </div>
       </div>
     </dialog>
+
   </div>
 </div>
 </dialog>
@@ -1035,7 +1262,7 @@ const studentinLine = async (students) => {
                     <hr className='flex justify-center w-full' />
                     <div className="flex flex-col  justify-center w-full">
                       <p className='mr-6 font-bold mt-6 text-[1.04rem]'>نبذه عن الشركة:</p>
-                      <p  className='border-non pr-6 pt-2 text-[#202020] ml-6  text-[0.9rem] text-justify' >{companyData.description}</p>
+                      <p  className='border-non  pr-6 pt-2 text-[#202020] ml-6  text-[0.9rem] text-justify' >{companyData.description}</p>
                       <div className='pt-2 pr-5 flex gap-1 mt-4'>
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5 text-[#99D2CB]">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -1047,12 +1274,12 @@ const studentinLine = async (students) => {
                 
                   <p className='mr-6 font-bold mt-8 text-[1.04rem]'>الشواغر المتاحة:</p>
 
-                  <div className='flex gap-2 mt-2'>
+                  <div className='flex mt-2 mr-4 flex-wrap'>
                   {
                     companyData && companyData.jobPositions && companyData.jobPositions.length > 0 ? (
                       <>
                         {companyData.jobPositions.map((position, index) => (
-                          <p key={index} className='px-2 mr-6 mt-2 py-1 rounded-full w-fit text-[0.8rem] bg-[#eee6f5]'>
+                          <p key={index} className='px-2 mr-2 mt-2 py-1 rounded-full w-fit text-[0.8rem] bg-[#99d2cb] text-white'>
                             {position}
                           </p>
                         ))}
@@ -1291,6 +1518,9 @@ const studentinLine = async (students) => {
     border-color: #E5E7EB;
   }
 `}</style>
+<div className='mt-6'>
+  <Footer />
+</div>
     </div>
   )
 }
