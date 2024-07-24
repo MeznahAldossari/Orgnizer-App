@@ -152,16 +152,17 @@ const Companies = () => {
             <div className='flex flex-col justify-center items-start mr-8 mb-8 ml-8 w-full h-full'>
 
                 <div className='bg-white w-full h-full rounded-lg'>
-                    <div className='flex flex-wrap justify-start  items-end w-full h-auto p-4 pr-0'>
+                    <div className='flex justify-between items-center w-full h-auto p-4 pr-0 '>
+                        <div>
                         <p className='font-semibold text-[1.6rem] mt-12  pt-1 pr-1 text-[#5C59C2] mb-7 max-sm:text-[1rem] max-sm:text-center'>
                             قائمة الشركات ذات الاهتمام بمجال تخصصك
                         </p>
-                        <div className='flex gap-2 w-full sm:w-[10vw] h-auto mt-6 mr-6'>
-                            <div className="pt-2 relative mx-auto text-gray-600">
-                                {checkExists && (
-                                    <button onClick={() => eventRegister(id)}>تسجيل</button>
-                                )}
-                            </div>
+                        </div>
+                        
+                        <div className="pt-2 ml-[-1%]  w-[50%] flex justify-end mx-auto text-gray-600">
+                            {checkExists && (
+                                <button className='cursor-pointer w-[12vw] gap-2 px-1 py-3 max-sm:mt-0 text-white justify-center items-center rounded-lg font-bold text-[0.8rem] bg-[#f39e4e] flex ' onClick={() => eventRegister(id)}>تأكيد حضورك</button>
+                            )}
                         </div>
                     </div>
 

@@ -6,6 +6,7 @@ import { auth, db, storage } from '../config/firebase';
 import { getDoc, doc, collection, getDocs, updateDoc, deleteDoc, setDoc } from 'firebase/firestore';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useLocation } from 'react-router-dom';
+import Footer from '../components/Footer';
 
 
 const DetailsCompanies = () => {
@@ -117,7 +118,7 @@ const DetailsCompanies = () => {
    
                if (!positionExists) {
                 const updatedPositions = [
-                    { indexNo: index, company: companyID, studentID: getLocal.id, positionName: jobName, status: "انتظار", appliedDate: localDate },
+                    { indexNo: index, company: companyID,eventId:eventIDs, studentID: getLocal.id, positionName: jobName, status: "انتظار", appliedDate: localDate },
                     ...applicationInfo.allPositions  // Keep existing positions after the new one
                 ];
 
@@ -152,7 +153,7 @@ const DetailsCompanies = () => {
        
                        await setDoc(docRef, {
                            allPositions: [
-                               {indexNo: index, company: companyID, studentID: getLocal.id, positionName: jobName, status: "انتظار", appliedDate: localDate},
+                               {indexNo: index, company: companyID, eventId:eventIDs, studentID: getLocal.id, positionName: jobName, status: "انتظار", appliedDate: localDate},
                            ]
                        });
                        setApplied(true)
@@ -283,7 +284,7 @@ const DetailsCompanies = () => {
                 console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXX"+applicationInfo)
                 let candidates = applicationInfo.candidates || [];
     
-                const existingCandidateIndex = candidates.findIndex(candidate => candidate.studentID === studentObj[0].studentID);
+                const existingCandidateIndex = candidates.findIndex(candidate => candidate.studentID === studentObj[0].studentID && candidate.eventId === studentObj[0].eventId);
     
                 if (existingCandidateIndex !== -1) {
                     // If candidate exists, update positionName array
@@ -323,7 +324,29 @@ const DetailsCompanies = () => {
         // status: "انتظار", 
         // appliedDate: localDate }
 
-       
+       const updatedStatus = async()=>{
+        const companyStudentList = doc(db, `CompaniesData/${companyID}`);
+        const companySnapshot = await getDoc(companyStudentList);
+  
+        if (companySnapshot.exists()) {
+            
+          const itsData = companySnapshot.data()
+
+
+
+          const AllApplications = itsData.allPositions
+
+          if(!AllApplications.empty){
+
+            const StudentList = doc(db, `users/${getLocal.id}`);
+            const companySnapshot = await getDoc(StudentList);
+
+            if(companySnapshot.exists()){
+
+                const userData = companySnapshot.data();
+            }}
+        }
+       }
    
 
   return (
@@ -537,6 +560,10 @@ const DetailsCompanies = () => {
 </div> 
 
                         
+</div>
+<div className='mt-6'>
+<Footer />
+
 </div>
  
     </>

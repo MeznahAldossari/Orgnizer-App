@@ -17,55 +17,71 @@ function Login() {
   });
   const navigate = useNavigate()
   const [err, setErr]= useState('')
+  const [emailErr, setEmailErr] = useState('');
+  const [passwordErr, setPasswordErr] = useState('');
 
 
   const changeName=  (e)=>{
 
     setUser({...user, "email": e.target.value})
     setErr('')
+    setEmailErr('');
 
   }
 
   const changePassword =(e)=>{
     setUser({...user, "password": e.target.value})
     setErr('')
+    setPasswordErr('');
   }
 
   const loginData = async () => {
+    let hasError = false;
+
+    if (!user.email) {
+      setEmailErr('الرجاء إدخال البريد الإلكتروني.');
+      hasError = true;
+    }
+    if (!user.password) {
+      setPasswordErr('الرجاء إدخال كلمة المرور.');
+      hasError = true;
+    }
+    if (hasError) {
+      setErr(''); 
+      return;
+    }
+
     try {
       const userInfo = await signInWithEmailAndPassword(auth, user.email, user.password);
       console.log("User info:", userInfo);
-    
+
       const userDocRef = doc(db, "users", userInfo.user.uid);
       const userDocSnapshot = await getDoc(userDocRef);
-      
+
       if (userDocSnapshot.exists()) {
         const userData = userDocSnapshot.data();
         console.log("User data:", userData);
-        
+
         let obj = {
           id: userInfo.user.uid,
           role: userData.role
         };
-        
+
         localStorage.setItem("loggedIn", JSON.stringify(obj));
-       
         navigate('/');
-        
-      
       } else {
         const companyDocRef = doc(db, "CompaniesData", userInfo.user.uid);
         const companyDocSnapshot = await getDoc(companyDocRef);
-        
+
         if (companyDocSnapshot.exists()) {
           const companyData = companyDocSnapshot.data();
           console.log("Company data:", companyData);
-          
+
           let obj = {
             id: userInfo.user.uid,
             role: companyData.role
           };
-          
+
           localStorage.setItem("loggedIn", JSON.stringify(obj));
           navigate('/');
         } else {
@@ -74,10 +90,10 @@ function Login() {
         }
       }
     } catch (error) {
-      // Handle error gracefully
+      setErr('تعذر تسجيل الدخول. البريد الإلكتروني أو كلمة المرور غير صحيحة.');
     }
   };
-  
+
 
   return (
     <div>
@@ -87,39 +103,29 @@ function Login() {
 	<div className='w-full h-screen flex flex-col  justify-center items-center'>
     <div className='relative flex flex-col mt-6 items-center gap-3 w-[35%] bg-white rounded-lg shadow-lg h-[75vh] max-sm:w-[90%]'>
       <img className="w-[20vw] mt-6 " src={Logo} />
-      <div className='w-[80%] flex justify-center '>
-        <i className='fa fa-user  text-purple-800 text-lg'></i>
+      <div className='w-[80%] flex  flex-col  '>
+        <i className='fa fa-user   text-purple-800 text-lg'></i>
           <input type='email' value={user.email} onChange={changeName} placeholder='البريد الالكتروني' className='pr-1 w-[90%] border-b-2 focus:outline-none focus:border-[#99d2cb]  ' />
+          {emailErr && <span className='text-red-500 w-full '>{emailErr}</span>}
+
       </div>
-      <div className=' mt-4 w-[80%] flex justify-center'>
+
+      <div className=' mt-4 w-[80%] flex flex-col'>
         <i className='fa fa-lock  text-purple-800 text-lg'></i>
           <input type='password' value={user.password} onChange={changePassword} placeholder='كلمة المرور' className='pr-1 border-b-2 w-[90%] focus:outline-none focus:border-[#99d2cb] ' />
+          {passwordErr && <span className='text-red-500 w-full'>{passwordErr}</span>}
+
       </div>
       <div className='flex justify-end w-[20vw] max-sm:w-[65vw]'>
       </div>
       <button onClick={loginData} className='py-3 px-20 bg-[#99d2cb] rounded-lg text-white font-bold uppercase text-lg mt-6 transform hover:translate-y-1 transition-all duration-500'> تسجيل دخول</button>
+      {err && (
+            <span className='text-red-500 w-[80%] mt-2'>{err}</span>
+        )}
     </div>
   </div>
 
   </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

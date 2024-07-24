@@ -5,7 +5,6 @@ import { jsPDF } from 'jspdf';
 // import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 // import '../Amiri-normal.js'
-import { RiDownload2Fill } from "react-icons/ri"
 
 
 import html2canvas from 'html2canvas';
@@ -14,6 +13,7 @@ import deleteStudent from '../assets/delete.png'
 import close from "../assets/close.png"
 import { IoIosAddCircle } from "react-icons/io";
 import MyqrCode from './MyqrCode';
+import { RiDownload2Fill } from "react-icons/ri";
 
 import '../App.css'
 
@@ -22,7 +22,6 @@ import { getDoc, doc, collection, getDocs, updateDoc, deleteDoc } from 'firebase
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { json, Link, useParams } from 'react-router-dom';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import Footer from '../components/Footer';
 
 
 function CompanyDetails() {
@@ -405,22 +404,23 @@ const [companyupdated, setCompanyupdated] = useState({
         const completed = candidates.filter(candidate => candidate.status === "تمت المقابلة");
         setCompletedApplication(completed)
 
+
         filteredCandidates.sort((a, b) => {
           const dateA = new Date(a.appliedDate);
           const dateB = new Date(b.appliedDate);
           return dateA - dateB;
       });
 
-      const filteredObjects = filteredCandidates.filter(obj => obj.eventId === id);
+      const filteredObjects = filteredCandidates.filter(obj => obj.eventId === id && obj.company ===getLocal.id );
 
-
+      console.log("############"+JSON.stringify(filteredObjects))
       setCompanyStudents(filteredObjects)
 
 
    
 
     
-            console.log("Sorted Student List:", candidates)
+        console.log("Sorted Student List:", candidates)
 
       
            
@@ -515,32 +515,10 @@ const orderApplications = async (arr) => {
     return dateTimeA - dateTimeB;
   });
 
-  // const updatedPositions = positions.map((item, index) => {
-  //   if (index < 2) {
-  //     const updatedAllPositions = item.allPositions.map(pos => {
-  //       if (pos.status !== "تمت المقابلة") {
-  //         return {
-  //           ...pos,
-  //           status: ""
-  //         };
-  //       } else {
-  //         return pos; // Return unchanged if status is "تمت المقابلة"
-  //       }
-  //     });
-  //     return {
-  //       ...item,
-  //       allPositions: updatedAllPositions
-  //     };
-  //   }
-  //   return item;
-  // });
-  
-  // setPositions(updatedPositions);
-
 
   setCompanyStudents(sortedStudents);
   console.log(JSON.stringify(companyStudents))
-  // HERE
+  
   
  
     
@@ -801,27 +779,60 @@ if (companySnapshot.exists()) {
     const itsData = companySnapshot.data();
     let candidates = itsData.candidates || [];
 
-    // Iterate through candidates array and update status based on conditions
     candidates = candidates.map(item => {
         if (item.studentID === userID && item.eventId === events && item.company === companys) {
             if (item.status === "انتظار") {
                 return {
                     ...item,
-                    status: "مقابلة" // Update status to "مقابلة" for matching conditions
+                    status: "مقابلة"
                 };
             } else if (item.status === "مقابلة") {
                 return {
                     ...item,
-                    status: "تمت المقابلة" // Update status to "تمت المقابلة" for matching conditions
+                    status: "تمت المقابلة" 
                 };
             }
         }
-        return item; // Return unchanged item if conditions do not match
+        return item; 
     });
 
-    // Update Firestore document with modified candidates array
     await updateDoc(companyStudentList, { candidates });
     getAppliedStudents()
+
+    const myUsers = doc(db, `users/${userID}/myEvents/${events}/appliedCompanies/${companys}`);
+    const userDoc = await getDoc(myUsers);
+
+    if (userDoc.exists()) {
+        const userData = userDoc.data();
+        console.log("#########++++++++"+JSON.stringify(userData.allPositions))
+        
+        
+        const updatedStudentUpdate = userData.allPositions.map(item => {
+            candidates.forEach(x => {
+                if (item.company === x.company && item.studentID === x.studentID && item.eventId === x.eventId) {
+                  console.log("%%%%%%%%")    
+                  item.status = x.status;
+                }
+            });
+            return item;
+        });
+         console.log("##########"+JSON.stringify(updatedStudentUpdate))
+        await updateDoc(myUsers, { allPositions: updatedStudentUpdate });
+    }
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
 
 
     // const updatedPositions = appliedCompaniesData.allPositions.map((item) => {
@@ -905,7 +916,34 @@ const removeStudent = async(studentIDs, events, jobCompany)=>{
     await updateDoc(companyStudentList, { candidates });
     getAppliedStudents(companyStudents.filter(e=>e.status !== "ملغي"))
 
+
+    const myUsers = doc(db, `users/${userID}/myEvents/${events}/appliedCompanies/${companys}`);
+    const userDoc = await getDoc(myUsers);
+
+    if (userDoc.exists()) {
+        const userData = userDoc.data();
+        console.log("#########++++++++"+JSON.stringify(userData.allPositions))
+        
+        
+        const updatedStudentUpdate = userData.allPositions.map(item => {
+            candidates.forEach(x => {
+                if (item.company === x.company && item.studentID === x.studentID && item.eventId === x.eventId) {
+                  console.log("%%%%%%%%")    
+                  item.status = x.status;
+                }
+            });
+            return item;
+        });
+         console.log("##########"+JSON.stringify(updatedStudentUpdate))
+        await updateDoc(myUsers, { allPositions: updatedStudentUpdate });
+    }
+
+
   }
+
+
+
+
 }
 
   return (
@@ -915,7 +953,7 @@ const removeStudent = async(studentIDs, events, jobCompany)=>{
         </div>
 
         <div className='bg-[#f3f3f3] mt-[-1.3%] h-full w-full'>
-        <div className='fflex justify-start items-end w-full h-[10vh]'>
+        <div className='flex justify-start items-end w-full h-[10vh]'>
             <p className='font-semibold text-[1.5rem] mr-14'> مرحباً <span className='text-[#6e68c4] font-bold'>بكم</span> في معرض التوظيف  </p>
         </div>
         <div className='flex flex-col justify-center items-center'>
@@ -934,7 +972,7 @@ const removeStudent = async(studentIDs, events, jobCompany)=>{
               <div>
                 {}
               <QRCode id="qr-code" value={companyData.companyName} className='hidden'></QRCode>
-              <RiDownload2Fill size={25} fill='#6e68c4'  className='cursor-pointer m-6 ' onClick={fetchData}/>
+              <RiDownload2Fill size={20} fill='#6e68c4'  className='cursor-pointer ' onClick={fetchData}/>
             </div>
 
               {/* Container for PDF generation, hidden from view */}
@@ -952,15 +990,15 @@ const removeStudent = async(studentIDs, events, jobCompany)=>{
   <div role="tablist" className="tabs w-[90vw] tabs-lifted bg-white max-sm:w-[80vw]">
     {/* المتقدمون */}
     <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white " aria-label="المتقدمون"  defaultChecked/>
-    <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6  h-auto overflow-y-auto overflow-x-hidden custom-scrollbar max-sm:h-[28vh]">
+    <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6  h-auto overflow-y-auto custom-scrollbar max-sm:h-[28vh]">
       {/* <p className='text-lg font-bold mb-5' > قائمة الشركات</p> */}
       {!checkPosition ? (
         <table className="w-full h-full max-sm:table-xs">
         <tbody>
           <tr className="focus:outline-none  border border-[#e4e6e6] bg-[#fafafa] rounded py-6">
           <th className="text-center  p-3 py-6 px-5 max-sm:p-1"> الاسم</th>
-          <th className="text-center p-3 py-6 px-5 max-sm:p-1">السيرة الذاتية </th>
           <th className="text-center p-3 py-6 px-5 max-sm:p-1">المجال الوظيفي </th>
+          <th className="text-center p-3 py-6 px-5 max-sm:p-1">السيرة الذاتية </th>
           <th className="text-center p-3 py-6 px-5 max-sm:p-1">الحالة </th>
           <th className="text-center p-3 py-6 px-5 max-sm:p-1 ">حذف </th>
  
@@ -979,13 +1017,13 @@ const removeStudent = async(studentIDs, events, jobCompany)=>{
             </td>
 
             
-               <td className=" px-5 max-sm:p-1  py-6 ">
+            <td className=" px-5 max-sm:p-1  py-6 ">
                     <div className="flex  justify-center   max-sm:h-10">
                         <p className="text-base flex justify-center font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-full  text-center break-words "> <RiDownload2Fill size={20} fill='#6e68c4'  className='cursor-pointer m-6 '/>
                         </p>
                     </div>
                 </td>
-                <td className="px-5 max-sm:p-1 py-6">
+                <td className="px-5 max-sm:p-1  py-6">
                   {console.log("#"+ item.positionName)}
                   {item.positionName && (
                     item.positionName.map((position, index) => (
@@ -1018,12 +1056,17 @@ const removeStudent = async(studentIDs, events, jobCompany)=>{
                         <dialog id="my_modal_1" className="modal ">
                           <div className="modal-box w-[35vw] max-w-5xl" >
 
-                          <p className="py-4 flex justify-center text-[1.1rem]">هل انت متأكد من الغاء الطالب؟</p>
+                          <p className="py-4 text-[1.1rem]">هل انت متأكد من الغاء الطالب؟</p>
                           <div className="modal-action">
-                          <form method="dialog" className='flex justify-center items-center gap-2 w-full '>
-                                        <button className="rounded-lg bg-red-600 text-white hover:bg-red-500 w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh]" onClick={()=>removeApplication(job.positionName, job.indexNo)}>نعم</button>
-                                        <button className="rounded-lg  text-black border border-[#a3a3a3] hover:bg-[#f0f0f0] w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh] ">لا</button>
-                                    </form>
+                          <form method="dialog" className='gap-6'>
+                         
+                          <button className="btn ml-1 bg-[#99D2CB] text-white" onClick={()=>removeStudent(item.studentID,item.eventId, item.company)} >نعم</button>
+                         
+                         
+                          <button className="btn bg-[#99D2CB] text-white">لا</button>
+                         
+
+                          </form>
                           </div>
                           </div>
                       </dialog>
@@ -1053,7 +1096,7 @@ const removeStudent = async(studentIDs, events, jobCompany)=>{
             </div>
 
 
-            <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white" aria-label="مكتمل" />
+            <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white" aria-label="في الطابور" />
             <div role="tabpanel" className="tab-content  overflow-y-auto custom-scrollbar bg-white border-base-100 rounded-box p-6">
     {/* <p className='text-lg font-bold mb-5' > قائمة الطلاب</p> */}
     {!checkPosition? (
@@ -1061,10 +1104,10 @@ const removeStudent = async(studentIDs, events, jobCompany)=>{
        <tbody className=''>
          <tr className="focus:outline-none  border border-[#e4e6e6] bg-[#fafafa] rounded py-6">
          <th className="text-center p-3 py-6 px-5 max-sm:p-1"> الأسم</th>
-         <th className="text-center p-3 py-6 px-5 max-sm:p-1">السيرة الذاتية </th>
-          <th className="text-center p-3 py-6 px-5 max-sm:p-1">المجال الوظيفي </th>
+         <th className="text-center p-3 py-6 px-5 max-sm:p-1">المعسكر </th>
+         <th className="text-center p-3 py-6 px-5 max-sm:p-1">الأيميل </th>
          <th className="ttext-center p-3 py-6 px-5 max-sm:p-1">الحالة </th>
-         {/* <th className="ttext-center p-3 py-6 px-5 max-sm:p-1">الحذف </th> */}
+         <th className="ttext-center p-3 py-6 px-5 max-sm:p-1">الحذف </th>
 
        </tr>
        {completedApplication?(
@@ -1080,10 +1123,9 @@ const removeStudent = async(studentIDs, events, jobCompany)=>{
             </td>
 
             
-            <td className=" px-5 max-sm:p-1  py-6 ">
-                    <div className="flex  justify-center   max-sm:h-10">
-                        <p className="text-base flex justify-center font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-full  text-center break-words max-sm:w-[10ch]"> <RiDownload2Fill size={20} fill='#6e68c4'  className='cursor-pointer m-6 '/>
-                        </p>
+            <td className="px-5 max-sm:p-1  py-6">
+                    <div className="flex items-center pl-5">
+                        <p className="ttext-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">   </p>
                     </div>
                 </td>
                 <td className="px-5 max-sm:p-1  py-6">
@@ -1101,13 +1143,39 @@ const removeStudent = async(studentIDs, events, jobCompany)=>{
                   )}
                     
                 </td>
-                <div className="flex justify-center items-center text-center h-full w-[8vw]">
-                <p  className="text-[0.9rem] px-4 bg-[#7ed191] py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold cursor-pointer" onClick={()=>{resetStatus(item.studentID, item.eventId, item.company, item.positionName)}}>{item.status}</p>
+                <div className="flex justify-center items-center h-full">
+                <p  className="text-base px-4 bg-[#fccd69] py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold cursor-pointer" onClick={()=>{resetStatus(item.studentID, item.eventId, item.company, item.positionName)}}>{item.status}</p>
 
                 </div>
 
+<td className="p-3 px-5 max-sm:p-1">
+                    <div className="flex flex-wrap justify-center">
+                        {/* <img src={deleteStudent} className='w-4 cursor-pointer' onClick={() => { document.getElementById('my_modal_1').showModal()}}/> */}
+                        <button className='flex justify-center w-6 mb-2 cursor-pointer' onClick={() => { document.getElementById('my_modal_1').showModal()}} >
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-7 text-[#d33232]">
+                          <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
+                          </svg>
+                        </button>
+                        <dialog id="my_modal_1" className="modal ">
+                          <div className="modal-box w-[35vw] max-w-5xl" >
 
-            
+                          <p className="py-4 text-[1.1rem]">هل انت متأكد من الغاء الطالب؟</p>
+                          <div className="modal-action">
+                          <form method="dialog" className='gap-6'>
+                         
+                          <button className="btn ml-1 bg-[#99D2CB] text-white"  >نعم</button>
+                         
+                         
+                          <button className="btn bg-[#99D2CB] text-white">لا</button>
+                         
+
+                          </form>
+                          </div>
+                          </div>
+                      </dialog>
+                    </div>
+                </td>
+              
               
            </tr>
 
@@ -1137,7 +1205,62 @@ const removeStudent = async(studentIDs, events, jobCompany)=>{
 
             {/*  */}
 
-    
+    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white" aria-label="مكتمل" />
+    <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6">
+    {/* <p className='text-lg font-bold mb-5' > قائمة الطلاب</p> */}
+    {!checkPosition? (
+       <table className="w-[48.6vw] whitespace-nowrap max-sm:table-xs">
+       <tbody>
+         <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
+         <th className="text-right p-3 px-5"> الأسم</th>
+         <th className="text-right p-3 px-5">المعسكر </th>
+         <th className="text-right p-3 px-5">الأيميل </th>
+         <th className="text-right p-3 px-5">الحالة </th>
+       </tr>
+           <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded">
+               {/* <td className="">
+                   <div className="flex items-center pl-5">
+                       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPk0IrfQt8yu8km4DYRG69OOhe2GQlK5NLvzIk23B3u77AjSRLJ3NLOqK9_W53M8jHV6Y&usqp=CAU" alt="" srcset="" className='w-[7vw] h-[7vh] mr-2' />
+                   </div>
+               </td> */}
+               <td className="">
+                   <div className="flex items-center pl-5">
+                       <p className="text-base font-medium leading-none text-gray-700 mr-5">   نوره محمد  </p>
+                   </div>
+               </td>
+               <td className="">
+                   <div className="flex items-center pl-5">
+                       <p className="text-base font-medium leading-none text-gray-700 mr-2">   معسكر جافاسكربت  </p>
+                   </div>
+               </td>
+               <td className="">
+                   <div className="flex items-center pl-5">
+                       <p className="text-base font-medium leading-none text-gray-700 mr-2"> Nora@hotmail.com</p>
+                   </div>
+               </td>
+               <td className="">
+                   <div className="flex items-center pl-5">
+                       <p className="text-base px-4 bg-[#ceefd4] py-1  rounded-md text-[#b9b9b7] font-medium leading-none  mr-2"> مكتمل</p>
+                   </div>
+               </td> 
+
+               {/* <td className="">
+                   <div className="flex items-center pl-5">
+                       <img src={deleteStudent}> </img>
+                   </div>
+               </td>  */}
+           </tr>
+       </tbody>
+   </table>  
+    ):(
+      
+                <p className='text-[1.2rem] mt-4 text-red-600 font-medium'> لعرض قائمة المتقدمين, يرجى التأكد من ادخال المسميات الوظيفية المطلوبة و اسماء الموظفين المشاركين</p>
+
+      
+      )}
+   
+  
+                      </div>
   </div>
   </div>
                     
@@ -1148,13 +1271,13 @@ const removeStudent = async(studentIDs, events, jobCompany)=>{
                 <div className='mt-6 bg-white h-[100vh] rounded-lg max-sm:h-[50vh] max-sm:w-[90vw]'>
                   <div className='flex items-center justify-between'>
                   <h1 className='pt-6 pr-6 font-extrabold text-[#6e68c4] text-[1.1rem]'>  تفاصيل الشركة </h1>
-                  <button className="btn mt-6 rounded-lg text-white bg-[#f39e4e] w-[7vw] text-[1.1rem] px-3 ml-6 max-sm:w-16" onClick={()=>document.getElementById('my_modal_4').showModal()}> تعديل</button>
+                  <button className="btn mt-6 rounded-lg text-white bg-[#f39e4e] py-1 px-3 ml-6" onClick={()=>document.getElementById('my_modal_4').showModal()}> تعديل</button>
                   <dialog id="my_modal_4" class="modal">
-<div className="modal-box w-[50vw] max-w-5xl flex flex-col p-4 py-2 custom-scrollbar" style={{ maxHeight: '95vh', overflowY: 'auto' }}>
+<div className="modal-box w-[50vw] max-w-5xl flex flex-col p-4 py-2" style={{ maxHeight: '95vh', overflowY: 'auto' }}>
   <h3 className="font-bold text-lg py-4 text-[#6e68c4]">تعديل تفاصيل الشركة</h3>
  
   <label className="mt-4 font-bold">نبذه عن الشركة</label>
-  <textarea className="py-2 mt-1 min-h-[20vh] rounded-md resize-none custom-scrollbar overflow-y-auto" rows="8" cols="50" value={companyupdated.description} onChange={handleDescriptionChange}></textarea>
+  <textarea className="py-2 mt-1 rounded-md resize-none overflow-y-auto" rows="8" cols="50" value={companyupdated.description} onChange={handleDescriptionChange}></textarea>
   <div className="flex items-center">
   <div className='flex flex-col'>
   <label className="font-bold  mt-4 mr-0">تحميل شعار الشركة</label>
@@ -1219,9 +1342,7 @@ const removeStudent = async(studentIDs, events, jobCompany)=>{
 </div>
 
   
-  <div className="modal-action pb-4 mt-4 flex gap-2">
-  <button onClick={()=>document.getElementById('my_modal_4').close()} className="btn mt-6 rounded-lg text-white bg-[#999999] hover:bg-[#b1b1b1] py-1 px-3 ">إلغاء</button>
-
+  <div className="modal-action pb-4 mt-4">
   <button className="btn mt-6 rounded-lg text-white bg-[#f39e4e] hover:bg-[#ffb977] py-1 px-3 " onClick={() => {
     updateInfo(id, getLocal.id)
     document.getElementById('my_modal_4').close()
@@ -1252,7 +1373,6 @@ const removeStudent = async(studentIDs, events, jobCompany)=>{
         </div>
       </div>
     </dialog>
-
   </div>
 </div>
 </dialog>
@@ -1262,7 +1382,7 @@ const removeStudent = async(studentIDs, events, jobCompany)=>{
                     <hr className='flex justify-center w-full' />
                     <div className="flex flex-col  justify-center w-full">
                       <p className='mr-6 font-bold mt-6 text-[1.04rem]'>نبذه عن الشركة:</p>
-                      <p  className='border-non  pr-6 pt-2 text-[#202020] ml-6  text-[0.9rem] text-justify' >{companyData.description}</p>
+                      <p  className='border-non pr-6 pt-2 text-[#202020] ml-6  text-[0.9rem] text-justify' >{companyData.description}</p>
                       <div className='pt-2 pr-5 flex gap-1 mt-4'>
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5 text-[#99D2CB]">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -1274,12 +1394,12 @@ const removeStudent = async(studentIDs, events, jobCompany)=>{
                 
                   <p className='mr-6 font-bold mt-8 text-[1.04rem]'>الشواغر المتاحة:</p>
 
-                  <div className='flex mt-2 mr-4 flex-wrap'>
+                  <div className='flex gap-2 mt-2'>
                   {
                     companyData && companyData.jobPositions && companyData.jobPositions.length > 0 ? (
                       <>
                         {companyData.jobPositions.map((position, index) => (
-                          <p key={index} className='px-2 mr-2 mt-2 py-1 rounded-full w-fit text-[0.8rem] bg-[#99d2cb] text-white'>
+                          <p key={index} className='px-2 mr-6 mt-2 py-1 rounded-full w-fit text-[0.8rem] bg-[#eee6f5]'>
                             {position}
                           </p>
                         ))}
@@ -1518,9 +1638,6 @@ const removeStudent = async(studentIDs, events, jobCompany)=>{
     border-color: #E5E7EB;
   }
 `}</style>
-<div className='mt-6'>
-  <Footer />
-</div>
     </div>
   )
 }

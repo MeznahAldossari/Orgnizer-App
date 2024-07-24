@@ -1,10 +1,5 @@
 import React from 'react'
 import Nav from '../components/Nav'
-import { CiCalendar } from "react-icons/ci";
-import { FaLocationDot } from "react-icons/fa6";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { FaEdit } from "react-icons/fa";
-import { IoMdInformationCircleOutline } from "react-icons/io";
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { db } from '../config/firebase';
@@ -13,8 +8,6 @@ import EditEventModal from '../components/EventEdit';
 import { updateDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { RiDownload2Fill } from "react-icons/ri"
-import Footer from '../components/Footer';
-
 const EventInfo = () => {
     const { eventId } = useParams();
     const [event, setEvent] = useState(null);
@@ -129,21 +122,10 @@ const EventInfo = () => {
         console.error('Error deleting company:', error);
       }
     };
-    // const exportToExcel = () => {
-    //   const filteredCompanies = companies.map(({ companyName,Location, description, email }) => ({
-    //     Location,
-    //     companyName,
-    //     description,
-    //     email
-    // }));
-    //   const worksheet = XLSX.utils.json_to_sheet(filteredCompanies);
-    //   const workbook = XLSX.utils.book_new();
-    //   XLSX.utils.book_append_sheet(workbook, worksheet, "Companies");
-    //   XLSX.writeFile(workbook, "Companies.xlsx");
-    // }
-    // const handleOpenCV = (cvUrl) => {
-    //   window.open(cvUrl, '_blank');
-    // };
+
+    const handleOpenCV = (cvUrl) => {
+      window.open(cvUrl, '_blank');
+    };
 
   return (
     <>
@@ -169,13 +151,13 @@ const EventInfo = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                 </svg>
-                <p className='text-base font-medium'>{  JSON.stringify(event.position)}</p>
+                <p className='text-base font-medium'>{  JSON.stringify(event.placename)}</p>
                 </div>
-            <div className='flex gap-1 '>
+            <div className='flex gap-1'>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5 text-[#99D2CB]">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                 </svg>
-                <p className='text-[gray] text-[0.9rem]  '>{event.startTime} - {event.endTime} </p>
+                <p className='text-[gray] text-[0.9rem] '>{event.startTime} - {event.endTime} </p>
             </div>
         </div>
         <div className='mt-2'>
@@ -295,65 +277,50 @@ const EventInfo = () => {
     <div role="tabpanel" className="tab-content bg-white border-base-100 rounded-box p-6 h-[20vw] overflow-y-auto custom-scrollbar max-sm:h-[28vh] ">
     <p className='text-lg mb-5 font-extrabold text-[#5C59C2]' > قائمة الطلاب</p>
 
-    <table className="w-full h-[20vh] max-sm:table-xs">
-        <tbody>
-            <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
-              <th className="text-center p-3 px-5 max-sm:p-1 ">الاسم</th>
-              {/* <th className="text-center p-3 px-5 max-sm:p-1">المعسكر</th> */}
-              <th className="text-center p-3 px-5 max-sm:p-1">السيرة الذاتية</th>
-              <th className="text-center p-3 px-5 max-sm:p-1">الايميل</th>
-              <th className='text-center p-3 px-5 max-sm:p-1'>المنطقة</th>
-            </tr>
-                <tr className='focus:outline-none h-16 border border-[#e4e6e6] rounded'>
-                    <td className="p-3 px-5 max-sm:p-1 text-center">
-                        <div className='flex flex-wrap justify-center overflow-y-auto h-7 custom-scrollbar max-sm:h-12'>
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[10ch]">زياد الصاعدي </p>
+    <table className="w-full text-md bg-white shadow-md rounded mb-4  max-sm:text-xs max-sm:table-xs overflow-y-auto">
+                <tbody>
+                  <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
+                    <th className="text-right p-3 px-5 max-sm:p-1 ">الاسم</th>
+                    <th className="text-right p-3 px-5 max-sm:p-1">السيرة الذاتية</th>
+                    <th className="text-right p-3 px-5 max-sm:p-1">الإيميل</th>
+                    <th className="text-right p-3 px-5 max-sm:p-1">المدينة</th>
+                  </tr>
+                  {students.map((student) => (
+                    <tr  className="focus:outline-none h-16 border border-[#e4e6e6] rounded">
+                      <td className="p-3 px-5 max-sm:p-1">
+                        <div className="flex flex-wrap">
+                          <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[10ch]">
+                            {student.Fname}
+                          </p>
                         </div>
-                    </td>
-                    {/* <td className="p-3 px-5 max-sm:p-1 text-center">
-                        <div className='flex flex-wrap'>
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[10ch]">معسكر تصميم واجهات  </p>
+                      </td>
+                      <td className="p-3 px-5 max-sm:p-1">
+                        <div className="flex flex-wrap">
+                          <button    onClick={() => handleOpenCV(student.CV)}  value={student.CV} className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[10ch]">
+                            {student.cvFileName}
+                          </button>
                         </div>
-                    </td> */}
-                    <td className="p-3 px-5 max-sm:p-1 text-center">
-                        <div className='flex items-center justify-center  h-7  max-sm:h-12'>
-                            <RiDownload2Fill size={20} fill='#6e68c4'  className='cursor-pointer m-6 '/>
+                      </td>
+                      <td className="p-3 px-5 max-sm:p-1">
+                        <div className="flex flex-wrap">
+                          <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[9ch]">
+                            {student.email}
+                          </p>
+                        </div>
+                      </td>
+                      <td className="p-3 px-5 max-sm:p-1">
+                        <div className="flex flex-wrap">
+                          <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[6ch]">
+                            {student.city}
+                          </p>
+                        </div>
+                      </td>
+                  
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
 
-                            
-                        </div>
-                    </td>
-                    {/* <td className="p-3 px-5 max-sm:p-1 text-center">
-                        <div className="flex flex-wrap justify-center overflow-y-auto h-7 custom-scrollbar max-sm:h-12">
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[10ch] break-words max-sm:w-[10ch] ">  
-                                <div className='flex gap-2 justify-center'>
-                                   <span className="text-base px-4 bg-[#fccd69] py-1 rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold">انتظار</span>
-                               </div> 
-                           </p>
-                       </div>
-                   </td> */}
-                    {/* <td className="p-3 px-5 flex max-sm:mt-3 justify-evenly max-sm:p-1"> */}
-                        {/* <div className="flex items-center "> */}
-                        {/* <button>
-                        <IoMdInformationCircleOutline style={{ color: 'black', fontSize: '20px' }} />                                   
-                        </button> */}
-
-                        {/* </div> */}
-                    {/* </td> */}
-                    <td className="p-3 px-5 max-sm:p-1 text-center">
-                        <div className='flex flex-wrap justify-center overflow-y-auto h-7 custom-scrollbar max-sm:h-12'>
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[10ch]">email@  </p>
-                        </div>
-                    </td>
-                    <td className="p-3 px-5 max-sm:p-1 text-center">
-                        <div className='flex flex-wrap justify-center overflow-y-auto h-7 custom-scrollbar max-sm:h-12'>
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[10ch]">الرياض  </p>
-                        </div>
-                    </td>
-                </tr>
-
-                
-             </tbody>
-       </table>  
     </div>
   </div>
 </div>
@@ -369,9 +336,6 @@ const EventInfo = () => {
 
 
     </div>
-    <div className='mt-16'> <Footer /></div>
-   
-
     </>
   )
 }
