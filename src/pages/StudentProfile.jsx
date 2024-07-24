@@ -78,7 +78,6 @@ const StudentProfile = () => {
                 <img className='mr-4 rounded-full h-[15vh] w-[7vw] max-sm:w-[20vw] max-sm:h-[10vh]' src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA2aIMpOIYZKSLNRQnDOXtna8n7eRumIbYfA&s' />
                 <div className='mr-4'>
                     <p className='font-bold text-[1.3rem]'> {student.Fname} {student.Lname}</p>
-                    <p className='text-[gray] text-[0.9rem]'>معسكر تطوير واجهات المستخدم باسخدام جافاسكربت</p>
                 </div>
             </div>
             <div className='grid grid-cols-2 gap-6 max-sm:grid-cols-1'>
@@ -108,38 +107,61 @@ const StudentProfile = () => {
                 </div>
                 <div className='flex justify-between w-[30vw] mt-4'>
                     <div className='flex flex-col'>
+                        <form className="max-w-[40vw] mx-auto">
                         <label htmlFor="countries" className="mt-2 mr-6 font-bold">الجنسية</label>
                         <div className="mr-6 mt-2 relative w-64 ">
-                        <p className='mt-2 mr-2 text-[gray]'>{student.nationality}</p>
-                        
+                            <select className="block  appearance-none w-[31vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-2  pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline max-sm:w-[75vw]">
+                                <option className=''>{student.nationality}</option>
+                          
+                            </select>
+                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                            </div>
                         </div>
+                        </form>
                     </div>
                 </div>
                 <div className='flex '> 
                 <div className='flex justify-between w-[30vw] mt-4'>
                     <div className='flex flex-col'>
+                        <form className="max-w-[40vw] mx-auto">
                         <label htmlFor="countries" className="mt-2 mr-6 font-bold">دولة الاقامة</label>
                         <div className="mr-6 mt-2 relative w-64">
-                        <p className='mt-2 mr-2 text-[gray]'>{student.country}</p>
-
+                            <select className="block appearance-none w-[31vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4  py-2  pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline">
+                                <option>{student.country}</option>
+                            </select>
+                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                            </div>
                         </div>
+                        </form>
                     </div>
                 </div>
                 </div>
                 <div className='flex justify-between w-[30vw] mt-4'>
                     <div className='flex flex-col'>
+                        <form className="max-w-[40vw] mx-auto">
                         <label htmlFor="countries" className="mt-2 mr-6 font-bold">المدينة</label>
                         <div className="mr-6 mt-2 relative w-64">
-                        <p className='mt-2 mr-2 text-[gray]'>{student.city}</p>
-
+                            <select className="block appearance-none w-[10vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4  py-2  pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline max-sm:w-[30vw]">
+                                <option>{student.city}</option>
+                            </select>
+                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                            </div>
                         </div>
+                        </form>
                     </div>
                     <div className='flex flex-col'>
                         <form className="max-w-[40vw] mx-auto">
                         <label htmlFor="countries" className="mt-2 mr-6 font-bold">الفئة المستهدفة</label>
                         <div className="mr-6 mt-2 relative w-64">
-                        <p className='mt-2 mr-2 text-[gray]'>{student.category}</p>
-
+                            <select className="block appearance-none w-[10vw] h-[7vh] bg-white border border-[#99D2CB] hover:border-[#61b8ae] px-4 py-2 pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline max-sm:w-[30vw]">
+                                <option >{student.category}</option>
+                            </select>
+                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                            </div>
                         </div>
                         </form>
                     </div>
