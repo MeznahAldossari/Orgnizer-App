@@ -1,24 +1,34 @@
 import React, {useEffect, useState, useRef} from 'react'
 import Nav from './Nav'
 import '../App.css'
-import jsPDF from 'jspdf'
+import { jsPDF } from 'jspdf';
+// import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
+// import '../Amiri-normal.js'
+
+
+import html2canvas from 'html2canvas';
 import QRCode from 'qrcode.react';
 import deleteStudent from '../assets/delete.png'
 import close from "../assets/close.png"
 import { IoIosAddCircle } from "react-icons/io";
+import MyqrCode from './MyqrCode';
 import { RiDownload2Fill } from "react-icons/ri";
 
-
+import '../App.css'
 
 import { auth, db, storage } from '../config/firebase';
 import { getDoc, doc, collection, getDocs, updateDoc, deleteDoc } from 'firebase/firestore';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { Link, useParams } from 'react-router-dom';
+import { json, Link, useParams } from 'react-router-dom';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 
 function CompanyDetails() {
   const [qrValue, setQRValue] = useState('');
+  const [completedApplication, setCompletedApplication] = useState([])
+  const [inProgress, setInProgress] = useState([])
+  const [inWaiting, setInWaiting] = useState([])
 
   const [showNewPositionInput, setShowNewPositionInput] = useState(false); 
   const [companyData, setCompanyData] = useState({
@@ -43,19 +53,44 @@ const [companyupdated, setCompanyupdated] = useState({
 
 
     const [checkEmp, setCheckEmp] = useState(false)
+    const [checkjobStatus, setCheckjobStatus] = useState({
+      name:'',
+      boolStatue:false
+    })
     const [checkPosition, setCheckPosition] = useState(false)
     const getLocal = JSON.parse(localStorage.getItem("loggedIn"));
     const {id} = useParams()
     const qrRef = useRef(null);
     const [pdfUrl, setPdfUrl] = useState('');
+    const [companyStudents, setCompanyStudents] = useState([])
+    const [firstTwoStudents, setFirstTwoStudents] = useState([])
+    const [inLineStudents, setInLineStudents] = useState([])
+    const [inLine, setInLine] = useState([])
+
+    const [checkJobStatus, setCheckJobStatus] = useState(false)
 
 
     useEffect(()=>{
       getCompanyInfo()
       checkPositionAndEmp()
+      getAppliedStudents()
+      console.log(getLocal.id);
+      
+
+     
+      
+
+    
       
     }, [])
 
+    // useEffect(()=>{
+
+    //   getAppliedStudents()
+      
+    // },[companyStudents])
+
+    
     const fetchData = async () => {
       const eventDetailsRef = doc(db, 'CompaniesData', getLocal.id);
       
@@ -89,7 +124,7 @@ const [companyupdated, setCompanyupdated] = useState({
         pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight(), 'F');
         pdf.addImage(qrDataURL, 'JPEG', qrX, qrY, qrSize, qrSize);
         
-        const title = "SAMI"; 
+        const title = ""; 
         pdf.setFontSize(20);
         pdf.setFont('Amiri', 'Amiri', 'normal');
         pdf.text(title, pdfWidth / 2, qrY + qrSize + 10, { align: 'center' });
@@ -158,7 +193,7 @@ const [companyupdated, setCompanyupdated] = useState({
                     Location: companyData.Location,  // Ensure casing matches Firestore document
                     logo: companyData.logo,
                     jobPositions: userData.jobPositions,
-                    EmpList:userData.EmpList
+                    
                 });
               } else {
                   console.error("Company data does not exist");
@@ -276,6 +311,7 @@ const [companyupdated, setCompanyupdated] = useState({
     setCheckPosition(false)
     setCheckEmp(false)
     const eventDetailsRef = doc(db, 'EventDetails', id);
+    console.log(id)
     const eventDetailsSnapshot = await getDoc(eventDetailsRef);
 
     if (eventDetailsSnapshot.exists()) {
@@ -329,7 +365,586 @@ const [companyupdated, setCompanyupdated] = useState({
   const handleInputChange = (event) => {
     setQRValue(event.target.value);
   };
+
+
+
+  const getAppliedStudents = async () => {
+
+        const companyStudentList = doc(db, `CompaniesData/${getLocal.id}`);
+        const companySnapshot = await getDoc(companyStudentList);
+  
+        if (companySnapshot.exists()) {
+
+          const itsData = companySnapshot.data()
+         
+          const candidates = itsData.candidates || [];
+
+
+            const userPromises = [];
+
+        // Fetch user info for each candidate
+        candidates.forEach(candidate => {
+            const userId = candidate.studentID;
+            const userRef = doc(db, 'users', userId);
+            const userPromise = getDoc(userRef).then(userDoc => {
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    candidate.studentName = userData.Fname +" "+userData.Lname; // Assign user's name to candidate object
+                } 
+            }).catch(error => {
+                console.error('Error fetching user info:', error);
+                candidate.studentName = "Error"; // Handle error case
+            });
+            userPromises.push(userPromise);
+        });
+
+        // Wait for all user info promises to resolve
+        await Promise.all(userPromises);
+        const filteredCandidates = candidates.filter(candidate => candidate.status !== "تمت المقابلة" && candidate.status !=="ملغي");
+        const completed = candidates.filter(candidate => candidate.status === "تمت المقابلة");
+        setCompletedApplication(completed)
+
+
+        filteredCandidates.sort((a, b) => {
+          const dateA = new Date(a.appliedDate);
+          const dateB = new Date(b.appliedDate);
+          return dateA - dateB;
+      });
+
+      const filteredObjects = filteredCandidates.filter(obj => obj.eventId === id && obj.company ===getLocal.id );
+
+      console.log("############"+JSON.stringify(filteredObjects))
+      setCompanyStudents(filteredObjects)
+
+
+   
+
+    
+        console.log("Sorted Student List:", candidates)
+
       
+           
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //   const studentsListRef = collection(db, "users");
+  //   const studentsSnapshot = await getDocs(studentsListRef);
+  //   let arr = [];
+  
+  //   if (!studentsSnapshot.empty) {
+  //     for (const studentDoc of studentsSnapshot.docs) {
+  //       // console.log(studentDoc.data())
+  //       const studentId = studentDoc.id;
+  //       const hisEventsRef = doc(db, `users/${studentId}/myEvents/${id}`);
+  //       const eventsSnapshot = await getDoc(hisEventsRef);
+  //       console.log(eventsSnapshot)
+  //       if (eventsSnapshot.exists()) {
+  //         const eventRef = doc(db, `users/${studentId}/myEvents/${id}/appliedCompanies/${getLocal.id}`);
+  //         const companiesSnapshot = await getDoc(eventRef);
+  //         // console.log(companiesSnapshot.data())
+  //         if (companiesSnapshot.exists()) {
+  //           const allPositionsData = companiesSnapshot.data().allPositions;
+  
+  //           // Check if allPositionsData is an array and not empty
+  //           if (Array.isArray(allPositionsData) && allPositionsData.length > 0) {
+  //             // Filter objects where status === 'wait'
+  //             // const filteredPositions = allPositionsData.filter(position => position.status === 'انتظار');
+  
+  //             // Construct user object with desired data and updated status
+  //             if (allPositionsData.length > 0) {
+  //               // Construct user object with desired data and updated status
+  //               const userData = {
+  //                 userId: studentId,
+  //                 Fname: studentDoc.data().Fname,
+  //                 Lname: studentDoc.data().Lname,
+  //                 allPositions: allPositionsData,
+  //                 event: id, // Optionally include event data
+  //                 company: getLocal.id // Optionally include company data
+  //               };
+  //               arr.push(userData);
+  //             }
+              
+  //           }
+  //         } else {
+  //           console.log(`No applied companies found for event ${id} in student ${studentId}`);
+  //         }
+  //       } else {
+  //         console.log(`No events found for student ${studentId}`);
+  //       }
+  //     }
+  //   } else {
+  //     console.log("No students found in the database.");
+  //   }
+  //   console.log(arr)
+  
+  //   // Assuming orderApplications function exists and sorts arr as needed
+  //  await orderApplications(arr);
+  }
+  
+
+
+const orderApplications = async (arr) => {
+  const sortedStudents = [...arr].sort((a, b) => {
+    const dateTimeA = parseEarliestAppliedDate(a);
+    const dateTimeB = parseEarliestAppliedDate(b);
+
+    return dateTimeA - dateTimeB;
+  });
+
+
+  setCompanyStudents(sortedStudents);
+  console.log(JSON.stringify(companyStudents))
+  
+  
+ 
+    
+  
+  
+  // studentinLine(sortedStudents)
+  // console.log("hello"+sortedStudents)
+}
+
+const parseEarliestAppliedDate = (student) => {
+
+  const earliestAppliedDate = allPositions.map(position => position.appliedDate)
+    .sort((a, b) => new Date(a) - new Date(b))[0];
+
+
+    return new Date(earliestAppliedDate);
+}
+
+const getInLineStudents = async()=>{
+
+  const studentsListRef = collection(db, "users");
+    const studentsSnapshot = await getDocs(studentsListRef);
+    let arr = [];
+  
+    if (!studentsSnapshot.empty) {
+      for (const studentDoc of studentsSnapshot.docs) {
+        const studentId = studentDoc.id;
+        const hisEventsRef = doc(db, `users/${studentId}/myEvents/${id}`);
+        const eventsSnapshot = await getDoc(hisEventsRef);
+  
+        if (eventsSnapshot.exists()) {
+          const eventRef = doc(db, `users/${studentId}/myEvents/${id}/appliedCompanies/${getLocal.id}`);
+          const companiesSnapshot = await getDoc(eventRef);
+  
+          if (companiesSnapshot.exists()) {
+            const allPositionsData = companiesSnapshot.data().allPositions;
+  
+            // Check if allPositionsData is an array and not empty
+            if (Array.isArray(allPositionsData) && allPositionsData.length > 0) {
+              // Filter objects where status === 'wait'
+              const filteredPositions = allPositionsData.filter(position => position.status === 'انتظار');
+  
+              // Construct user object with desired data and updated status
+              if (filteredPositions.length > 0) {
+                // Construct user object with desired data and updated status
+                const userData = {
+                  userId: studentId,
+                  Fname: studentDoc.data().Fname,
+                  Lname: studentDoc.data().Lname,
+                  allPositions: filteredPositions,
+                  event: id, // Optionally include event data
+                  company: getLocal.id // Optionally include company data
+                };
+                arr.push(userData);
+              }
+            }
+          } else {
+            console.log(`No applied companies found for event ${id} in student ${studentId}`);
+          }
+        } else {
+          console.log(`No events found for student ${studentId}`);
+        }
+      }
+    } else {
+      console.log("No students found in the database.");
+    }
+  
+    // Assuming orderApplications function exists and sorts arr as needed
+    ordering(arr);
+ 
+  
+
+}
+
+const ordering = async (arr) => {
+  const sortedStudents = [...arr].sort((a, b) => {
+    const dateTimeA = parseEarliestAppliedDate(a);
+    const dateTimeB = parseEarliestAppliedDate(b);
+    return dateTimeA - dateTimeB;
+  });
+
+  let arr2 = [];
+
+  if (inLineStudents === null || inLineStudents === undefined || inLineStudents.length === 0 || (inLineStudents.length === 1 && companyStudents.length >= 2)) {
+    for (let i = 0; i < Math.min(2, sortedStudents.length); i++) {
+      const student = sortedStudents[i];
+      const updatedPositions = student.allPositions.map(position => {
+        if (position.status === 'انتظار') {
+          return { ...position, status: 'في الطابور' };
+        } else {
+          return position;
+        }
+      });
+
+      const userData = {
+        userId: student.userId,
+        Fname: student.Fname,
+        Lname: student.Lname,
+        allPositions: updatedPositions,
+        event: student.event,
+        company: student.company
+      };
+
+      arr2.push(userData);
+    }
+
+  }
+  setInLineStudents(prevInLineStudents => [...prevInLineStudents, ...arr2]);
+
+
+  const remainingStudents = companyStudents.filter(student => {
+    return !arr2.some(updatedStudent => (
+      student.userId === updatedStudent.userId &&
+      student.event === updatedStudent.event &&
+      student.company === updatedStudent.company
+    ));
+  });
+
+  console.log(remainingStudents);
+  setCompanyStudents(remainingStudents);
+
+  // Update inLineStudents state
+
+  // Process arr2 asynchronously
+  for (const userData of arr2) {
+    const { userId, event, company, allPositions } = userData;
+    const eventRef = doc(db, `users/${userId}/myEvents/${event}/appliedCompanies/${company}`);
+    const docSnapshot = await getDoc(eventRef);
+
+    if (docSnapshot.exists()) {
+      const existingData = docSnapshot.data();
+      const updatedPositions = allPositions.map(position => {
+        const existingPosition = existingData.allPositions.find(p => p.id === position.id);
+        return existingPosition ? { ...existingPosition, status: position.status } : position;
+      });
+
+      await updateDoc(eventRef, { allPositions: updatedPositions });
+    } else {
+      console.log(`Document does not exist for ${userId}, ${event}, ${company}`);
+    }
+  
+}
+
+
+
+  // const remainingStudents = companyStudents.filter(student => {
+  //   for (let i = 0; i < arr2.length; i++) {
+  //     if (student.userId === arr2[i].userId && student.event === arr2[i].event && student.company === arr2[i].company) {
+  //       return false; // Do not include this studen}t in remainingStudents
+  //     }
+  //   }
+  //   return true; // Include this student in remainingStudents
+  // });
+  // console.log(remainingStudents)
+
+  // // Update companyStudents with remaining students
+  // setCompanyStudents(remainingStudents);
+
+  // studentinLine(sortedStudents)
+  // console.log("hello"+sortedStudents)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const studentinLine = async (students) => {
+//   if (students.length >= 2) {
+//     const studentsListRef = collection(db, "users");
+//     const studentsSnapshot = await getDocs(studentsListRef);
+    
+//     const allStudents = studentsSnapshot.docs.map(doc => ({
+//       id: doc.id,
+//       ...doc.data()
+//     }));
+  
+//     const updatedFirstTwo = students.slice(0, 2).map(student => {
+//       const updatedPositions = student.allPositions.map(position => {
+//         if (position.status === "انتظار") {
+//           return {
+//             ...position,
+//             status: "في الطابور"
+//           };
+//         } else {
+//           return position; // Return unchanged position if status is not "انتظار"
+//         }
+//       });
+  
+//       return {
+//         ...student,
+//         allPositions: updatedPositions
+//       };
+//     });
+  
+//     console.log("Updated First Two Students:", updatedFirstTwo);
+    
+//     await Promise.all(updatedFirstTwo.map(async (updatedStudent) => {
+//       const { userId, event, company, allPositions } = updatedStudent;
+
+//       const eventId = event; 
+//       const companyId = company; 
+
+//       const userRef = doc(db, "users", userId);
+//       const userDoc = await getDoc(userRef);
+
+//       if (userDoc.exists()) {
+//         const { myEvents } = userDoc.data();
+
+//         const eventRef = doc(db, `users/${userId}/myEvents/${eventId}/appliedCompanies/${companyId}`);
+//         const eventDoc = await getDoc(eventRef);
+
+//         if (eventDoc.exists()) {
+//           const { allPositions: existingPositions } = eventDoc.data();
+
+//           // Update positions with new status
+//           const updatedPositions = existingPositions.map(pos => {
+//             const matchingPosition = allPositions.find(ap => ap.company === pos.company && ap.positionName === pos.positionName);
+//             if (matchingPosition) {
+//               return {
+//                 ...pos,
+//                 status: matchingPosition.status // Update status based on the updatedStudent data
+//               };
+//             } else {
+//               return pos;
+//             }
+//           });
+
+//           // Update Firestore document with new positions
+//           await updateDoc(eventRef, { allPositions: updatedPositions });
+//         }
+//       }
+//     }));
+
+//     setFirstTwoStudents(updatedFirstTwo);
+//     console.log(JSON.stringify(updatedFirstTwo))
+
+//     const remainingStudents = companyStudents.slice(2);
+//     setCompanyStudents(remainingStudents);
+
+//   }}
+
+
+const resetStatus = async (userID, events, companys, setCompanyStudents) => {
+  const companyStudentList = doc(db, `CompaniesData/${getLocal.id}`);
+  const companySnapshot = await getDoc(companyStudentList);
+
+if (companySnapshot.exists()) {
+    const itsData = companySnapshot.data();
+    let candidates = itsData.candidates || [];
+
+    candidates = candidates.map(item => {
+        if (item.studentID === userID && item.eventId === events && item.company === companys) {
+            if (item.status === "انتظار") {
+                return {
+                    ...item,
+                    status: "مقابلة"
+                };
+            } else if (item.status === "مقابلة") {
+                return {
+                    ...item,
+                    status: "تمت المقابلة" 
+                };
+            }
+        }
+        return item; 
+    });
+
+    await updateDoc(companyStudentList, { candidates });
+    getAppliedStudents()
+
+    const myUsers = doc(db, `users/${userID}/myEvents/${events}/appliedCompanies/${companys}`);
+    const userDoc = await getDoc(myUsers);
+
+    if (userDoc.exists()) {
+        const userData = userDoc.data();
+        console.log("#########++++++++"+JSON.stringify(userData.allPositions))
+        
+        
+        const updatedStudentUpdate = userData.allPositions.map(item => {
+            candidates.forEach(x => {
+                if (item.company === x.company && item.studentID === x.studentID && item.eventId === x.eventId) {
+                  console.log("%%%%%%%%")    
+                  item.status = x.status;
+                }
+            });
+            return item;
+        });
+         console.log("##########"+JSON.stringify(updatedStudentUpdate))
+        await updateDoc(myUsers, { allPositions: updatedStudentUpdate });
+    }
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // const updatedPositions = appliedCompaniesData.allPositions.map((item) => {
+    //   if (item.company === company && item.status === "انتظار") {
+       
+    //     return {
+    //       ...item,
+    //       status: "مقابلة" 
+    //     };
+    //   } else if(item.company === company && item.status === "مقابلة"){
+    //     return {
+    //       ...item,
+    //       status: "تمت المقابلة" 
+    //     };
+    //   }
+      
+    //   else {
+    //     return item; 
+    //   }
+    // });
+
+    // await updateDoc(appliedCompaniesRef, {
+    //   allPositions: updatedPositions
+    // });
+
+    // console.log(`Status updated for position '${hisposition}' in company '${company}'.`);
+
+    // // Fetch the updated document again to get the latest data
+    // const updatedAppliedCompaniesSnapshot = await getDoc(appliedCompaniesRef);
+    // const updatedAppliedCompaniesData = updatedAppliedCompaniesSnapshot.data();
+
+    // // Update useState with new data, changing status for all "انتظار" items
+    // const updatedParentArray = companyStudents.map(parent => {
+    //   if (parent.company === company) {
+    //     let arrs = []
+       
+    //     return {
+    //       ...parent,
+    //       allPositions: updatedAppliedCompaniesData.allPositions
+    //     };
+    //   } else {
+    //     return parent;
+    //   }
+    // });
+
+
+
+
+    // // Logging to indicate status update
+    // console.log("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
+    //   setCompanyStudents(updatedParentArray);
+   
+    // // Update state with the modified array
+    
+  }
+};
+
+const removeStudent = async(studentIDs, events, jobCompany)=>{
+  const companyStudentList = doc(db, `CompaniesData/${getLocal.id}`);
+  const companySnapshot = await getDoc(companyStudentList);
+  
+  if (companySnapshot.exists()) {
+   
+  const itsData = companySnapshot.data();
+    let candidates = itsData.candidates || [];
+
+    // Iterate through candidates array and update status based on conditions
+    candidates = candidates.map(item => {
+        if (item.studentID === studentIDs && item.eventId === events && item.company === jobCompany) {
+                return {
+                    ...item,
+                    status: "ملغي" // Update status to "مقابلة" for matching conditions
+                };
+           
+            
+        }
+        return item; // Return unchanged item if conditions do not match
+    });
+
+    // Update Firestore document with modified candidates array
+    await updateDoc(companyStudentList, { candidates });
+    getAppliedStudents(companyStudents.filter(e=>e.status !== "ملغي"))
+
+
+    const myUsers = doc(db, `users/${userID}/myEvents/${events}/appliedCompanies/${companys}`);
+    const userDoc = await getDoc(myUsers);
+
+    if (userDoc.exists()) {
+        const userData = userDoc.data();
+        console.log("#########++++++++"+JSON.stringify(userData.allPositions))
+        
+        
+        const updatedStudentUpdate = userData.allPositions.map(item => {
+            candidates.forEach(x => {
+                if (item.company === x.company && item.studentID === x.studentID && item.eventId === x.eventId) {
+                  console.log("%%%%%%%%")    
+                  item.status = x.status;
+                }
+            });
+            return item;
+        });
+         console.log("##########"+JSON.stringify(updatedStudentUpdate))
+        await updateDoc(myUsers, { allPositions: updatedStudentUpdate });
+    }
+
+
+  }
+
+
+
+
+}
 
   return (
     <div>
@@ -357,7 +972,7 @@ const [companyupdated, setCompanyupdated] = useState({
               <div>
                 {}
               <QRCode id="qr-code" value={companyData.companyName} className='hidden'></QRCode>
-              <RiDownload2Fill size={20} className='cursor-pointer' onClick={fetchData}/>
+              <RiDownload2Fill size={20} fill='#6e68c4'  className='cursor-pointer ' onClick={fetchData}/>
             </div>
 
               {/* Container for PDF generation, hidden from view */}
@@ -373,47 +988,64 @@ const [companyupdated, setCompanyupdated] = useState({
                     <hr className='flex justify-center w-full' />
                     <div className='flex justify-center bg-[#F3F6FF] w-[93%] mt-4 mr-10 max-sm:mr-0 max-sm:w-full max-sm:bg-white'>
   <div role="tablist" className="tabs w-[90vw] tabs-lifted bg-white max-sm:w-[80vw]">
-
     {/* المتقدمون */}
-    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white" aria-label="المتقدمين" />
-    <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6 h-[18vw] overflow-y-auto custom-scrollbar max-sm:h-[28vh] ">
-    {/* <p className='text-lg font-bold mb-5' > قائمة الطلاب</p> */}
-    {!checkPosition? (
-       <table className="w-full h-full max-sm:table-xs">
-       <tbody>
-         <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
-         <th className="text-center p-3 px-5 max-sm:p-1"> الاسم</th>
-         <th className="text-center p-3 px-5 max-sm:p-1">المجال الوظيفي </th>
-         <th className="text-center p-3 px-5 max-sm:p-1">السيرة الذاتية </th>
-         <th className="text-center p-3 px-5 max-sm:p-1">الحالة </th>
-         <th className="text-center p-3 px-5 max-sm:p-1 ">حذف </th>
+    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white " aria-label="المتقدمون"  defaultChecked/>
+    <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6  h-auto overflow-y-auto custom-scrollbar max-sm:h-[28vh]">
+      {/* <p className='text-lg font-bold mb-5' > قائمة الشركات</p> */}
+      {!checkPosition ? (
+        <table className="w-full h-full max-sm:table-xs">
+        <tbody>
+          <tr className="focus:outline-none  border border-[#e4e6e6] bg-[#fafafa] rounded py-6">
+          <th className="text-center  p-3 py-6 px-5 max-sm:p-1"> الاسم</th>
+          <th className="text-center p-3 py-6 px-5 max-sm:p-1">المجال الوظيفي </th>
+          <th className="text-center p-3 py-6 px-5 max-sm:p-1">السيرة الذاتية </th>
+          <th className="text-center p-3 py-6 px-5 max-sm:p-1">الحالة </th>
+          <th className="text-center p-3 py-6 px-5 max-sm:p-1 ">حذف </th>
+ 
+        </tr>
+        {companyStudents?(
+           
+           companyStudents.map((item, index)=>(
+           
+          
 
-       </tr>
-           <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded ">
-               <td className="p-3 px-5 max-sm:p-1">
-                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">   نوره محمد  </p>
-                   </div>
-               </td>
-               <td className="p-3 px-5 max-sm:p-1">
-                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[15ch] text-center break-words max-sm:w-[10ch]"> معسكر جافاسكربت  </p>
-                   </div>
-               </td>
-               <td className="p-3 px-5 max-sm:p-1">
-                <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                  <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[20ch] text-center break-words max-sm:w-[10ch]">
-                    Nora1998@hotmail.com
-                  </p>
+            <tr tabindex="0" className="focus:outline-none border py-16 h-auto border-[#e4e6e6] rounded" key={index}>
+            <td className=" px-5 max-sm:p-1  py-6 ">
+                <div className="flex flex-wrap justify-center max-sm:h-10">
+                    <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]"> {item.studentName} </p>
                 </div>
-              </td>
+            </td>
 
-              <td className="pb-2 px-5 max-sm:p-1 ">
-                   <div className="flex flex-wrap justify-center">
-                       <p className="text-base px-4 bg-[#fccd69] py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold">  انتظار</p>
-                   </div>
-               </td>
-               <td className="p-3 px-5 max-sm:p-1">
+            
+            <td className=" px-5 max-sm:p-1  py-6 ">
+                    <div className="flex  justify-center   max-sm:h-10">
+                        <p className="text-base flex justify-center font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-full  text-center break-words "> <RiDownload2Fill size={20} fill='#6e68c4'  className='cursor-pointer m-6 '/>
+                        </p>
+                    </div>
+                </td>
+                <td className="px-5 max-sm:p-1  py-6">
+                  {console.log("#"+ item.positionName)}
+                  {item.positionName && (
+                    item.positionName.map((position, index) => (
+                      <div key={index}>
+                        <div className="flex flex-wrap justify-center px-2   max-sm:h-10">
+                          <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[20ch] text-center break-words max-sm:w-[10ch]">{position}</p>
+                      
+                        </div>
+                        {/* Add other fields you want to display */}
+                      </div>
+                    ))
+                  )}
+                    
+                </td>
+           
+                <div className="flex justify-center items-center h-full">
+                <p  className="text-base px-4 bg-[#fccd69] py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold cursor-pointer" onClick={()=>{resetStatus(item.studentID, item.eventId, item.company, item.positionName)}}>{item.status}</p>
+
+                </div>
+             
+
+<td className="p-3 px-5 max-sm:p-1">
                     <div className="flex flex-wrap justify-center">
                         {/* <img src={deleteStudent} className='w-4 cursor-pointer' onClick={() => { document.getElementById('my_modal_1').showModal()}}/> */}
                         <button className='flex justify-center w-6 mb-2 cursor-pointer' onClick={() => { document.getElementById('my_modal_1').showModal()}} >
@@ -421,185 +1053,194 @@ const [companyupdated, setCompanyupdated] = useState({
                           <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
                           </svg>
                         </button>
-                        <dialog id="my_modal_1" className="modal modal-bottom sm:modal-middle">
-                                <div className="modal-box">
-                                    <h3 className="font-bold text-lg flex justify-center ">هل انت متأكد من حذف الطالب؟</h3>
-                                    <div className="modal-action">
-                                    <form method="dialog" className='flex justify-center items-center gap-2 w-full '>
-                                        <button onClick={() => {
-                                            const modal = document.getElementById('my_modal_2');
-                                            modal.showModal();
-                                            setTimeout(() => {
-                                              modal.close();
-                                            }, 2000);
-                                          }} className="rounded-lg bg-red-600 text-white hover:bg-red-500 w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh]">نعم</button>
-                                        <dialog id="my_modal_2" className="modal modal-bottom sm:modal-middle ">
-                                            <div className="modal-box">
-                                                <div className='flex flex-col justify-center items-center gap-4'>
-                                                  <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 512 512">
-                                                  <path fill="#32BEA6" d="M504.1,256C504.1,119,393,7.9,256,7.9C119,7.9,7.9,119,7.9,256C7.9,393,119,504.1,256,504.1C393,504.1,504.1,393,504.1,256z"></path><path fill="#FFF" d="M392.6,172.9c-5.8-15.1-17.7-12.7-30.6-10.1c-7.7,1.6-42,11.6-96.1,68.8c-22.5,23.7-37.3,42.6-47.1,57c-6-7.3-12.8-15.2-20-22.3C176.7,244.2,152,229,151,228.4c-10.3-6.3-23.8-3.1-30.2,7.3c-6.3,10.3-3.1,23.8,7.2,30.2c0.2,0.1,21.4,13.2,39.6,31.5c18.6,18.6,35.5,43.8,35.7,44.1c4.1,6.2,11,9.8,18.3,9.8c1.2,0,2.5-0.1,3.8-0.3c8.6-1.5,15.4-7.9,17.5-16.3c0.1-0.2,8.8-24.3,54.7-72.7c37-39.1,61.7-51.5,70.3-54.9c0.1,0,0.1,0,0.3,0c0,0,0.3-0.1,0.8-0.4c1.5-0.6,2.3-0.8,2.3-0.8c-0.4,0.1-0.6,0.1-0.6,0.1l0-0.1c4-1.7,11.4-4.9,11.5-5C393.3,196.1,397,184.1,392.6,172.9z"></path>
-                                                  </svg>
-                                                  <h3 className="font-bold text-lg">تم حذف الطالب بنجاح</h3>
-                                                </div>
-                                              <div className="modal-action">
-                                                <form method="dialog">
-                                                {/* <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button> */}
-                                                </form>
-                                              </div>
-                                            </div>
-                                        </dialog>
-                                        <button className="rounded-lg  text-black border border-[#a3a3a3] hover:bg-[#f0f0f0] w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh] ">لا</button>
-                                    </form>
-                                    </div>
-                                </div>
-                        </dialog>
+                        <dialog id="my_modal_1" className="modal ">
+                          <div className="modal-box w-[35vw] max-w-5xl" >
+
+                          <p className="py-4 text-[1.1rem]">هل انت متأكد من الغاء الطالب؟</p>
+                          <div className="modal-action">
+                          <form method="dialog" className='gap-6'>
+                         
+                          <button className="btn ml-1 bg-[#99D2CB] text-white" onClick={()=>removeStudent(item.studentID,item.eventId, item.company)} >نعم</button>
+                         
+                         
+                          <button className="btn bg-[#99D2CB] text-white">لا</button>
+                         
+
+                          </form>
+                          </div>
+                          </div>
+                      </dialog>
                     </div>
                 </td>
-               {/* <td className="">
-                   <div className="flex items-center pl-5">
-                       <img src={deleteStudent}> </img>
-                   </div>
-               </td>  */}
+              
            </tr>
-       </tbody>
-   </table>  
-    ):(
-      <p className='text-[1.2rem] mt-4 text-red-600 font-medium'> لعرض قائمة المتقدمين, يرجى التأكد من ادخال المسميات الوظيفية المطلوبة و اسماء الموظفين المشاركين</p>
+
+            
+          ))
+      
+
+        ):(
+          <></>
+        )}
+            
+        </tbody>
+    </table>
+        
+      ):(
+     
+                <p className='text-[1.2rem] mt-4 text-red-600 font-medium'> لعرض قائمة المتقدمين, يرجى التأكد من ادخال المسميات الوظيفية المطلوبة و اسماء الموظفين المشاركين</p>
+
+      
       )}
-      </div>
+      
+            </div>
 
-    {/* بالطابور  */}
 
-    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white" aria-label="الطابور" />
-    <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6 h-[18vw] overflow-y-auto custom-scrollbar max-sm:h-[28vh] ">
+            <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white" aria-label="في الطابور" />
+            <div role="tabpanel" className="tab-content  overflow-y-auto custom-scrollbar bg-white border-base-100 rounded-box p-6">
     {/* <p className='text-lg font-bold mb-5' > قائمة الطلاب</p> */}
     {!checkPosition? (
-       <table className="w-full h-full max-sm:table-xs">
-       <tbody>
-         <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
-         <th className="text-center p-3 px-5 max-sm:p-1"> الاسم</th>
-         <th className="text-center p-3 px-5 max-sm:p-1">المسمى الوظيفي </th>
-         <th className="text-center p-3 px-5 max-sm:p-1">السيرة الذاتية </th>
-         <th className="text-center p-3 px-5 max-sm:p-1">الحالة </th>
-         <th className="text-center p-3 px-5 max-sm:p-1 ">حذف </th>
+       <table className="w-full h-full max-sm:table-xs ">
+       <tbody className=''>
+         <tr className="focus:outline-none  border border-[#e4e6e6] bg-[#fafafa] rounded py-6">
+         <th className="text-center p-3 py-6 px-5 max-sm:p-1"> الأسم</th>
+         <th className="text-center p-3 py-6 px-5 max-sm:p-1">المعسكر </th>
+         <th className="text-center p-3 py-6 px-5 max-sm:p-1">الأيميل </th>
+         <th className="ttext-center p-3 py-6 px-5 max-sm:p-1">الحالة </th>
+         <th className="ttext-center p-3 py-6 px-5 max-sm:p-1">الحذف </th>
 
        </tr>
-           <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded ">
-               <td className="p-3 px-5 max-sm:p-1">
-                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">   نوره محمد  </p>
-                   </div>
-               </td>
-               <td className="p-3 px-5 max-sm:p-1">
-                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[15ch] text-center break-words max-sm:w-[10ch]"> معسكر جافاسكربت  </p>
-                   </div>
-               </td>
-               <td className="p-3 px-5 max-sm:p-1">
-                <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                  <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[20ch] text-center break-words max-sm:w-[10ch]">
-                    Nora1998@hotmail.com
-                  </p>
+       {completedApplication?(
+          completedApplication.map((item, index)=>(
+            <>
+
+            <tr tabindex="0" className="focus:outline-none border py-16 h-auto border-[#e4e6e6] rounded">
+            <td className="px-5 max-sm:p-1  py-6">
+                <div className="flex flex-wrap justify-center max-sm:h-10  ">
+                    <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">   {item.studentName} </p>
+                
                 </div>
-              </td>
+            </td>
 
-               <td className="pb-2 px-5 max-sm:p-1 ">
-                   <div className="flex flex-wrap justify-center">
-                       <p className="text-base  px-4 bg-[#74a7df] py-1  rounded-md text-white font-medium mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold text-center">  يجري مقابلة</p>
-                   </div>
-               </td> 
+            
+            <td className="px-5 max-sm:p-1  py-6">
+                    <div className="flex items-center pl-5">
+                        <p className="ttext-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">   </p>
+                    </div>
+                </td>
+                <td className="px-5 max-sm:p-1  py-6">
+                {console.log("#"+ item.positionName)}
+                  {item.positionName && (
+                    item.positionName.map((position, index) => (
+                      <div key={index}>
+                        <div className="flex flex-wrap justify-center px-2   max-sm:h-10">
+                          <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[20ch] text-center break-words max-sm:w-[10ch]">{position}</p>
+                      
+                        </div>
+                        {/* Add other fields you want to display */}
+                      </div>
+                    ))
+                  )}
+                    
+                </td>
+                <div className="flex justify-center items-center h-full">
+                <p  className="text-base px-4 bg-[#fccd69] py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold cursor-pointer" onClick={()=>{resetStatus(item.studentID, item.eventId, item.company, item.positionName)}}>{item.status}</p>
 
-               <td className="p-3 px-5 max-sm:p-1">
+                </div>
+
+<td className="p-3 px-5 max-sm:p-1">
                     <div className="flex flex-wrap justify-center">
-                        {/* <img src={deleteStudent} className='w-4 cursor-pointer' onClick={() => { document.getElementById('my_modal_2').showModal()}}/> */}
-                        <button className='flex justify-center w-6 mb-2 cursor-pointer' onClick={() => { document.getElementById('my_modal_3').showModal()}} >
+                        {/* <img src={deleteStudent} className='w-4 cursor-pointer' onClick={() => { document.getElementById('my_modal_1').showModal()}}/> */}
+                        <button className='flex justify-center w-6 mb-2 cursor-pointer' onClick={() => { document.getElementById('my_modal_1').showModal()}} >
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-7 text-[#d33232]">
                           <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
                           </svg>
                         </button>
-                        <dialog id="my_modal_3" className="modal modal-bottom sm:modal-middle">
-                                <div className="modal-box">
-                                    <h3 className="font-bold text-lg flex justify-center ">هل انت متأكد من حذف الطالب؟</h3>
-                                    <div className="modal-action">
-                                    <form method="dialog" className='flex justify-center items-center gap-2 w-full '>
-                                        <button onClick={() => {
-                                            const modal = document.getElementById('my_modal_4');
-                                            modal.showModal();
-                                            setTimeout(() => {
-                                              modal.close();
-                                            }, 2000);
-                                          }} className="rounded-lg bg-red-600 text-white hover:bg-red-500 w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh]">نعم</button>
-                                        <dialog id="my_modal_4" className="modal modal-bottom sm:modal-middle ">
-                                            <div className="modal-box">
-                                                <div className='flex flex-col justify-center items-center gap-4'>
-                                                  <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 512 512">
-                                                  <path fill="#32BEA6" d="M504.1,256C504.1,119,393,7.9,256,7.9C119,7.9,7.9,119,7.9,256C7.9,393,119,504.1,256,504.1C393,504.1,504.1,393,504.1,256z"></path><path fill="#FFF" d="M392.6,172.9c-5.8-15.1-17.7-12.7-30.6-10.1c-7.7,1.6-42,11.6-96.1,68.8c-22.5,23.7-37.3,42.6-47.1,57c-6-7.3-12.8-15.2-20-22.3C176.7,244.2,152,229,151,228.4c-10.3-6.3-23.8-3.1-30.2,7.3c-6.3,10.3-3.1,23.8,7.2,30.2c0.2,0.1,21.4,13.2,39.6,31.5c18.6,18.6,35.5,43.8,35.7,44.1c4.1,6.2,11,9.8,18.3,9.8c1.2,0,2.5-0.1,3.8-0.3c8.6-1.5,15.4-7.9,17.5-16.3c0.1-0.2,8.8-24.3,54.7-72.7c37-39.1,61.7-51.5,70.3-54.9c0.1,0,0.1,0,0.3,0c0,0,0.3-0.1,0.8-0.4c1.5-0.6,2.3-0.8,2.3-0.8c-0.4,0.1-0.6,0.1-0.6,0.1l0-0.1c4-1.7,11.4-4.9,11.5-5C393.3,196.1,397,184.1,392.6,172.9z"></path>
-                                                  </svg>
-                                                  <h3 className="font-bold text-lg">تم حذف الطالب بنجاح</h3>
-                                                </div>
-                                              <div className="modal-action">
-                                                <form method="dialog">
-                                                {/* <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button> */}
-                                                </form>
-                                              </div>
-                                            </div>
-                                        </dialog>
-                                        <button className="rounded-lg  text-black border border-[#a3a3a3] hover:bg-[#f0f0f0] w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh] ">لا</button>
-                                    </form>
-                                    </div>
-                                </div>
-                        </dialog>
+                        <dialog id="my_modal_1" className="modal ">
+                          <div className="modal-box w-[35vw] max-w-5xl" >
+
+                          <p className="py-4 text-[1.1rem]">هل انت متأكد من الغاء الطالب؟</p>
+                          <div className="modal-action">
+                          <form method="dialog" className='gap-6'>
+                         
+                          <button className="btn ml-1 bg-[#99D2CB] text-white"  >نعم</button>
+                         
+                         
+                          <button className="btn bg-[#99D2CB] text-white">لا</button>
+                         
+
+                          </form>
+                          </div>
+                          </div>
+                      </dialog>
                     </div>
                 </td>
-               {/* <td className="">
-                   <div className="flex items-center pl-5">
-                       <img src={deleteStudent}> </img>
-                   </div>
-               </td>  */}
+              
+              
            </tr>
+
+          {/*  */}
+
+  
+          </>
+
+            
+          ))
+      
+
+        ):(
+          <></>
+        )}
        </tbody>
    </table>  
     ):(
-      <p className='text-[1.2rem] mt-4 text-red-600 font-medium'> لعرض قائمة المتقدمين, يرجى التأكد من ادخال المسميات الوظيفية المطلوبة و اسماء الموظفين المشاركين</p>
-      )}
-      </div>
+      
+                <p className='text-[1.2rem] mt-4 text-red-600 font-medium'> لعرض قائمة المتقدمين, يرجى التأكد من ادخال المسميات الوظيفية المطلوبة و اسماء الموظفين المشاركين</p>
 
-    {/* مكتمل   */}
+      
+      )}
+   
+  
+                      </div>
+
+            {/*  */}
 
     <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white" aria-label="مكتمل" />
-    <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6 h-[18vw] overflow-y-auto custom-scrollbar max-sm:h-[28vh] ">
+    <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6">
     {/* <p className='text-lg font-bold mb-5' > قائمة الطلاب</p> */}
     {!checkPosition? (
-       <table className="w-full h-full max-sm:table-xs">
+       <table className="w-[48.6vw] whitespace-nowrap max-sm:table-xs">
        <tbody>
-        <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
-          <th className="text-center p-3 px-5 max-sm:p-1"> الاسم</th>
-          <th className="text-center p-3 px-5 max-sm:p-1">المجال الوظيفي </th>
-          <th className="text-center p-3 px-5 max-sm:p-1">السيرة الذاتية </th>
-          <th className="text-center p-3 px-5 max-sm:p-1">الحالة </th>
-        </tr>
-           <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded ">
-               <td className="p-3 px-5 max-sm:p-1">
-                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">   نوره محمد  </p>
+         <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
+         <th className="text-right p-3 px-5"> الأسم</th>
+         <th className="text-right p-3 px-5">المعسكر </th>
+         <th className="text-right p-3 px-5">الأيميل </th>
+         <th className="text-right p-3 px-5">الحالة </th>
+       </tr>
+           <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded">
+               {/* <td className="">
+                   <div className="flex items-center pl-5">
+                       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPk0IrfQt8yu8km4DYRG69OOhe2GQlK5NLvzIk23B3u77AjSRLJ3NLOqK9_W53M8jHV6Y&usqp=CAU" alt="" srcset="" className='w-[7vw] h-[7vh] mr-2' />
+                   </div>
+               </td> */}
+               <td className="">
+                   <div className="flex items-center pl-5">
+                       <p className="text-base font-medium leading-none text-gray-700 mr-5">   نوره محمد  </p>
                    </div>
                </td>
-               <td className="p-3 px-5 max-sm:p-1">
-                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[15ch] text-center break-words max-sm:w-[10ch]"> معسكر جافاسكربت  </p>
+               <td className="">
+                   <div className="flex items-center pl-5">
+                       <p className="text-base font-medium leading-none text-gray-700 mr-2">   معسكر جافاسكربت  </p>
                    </div>
                </td>
-               <td className="p-3 px-5 max-sm:p-1">
-                <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                  <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[20ch] text-center break-words max-sm:w-[10ch]">
-                    Nora1998@hotmail.com
-                  </p>
-                </div>
-              </td>
-
-               <td className="pb-2 px-5 max-sm:p-1 ">
-                   <div className="flex flex-wrap justify-center">
-                       <p className="text-base px-4 bg-[#7ed191] py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold">  مكتمل</p>
+               <td className="">
+                   <div className="flex items-center pl-5">
+                       <p className="text-base font-medium leading-none text-gray-700 mr-2"> Nora@hotmail.com</p>
+                   </div>
+               </td>
+               <td className="">
+                   <div className="flex items-center pl-5">
+                       <p className="text-base px-4 bg-[#ceefd4] py-1  rounded-md text-[#b9b9b7] font-medium leading-none  mr-2"> مكتمل</p>
                    </div>
                </td> 
 
@@ -609,141 +1250,17 @@ const [companyupdated, setCompanyupdated] = useState({
                    </div>
                </td>  */}
            </tr>
-
-           <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded ">
-               <td className="p-3 px-5 max-sm:p-1">
-                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">   نوره محمد  </p>
-                   </div>
-               </td>
-               <td className="p-3 px-5 max-sm:p-1">
-                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[15ch] text-center break-words max-sm:w-[10ch]"> معسكر جافاسكربت  </p>
-                   </div>
-               </td>
-               <td className="p-3 px-5 max-sm:p-1">
-                <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                  <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[20ch] text-center break-words max-sm:w-[10ch]">
-                    Nora1998@hotmail.com
-                  </p>
-                </div>
-              </td>
-
-               <td className="pb-2 px-5 max-sm:p-1 ">
-                   <div className="flex flex-wrap justify-center">
-                       <p className="text-base px-4 bg-[#7ed191] py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold">  مكتمل</p>
-                   </div>
-               </td> 
-
-               {/* <td className="">
-                   <div className="flex items-center pl-5">
-                       <img src={deleteStudent}> </img>
-                   </div>
-               </td>  */}
-           </tr>
-
-           <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded ">
-               <td className="p-3 px-5 max-sm:p-1">
-                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">   نوره محمد  </p>
-                   </div>
-               </td>
-               <td className="p-3 px-5 max-sm:p-1">
-                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[15ch] text-center break-words max-sm:w-[10ch]"> معسكر جافاسكربت  </p>
-                   </div>
-               </td>
-               <td className="p-3 px-5 max-sm:p-1">
-                <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                  <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[20ch] text-center break-words max-sm:w-[10ch]">
-                    Nora1998@hotmail.com
-                  </p>
-                </div>
-              </td>
-
-               <td className="pb-2 px-5 max-sm:p-1 ">
-                   <div className="flex flex-wrap justify-center">
-                       <p className="text-base px-4 bg-[#7ed191] py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold">  مكتمل</p>
-                   </div>
-               </td> 
-
-               {/* <td className="">
-                   <div className="flex items-center pl-5">
-                       <img src={deleteStudent}> </img>
-                   </div>
-               </td>  */}
-           </tr>
-
-           <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded ">
-               <td className="p-3 px-5 max-sm:p-1">
-                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">   نوره محمد  </p>
-                   </div>
-               </td>
-               <td className="p-3 px-5 max-sm:p-1">
-                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[15ch] text-center break-words max-sm:w-[10ch]"> معسكر جافاسكربت  </p>
-                   </div>
-               </td>
-               <td className="p-3 px-5 max-sm:p-1">
-                <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                  <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[20ch] text-center break-words max-sm:w-[10ch]">
-                    Nora1998@hotmail.com
-                  </p>
-                </div>
-              </td>
-
-               <td className="pb-2 px-5 max-sm:p-1 ">
-                   <div className="flex flex-wrap justify-center">
-                       <p className="text-base px-4 bg-[#7ed191] py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold">  مكتمل</p>
-                   </div>
-               </td> 
-
-               {/* <td className="">
-                   <div className="flex items-center pl-5">
-                       <img src={deleteStudent}> </img>
-                   </div>
-               </td>  */}
-           </tr>
-
-           <tr tabindex="0" className="focus:outline-none h-16 border border-[#e4e6e6] rounded ">
-               <td className="p-3 px-5 max-sm:p-1">
-                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[8ch] text-center break-words max-sm:w-[10ch]">   نوره محمد  </p>
-                   </div>
-               </td>
-               <td className="p-3 px-5 max-sm:p-1">
-                   <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                       <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[15ch] text-center break-words max-sm:w-[10ch]"> معسكر جافاسكربت  </p>
-                   </div>
-               </td>
-               <td className="p-3 px-5 max-sm:p-1">
-                <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-10">
-                  <p className="text-base font-medium max-sm:text-center max-sm:text-xs leading-none text-gray-700 w-[20ch] text-center break-words max-sm:w-[10ch]">
-                    Nora1998@hotmail.com
-                  </p>
-                </div>
-              </td>
-
-               <td className="pb-2 px-5 max-sm:p-1 ">
-                   <div className="flex flex-wrap justify-center">
-                       <p className="text-base px-4 bg-[#7ed191] py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold">  مكتمل</p>
-                   </div>
-               </td> 
-
-               {/* <td className="">
-                   <div className="flex items-center pl-5">
-                       <img src={deleteStudent}> </img>
-                   </div>
-               </td>  */}
-           </tr>
-
        </tbody>
    </table>  
     ):(
-      <p className='text-[1.2rem] mt-4 text-red-600 font-medium'> لعرض قائمة المتقدمين, يرجى التأكد من ادخال المسميات الوظيفية المطلوبة و اسماء الموظفين المشاركين</p>
+      
+                <p className='text-[1.2rem] mt-4 text-red-600 font-medium'> لعرض قائمة المتقدمين, يرجى التأكد من ادخال المسميات الوظيفية المطلوبة و اسماء الموظفين المشاركين</p>
+
+      
       )}
-      </div>
+   
+  
+                      </div>
   </div>
   </div>
                     
@@ -754,9 +1271,9 @@ const [companyupdated, setCompanyupdated] = useState({
                 <div className='mt-6 bg-white h-[100vh] rounded-lg max-sm:h-[50vh] max-sm:w-[90vw]'>
                   <div className='flex items-center justify-between'>
                   <h1 className='pt-6 pr-6 font-extrabold text-[#6e68c4] text-[1.1rem]'>  تفاصيل الشركة </h1>
-                  <button className="btn mt-6 rounded-lg text-white bg-[#f39e4e] py-1 px-3 ml-6" onClick={()=>document.getElementById('my_modal_5').showModal()}> تعديل</button>
-                  <dialog id="my_modal_5" class="modal">
-<div className="modal-box w-[50vw] max-w-5xl flex flex-col p-4 py-2 max-sm:w-[90vw]" style={{ maxHeight: '95vh', overflowY: 'auto' }}>
+                  <button className="btn mt-6 rounded-lg text-white bg-[#f39e4e] py-1 px-3 ml-6" onClick={()=>document.getElementById('my_modal_4').showModal()}> تعديل</button>
+                  <dialog id="my_modal_4" class="modal">
+<div className="modal-box w-[50vw] max-w-5xl flex flex-col p-4 py-2" style={{ maxHeight: '95vh', overflowY: 'auto' }}>
   <h3 className="font-bold text-lg py-4 text-[#6e68c4]">تعديل تفاصيل الشركة</h3>
  
   <label className="mt-4 font-bold">نبذه عن الشركة</label>
@@ -769,7 +1286,7 @@ const [companyupdated, setCompanyupdated] = useState({
     
   <div className='flex flex-col'>
   <label className="mt-4 font-bold">المنطقة</label>
-  <input className="py-2 mt-4 w-[12vw] px-2 rounded-md max-sm:" type="text" value={companyupdated.Location} onChange={handleLocationChange}></input>
+  <input className="py-2 mt-4 w-[12vw] px-2 rounded-md" type="text" value={companyupdated.Location} onChange={handleLocationChange}></input>
   
   </div>
   </div>
@@ -780,13 +1297,13 @@ const [companyupdated, setCompanyupdated] = useState({
 
 
   </div>
-  <div className='flex flex-wrap gap-4 w-full mt-4 rounded-md bg-white p-4'>
+  <div className='flex flex-wrap gap-4 w-full mt-4 rounded-md bg-white p-4 '>
     {(companyupdated.jobPositions && companyupdated.jobPositions.length >0) &&(
       <>
         {companyupdated.jobPositions.map((positionName, index) => (
           <div className='rounded-md h-auto mt-2 px-4 flex gap-2 items-center' key={index}>
-            <div className="relative flex items-center ">
-              <input
+           <div className="relative flex items-center">
+           <input
                 type="text"
                 className="py-0 mt-2 w-auto flex-shrink-0 px-2 rounded-full pl-4 border-[1.2px] bg-gray-100 pr-8"
                 style={{ minWidth: '50px' }} // Adjust minimum width as needed
@@ -800,7 +1317,7 @@ const [companyupdated, setCompanyupdated] = useState({
                 onClick={() => deletePosition(index)}
                 alt="Delete"
               />
-            </div>
+        </div>
           </div>
           
         ))}
@@ -811,31 +1328,36 @@ const [companyupdated, setCompanyupdated] = useState({
 
 {showNewPositionInput && (
   <div className='rounded-md h-auto mt-2 px-4 flex gap-2 items-center'>
-    <input
-      type="text"
-      className="py-0 mt-1 w-auto px-2 rounded-full pl-4 border-[1.2px] bg-gray-100 pr-8"
-      style={{ minWidth: '50px' }} // Adjust minimum width as needed
-      placeholder="عنوان الوظيفة"
-      value={newPosition}
-      onChange={handleNewPositionChange}
-    />
-    <IoIosAddCircle size={25} fill='#5ab35f' className='cursor-pointer mt-1' onClick={handleSubmit} />
-  </div>
+  <input
+    type="text"
+    className="py-0 mt-1 w-auto px-2 rounded-full pl-4 border-[1.2px] bg-gray-100 pr-8"
+    style={{ minWidth: '50px' }} // Adjust minimum width as needed
+    placeholder="عنوان الوظيفة"
+    value={newPosition}
+    onChange={handleNewPositionChange}
+  />
+  <IoIosAddCircle size={25} fill='#5ab35f' className='cursor-pointer mt-1' onClick={handleSubmit} />
+</div>
 )}
 </div>
 
   
-  <div className="modal-action mt-4 flex gap-2">
-    <button className="btn mt-6 rounded-lg text-white bg-[#f39e4e] hover:bg-[#ffb977] py-1 px-3 " onClick={() => {
+  <div className="modal-action pb-4 mt-4">
+  <button className="btn mt-6 rounded-lg text-white bg-[#f39e4e] hover:bg-[#ffb977] py-1 px-3 " onClick={() => {
     updateInfo(id, getLocal.id)
-    const modal = document.getElementById('my_modal_6');
-                  modal.showModal();
+    document.getElementById('my_modal_4').close()
+    // document.getElementById('my_modal_5').showModal();
+    const modal = document.getElementById('my_modal_5');
+    modal.showModal();
 
-                  setTimeout(() => {
-                    modal.close();
-                  }, 2000);
+    setTimeout(() => {
+      modal.close();
+    }, 2000);
+  
+    
     }}>حفظ</button>
-    <dialog id="my_modal_6" className="modal modal-bottom sm:modal-middle ">
+
+<dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle ">
         <div className="modal-box">
         <div className='flex flex-col justify-center items-center gap-4'>
           <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 512 512">
@@ -845,12 +1367,12 @@ const [companyupdated, setCompanyupdated] = useState({
         </div>
         <div className="modal-action">
           <form method="dialog">
-          {/* <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button> */}
+            {/* if there is a button in form, it will close the modal */}
+            
           </form>
         </div>
       </div>
     </dialog>
-    <button className="btn mt-6 rounded-lg text-white bg-[#999999] hover:bg-[#b1b1b1] py-1 px-3 ">إلغاء</button>
   </div>
 </div>
 </dialog>
@@ -860,24 +1382,24 @@ const [companyupdated, setCompanyupdated] = useState({
                     <hr className='flex justify-center w-full' />
                     <div className="flex flex-col  justify-center w-full">
                       <p className='mr-6 font-bold mt-6 text-[1.04rem]'>نبذه عن الشركة:</p>
-                      <p  className='border-non pr-6 pt-2 text-[#202020] ml-6  text-[0.9rem] text-justify ' >{companyData.description}</p>
+                      <p  className='border-non pr-6 pt-2 text-[#202020] ml-6  text-[0.9rem] text-justify' >{companyData.description}</p>
                       <div className='pt-2 pr-5 flex gap-1 mt-4'>
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5 text-[#99D2CB]">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                       </svg>
-                      <p className='text-[gray] text-[0.8rem]'>{companyData.Location} </p>
+                      <p className='text-[gray] text-[0.8rem] '>{companyData.Location} </p>
                   </div> 
 
                 
                   <p className='mr-6 font-bold mt-8 text-[1.04rem]'>الشواغر المتاحة:</p>
 
-                  <div className='flex mt-2 flex-wrap'>
+                  <div className='flex gap-2 mt-2'>
                   {
                     companyData && companyData.jobPositions && companyData.jobPositions.length > 0 ? (
                       <>
                         {companyData.jobPositions.map((position, index) => (
-                          <p key={index} className='px-2 mr-5 mt-2 py-1 rounded-full w-fit text-[0.8rem] bg-[#eee6f5]'>
+                          <p key={index} className='px-2 mr-6 mt-2 py-1 rounded-full w-fit text-[0.8rem] bg-[#eee6f5]'>
                             {position}
                           </p>
                         ))}
