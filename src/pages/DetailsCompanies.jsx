@@ -6,6 +6,7 @@ import { auth, db, storage } from '../config/firebase';
 import { getDoc, doc, collection, getDocs, updateDoc, deleteDoc, setDoc } from 'firebase/firestore';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useLocation } from 'react-router-dom';
+import Footer from '../components/Footer';
 
 
 const DetailsCompanies = () => {
@@ -16,6 +17,9 @@ const DetailsCompanies = () => {
        const {companyID, eventIDs} = locationValue.state
        const initialButtonState = { text: 'تقديم', color: '#99D2CB' };
        const getLocal = JSON.parse(localStorage.getItem("loggedIn"));
+       const [checkAppliedJob, setCheckAppliedJob] = useState([])
+       const [hisApplication, setHisApplication] = useState([])
+       const [applied, setApplied] = useState(false);
        const [company, setCompanyData] = useState({
            companyName: '',
            description: '',
@@ -23,14 +27,19 @@ const DetailsCompanies = () => {
            Location: '',
            logo:'',
            jobPositions: [],
-           EmpList:[]
+           endDate:'',
+           startDate:'',
+           startTime:'',
+           endTime:''
        });
        useEffect(()=>{
    
            getCompanyInfo()
+           chechPositions()
+           hisapplicationList()
            
    
-       }, [])
+       }, [applied])
    
    
        const getCompanyInfo = async()=>{
@@ -58,6 +67,10 @@ const DetailsCompanies = () => {
                        Location: companyData.Location,  
                        logo: companyData.logo,
                        jobPositions: eventJobs.jobPositions,
+                       endDate:companyData.endDate,
+                       startDate:companyData.startDate,
+                       startTime:companyData.startTime,
+                       endTime:companyData.endTime
                       
                    });
    
@@ -74,9 +87,28 @@ const DetailsCompanies = () => {
       
    
        const jobApplied = async (jobName, index) => {
+        setApplied(false)
+        const currentDate = new Date();
+
+        const options = {
+            timeZone: 'Asia/Riyadh',  // Middle East timezone, adjust as per your specific location
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        };
+        const localDate = currentDate.toLocaleString('en-US', options);
+        
+
            try {
                const myCompaniesRef = doc(db, `users/${getLocal.id}/myEvents/${eventIDs}/appliedCompanies`, companyID);
                const userDocSnapshot = await getDoc(myCompaniesRef);
+
+               console.log(""+ getLocal.id)
+
+             
        
                if (userDocSnapshot.exists()) {
    
@@ -85,18 +117,30 @@ const DetailsCompanies = () => {
                const positionExists = applicationInfo.allPositions.some(position => position.positionName === jobName);
    
                if (!positionExists) {
-                   const updatedPositions = [
-                       ...applicationInfo.allPositions,
-                       { company: companyID, positionName: jobName, status: "انتظار" }
-                   ];
-   
-                   await updateDoc(myCompaniesRef, {
-                       allPositions: updatedPositions
-                   });
-   ;
-               } else {
-                   console.error(`Position '${jobName}' already exists.`);
-               }
+                const updatedPositions = [
+                    { indexNo: index, company: companyID,eventId:eventIDs, studentID: getLocal.id, positionName: jobName, status: "انتظار", appliedDate: localDate },
+                    ...applicationInfo.allPositions  // Keep existing positions after the new one
+                ];
+
+            
+            
+                await updateDoc(myCompaniesRef, { allPositions: updatedPositions });
+                setApplied(true);
+                
+                let arrs =
+
+                addToCompanies([{ indexNo: index, 
+                    company: companyID, 
+                    studentID: getLocal.id, 
+                    positionName: jobName, 
+                    status: "انتظار", 
+                    eventId:eventIDs,
+                    appliedDate: localDate }])
+                
+            } else {
+                console.error(`Position '${jobName}' already exists.`);
+                setApplied(true);
+            }
                    
                   
                } else {
@@ -109,43 +153,209 @@ const DetailsCompanies = () => {
        
                        await setDoc(docRef, {
                            allPositions: [
-                               { company: companyID, positionName: jobName, status: "انتظار" },
+                               {indexNo: index, company: companyID, eventId:eventIDs, studentID: getLocal.id, positionName: jobName, status: "انتظار", appliedDate: localDate},
                            ]
                        });
+                       setApplied(true)
+
                    } else {
                        console.error(`Parent document 'users/${getLocal.id}/myEvents/${eventIDs}' does not exist.`);
-                   }
+                       setApplied(true)
+                    }
                }
+
+               
            } catch (error) {
                console.error("Error fetching or updating document:", error);
                // Handle error appropriately
            }
        }
-   
-   
-       const checkBtn = async()=>{
-           try {
-               const myCompaniesRef = doc(db, `users/${getLocal.id}/myEvents/${eventIDs}/appliedCompanies`, companyID);
-               const userDocSnapshot = await getDoc(myCompaniesRef);
-   
-               if (userDocSnapshot.exists()) {
-                   const data = userDocSnapshot.data();
-                   setApplicationInfo(data);
-               } else {
-                   console.error("Document does not exist.");
-               }
-           } catch (error) {
-               console.error("Error fetching document:", error);
-               // Handle error appropriately
-           
+
+       const chechPositions = async()=>{
+        try{
+            
+            const myCompaniesRef = doc(db, `users/${getLocal.id}/myEvents/${eventIDs}/appliedCompanies`, companyID);
+            const userDocSnapshot = await getDoc(myCompaniesRef);
+    
+            if (userDocSnapshot.exists()) {
+                const applicationInfo = userDocSnapshot.data();
+                if(applicationInfo.allPositions){
+
+                    const lists = applicationInfo.allPositions
+                    let arr = []
+                    lists.forEach(position => {
+                       
+                        arr.push({
+                           company: position.company,
+                           positionName: position.positionName,
+                           status: position.status,
+                           indexNo:arr.length
+                        })
+                        console.log("hhhhhhhhhhhhhi")
+        
+        
+                        console.log(`Status of job: ${JSON.stringify(arr)}`);
+                    });
+    
+                    setCheckAppliedJob(arr)
+    
+
+                }
+               
+            }
+
+        }catch{
+
+        }
+      
+
        }
+
+       const hisapplicationList =  async()=>{
+
+        const myCompaniesRef = doc(db, `users/${getLocal.id}/myEvents/${eventIDs}/appliedCompanies`, companyID);
+            const userDocSnapshot = await getDoc(myCompaniesRef);
+    
+            if (userDocSnapshot.exists()) {
+
+                const applicationInfo = userDocSnapshot.data();
+                if(applicationInfo.allPositions){
+
+                    const lists = applicationInfo.allPositions
+                    let arr = []
+                    lists.forEach(position => {
+
+                       
+                        arr.push({
+                           company: position.company,
+                           positionName: position.positionName,
+                           status: position.status,
+                           indexNo: arr.length
+                        })
+                        console.log("hhhhhhhhhhhhhi")
+        
+        
+                        console.log(`Status of job: ${JSON.stringify(arr)}`);
+                    });
+
+                    setHisApplication(arr)
+
+                }}
+
+
        }
+
+       const removeApplication = async(job, index)=>{
+        console.log(job)
+       
+        const myCompaniesRef = doc(db, `users/${getLocal.id}/myEvents/${eventIDs}/appliedCompanies`, companyID);
+            const userDocSnapshot = await getDoc(myCompaniesRef);
+    
+            if (userDocSnapshot.exists()) {
+                const applicationInfo = userDocSnapshot.data();
+                if(applicationInfo.allPositions){
+
+                    const updatedPositions = applicationInfo.allPositions.filter(position => position.positionName !== job);
+                
+                await updateDoc(myCompaniesRef, {
+                    allPositions: updatedPositions
+                })
+
+                hisapplicationList()
+                chechPositions()
+                
+
+
+
+
+       }}}
+
+
+      
+       const addToCompanies = async(studentObj)=>{
+        console.log("hellloooooooooooooooooooooo"+ JSON.stringify(studentObj))
+        if (studentObj && studentObj.length > 0) {
+            const myCompaniesRef = doc(db, 'CompaniesData', studentObj[0].company);
+            
+            const userDocSnapshot = await getDoc(myCompaniesRef);
+            console.log("QQQQQQQQQ"+userDocSnapshot)
+            if (userDocSnapshot.exists()) {
+                const applicationInfo = userDocSnapshot.data();
+                console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXX"+applicationInfo)
+                let candidates = applicationInfo.candidates || [];
+    
+                const existingCandidateIndex = candidates.findIndex(candidate => candidate.studentID === studentObj[0].studentID && candidate.eventId === studentObj[0].eventId);
+    
+                if (existingCandidateIndex !== -1) {
+                    // If candidate exists, update positionName array
+                    const existingCandidate = candidates[existingCandidateIndex];
+                    const positionNamesSet = new Set(existingCandidate.positionName);
+                    positionNamesSet.add(studentObj[0].positionName); // Add new jobName to the set
+                    existingCandidate.positionName = Array.from(positionNamesSet); // Convert back to array
+    
+                } else {
+                    // If studentID doesn't exist, add new object to candidates array
+                    const newCandidate = {
+                        indexNo: studentObj[0].indexNo,
+                        company: studentObj[0].company,
+                        studentID: studentObj[0].studentID,
+                        positionName: [studentObj[0].positionName],
+                        status: studentObj[0].status,
+                        eventId:studentObj[0].eventId,
+                        appliedDate: studentObj[0].appliedDate
+                      };
+
+                      console.log("WWWWWWWWWWWWWWWWWWWWW")
+                      console.log(newCandidate)
+                      candidates.push(newCandidate);
+                }
+    
+                await updateDoc(myCompaniesRef, { candidates });
+        
+        
+            }}
+    
+       }
+
+        //      let arrs ={ indexNo: index, 
+        // company: companyID, 
+        // studentID: getLocal.id, 
+        // positionName: jobName, 
+        // status: "انتظار", 
+        // appliedDate: localDate }
+
+       const updatedStatus = async()=>{
+        const companyStudentList = doc(db, `CompaniesData/${companyID}`);
+        const companySnapshot = await getDoc(companyStudentList);
+  
+        if (companySnapshot.exists()) {
+            
+          const itsData = companySnapshot.data()
+
+
+
+          const AllApplications = itsData.allPositions
+
+          if(!AllApplications.empty){
+
+            const StudentList = doc(db, `users/${getLocal.id}`);
+            const companySnapshot = await getDoc(StudentList);
+
+            if(companySnapshot.exists()){
+
+                const userData = companySnapshot.data();
+            }}
+        }
+       }
+   
+
   return (
     <>
 <Nav />
+
 <div className='h-full w-full bg-[#f7f7f7] ' dir='rtl '>
    {/* <div className='flex mt-10 flex-col'> */}
-    <div className='flex max-sm:flex-wrap w-full gap-5 p-10 ml-6 bg-[#f7f7f7] max-sm:w-full'>
+    <div className='flex max-sm:flex-wrap w-full gap-5 p-10  bg-[#f7f7f7] max-sm:w-full'>
          <img className='w-[30vw] h-[60vh] rounded-lg object-cover max-sm:w-[82vw] max-sm:h-[45vh] mr-3' src={company.logo} />
          <div className=' flex flex-col w-[58vw] bg-white rounded-lg h-[60vh] mr-4 p-3 max-sm:w-[82vw] max-sm:h-[45vh] max-sm:mr-0 '>
             <p className='pt-6 pr-4 font-extrabold text-[#5C59C2] text-[1.5rem]'> {company.companyName}</p>
@@ -166,24 +376,23 @@ const DetailsCompanies = () => {
                     <Link to={`/Companies/${eventIDs}`}><p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#7c7c7c] hover:bg-[#919191] py-2 px-4  rounded-lg cursor-pointer text-center max-sm:w-[20vw] max-sm:mb-5">العودة</p>
                     </Link>
             </div>
-        </div>      
-    </div>
+            </div>      
+            </div>
 
 <div className='flex justify-center bg-[#f7f7f7] w-[93%] mr-10   max-sm:mr-0 max-sm:w-full max-sm:mb-2'>
   <div role="tablist" className="tabs w-[90vw] tabs-lifted bg-white rounded-lg">
-
-    {/* الشواغر */}
     <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white hover:text-[#5C59C2] " aria-label="الشواغر" defaultChecked/>
-    <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6 h-[20vw] overflow-y-auto custom-scrollbar max-sm:h-[28vh]">
+    <div role="tabpanel" className="tab-content  bg-white border-base-100 rounded-box p-6 h-[20vw] overflow-y-auto custom-scrollbar max-sm:h-[28vh">
       <p className='text-lg mb-5 font-extrabold text-[#5C59C2]' > قائمة الشواغر</p>
         <table className="w-full h-[20vh] max-sm:table-xs">
             <tbody>
-              <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
+            <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
                 <th className="text-center p-3 px-5 max-sm:p-1 ">المسمى الوظيفي</th>
                 {/* <th className="text-right p-3 px-5">المسؤوليات </th>
                 <th className="text-right p-3 px-5">المهارات المطلوبة</th> */}
                 <th className="text-center p-3 px-5 max-sm:p-1">التقديم </th>
             </tr>
+   
             {company.jobPositions && company.jobPositions.length > 0 && (
     <>
         {company.jobPositions.map((job, index) => (
@@ -193,28 +402,52 @@ const DetailsCompanies = () => {
                         <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[10ch] break-words max-sm:w-[10ch]"> {job}</p>
                     </div>
                 </td>
-                <td className="p-3 px-5 max-sm:p-1 text-center ">
-                    <div className="flex flex-wrap justify-center items-center ">
-                        <p className="text-base text-center font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[10ch]">
-                            <div className='flex justify-center gap-2'>
-                                <button onClick={() => {
-                                    jobApplied(job, index);
-                                    document.getElementById('my_modal_1').showModal();
-                                }}
-                                className="text-base px-4 bg-[#7ed191] py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold">تقديم</button>
-                                <dialog id="my_modal_1" className="modal modal-bottom sm:modal-middle">
-                                <div className="modal-box">
+                <td className="p-3 px-5 max-sm:p-1 text-center">
+                <div className="flex flex-wrap justify-center items-center ">
+
+                <p className="text-base text-center font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[10ch]">
+                <div className='flex justify-center gap-2'></div>
+                <span  onClick={()=> {jobApplied(job,index)
+                               const modal = document.getElementById('my_modal_2');
+                               modal.showModal();
+             
+                               setTimeout(() => {
+                                 modal.close();
+                               }, 2000);
+                             }}
+                    
+                     
+                
+                       className="text-base px-4  py-1  rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold"
+                        style={{
+                        backgroundColor: checkAppliedJob.find((e)=> e.positionName === job && e.status) ? '#fce4b0' : '#7ed191', // Change color based on applied state
+                        color: 'black',
+                       
+                        cursor: checkAppliedJob.find((e)=> e.positionName === job && e.status =="مرفوض")? 'not-allowed' : 'pointer', // Change cursor based on applied state
+                        }}
+                         // Disable button after first click
+                         
+                        >
+                          {console.log(applied)}  
+                          {checkAppliedJob.find((e)=> e.positionName === job && e.status)? 'تم التقديم' : 'تقديم'}
+
+                            
+                        
+                        </span>
+
+                        <dialog id="my_modal_1" className="modal modal-bottom sm:modal-middle">
+                                <div className="modal-box h-[30vh]  flex flex-col justify-center items-center">
                                     <h3 className="font-bold text-lg">هل انت متأكد من التقديم؟</h3>
                                     <div className="modal-action">
                                     <form method="dialog" className='flex justify-center items-center gap-2 w-full '>
-                                        <button onClick={() => {
-                                            const modal = document.getElementById('my_modal_2');
-                                            modal.showModal();
+                                        <button onClick={() => { 
+                                            document.getElementById('my_modal_2').showModal();
+                                           
 
                                             setTimeout(() => {
-                                                modal.close();
+                                                document.getElementById('my_modal_2').close();
                                             }, 2000);
-                                            }} className="rounded-lg bg-[#7ed191] text-white hover:bg-[#94e6a7] w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh]">نعم</button>
+                                           }} className="rounded-lg bg-[#7ed191] text-white hover:bg-[#94e6a7] w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh]">نعم</button>
                                         <dialog id="my_modal_2" className="modal modal-bottom sm:modal-middle ">
                                             <div className="modal-box">
                                             <div className='flex flex-col justify-center items-center gap-4'>
@@ -235,7 +468,6 @@ const DetailsCompanies = () => {
                                     </div>
                                 </div>
                             </dialog>
-                            </div>
                         </p>
                     </div>
                 </td>
@@ -251,72 +483,87 @@ const DetailsCompanies = () => {
         </table>  
 </div>
 {/* تقديماتي */}
-    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white hover:text-[#5C59C2]" aria-label="تقديماتي"  />
-    <div role="tabpanel" className="tab-content bg-white border-base-100 rounded-box p-6 h-[20vw] overflow-y-auto custom-scrollbar max-sm:h-[28vh]">
-    <p className='text-lg mb-5 font-extrabold text-[#5C59C2]' > قائمة تقديماتي</p>
-    <table className="w-full h-[20vh] max-sm:table-xs">
-        <tbody>
+<input type="radio" name="my_tabs_2" role="tab" className="tab bg-white hover:text-[#5C59C2]" aria-label="تقديماتي"  />
+<div role="tabpanel" className="tab-content bg-white border-base-100 rounded-box p-6 h-[20vw] overflow-y-auto custom-scrollbar max-sm:h-[28vh]">
+<p className='text-lg mb-5 font-extrabold text-[#5C59C2]' > قائمة تقديماتي</p>
+<table className="w-full h-[20vh] max-sm:table-xs">
+<tbody>
             <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
               <th className="text-center p-3 px-5 max-sm:p-1">المسمى الوظيفي</th>
               <th className="text-center p-3 px-5 max-sm:p-1">الحالة </th>
               <th className="text-center p-3 px-5 max-sm:p-1"> الترتيب </th>
               <th className="text-center p-3 px-5 max-sm:p-1"> انسحاب </th>
             </tr>
+            {hisApplication.map((job, index) => (
             <tr className="focus:outline-none h-16 border border-[#e4e6e6] rounded">
-                    <td className="p-3 px-5 max-sm:p-1 text-center">
+                   {/* <td className="">
+                       <div className="flex items-center pl-5">
+                           <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPk0IrfQt8yu8km4DYRG69OOhe2GQlK5NLvzIk23B3u77AjSRLJ3NLOqK9_W53M8jHV6Y&usqp=CAU" alt="" srcset="" className='w-[7vw] h-[7vh] mr-2' />
+                       </div>
+                   </td> */}
+                   <td className="p-3 px-5 max-sm:p-1 text-center">
                         <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-12">
-                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[10ch] break-words max-sm:w-[10ch]">   مطور ويب  </p>
-                        </div>
-                    </td>
-                    
-                    <td className="p-3 px-5 max-sm:p-1 text-center">
+                        
+                           <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[10ch] break-words max-sm:w-[10ch]">    {job.positionName}  </p>
+                       </div>
+                   </td>
+                   
+                   <td className="p-3 px-5 max-sm:p-1 text-center">
                         <div className="flex flex-wrap justify-center overflow-y-auto h-7 custom-scrollbar max-sm:h-12">
                             <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[10ch] break-words max-sm:w-[10ch] ">  
                                 <div className='flex gap-2 justify-center'>
-                                    <span className="text-base px-4 bg-[#fccd69] py-1 rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold">انتظار</span>
-                                </div> 
-                            </p>
-                        </div>
-                    </td>
-                    <td className="p-3 px-5 max-sm:p-1 text-center">
+                                   <span className="text-base px-4 bg-[#fccd69] py-1 rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold">{job.status}</span>
+                               </div> 
+                           </p>
+                       </div>
+                   </td>
+                   <td className="p-3 px-5 max-sm:p-1 text-center">
                         <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-12">
                             <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[10ch] break-words max-sm:w-[10ch]"> 10 </p>
                         </div>
                     </td>
                     <td className="p-3 px-5 max-sm:p-1 text-center">
                         <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-12">
-                            <svg className="size-6 text-[#c71919] cursor-pointer" onClick={()=>document.getElementById('my_modal_5').showModal()} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" >
-                            <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
-                            </svg>
-                            <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
+                           <svg onClick={(()=> 
+                           document.getElementById('my_modal_3').showModal()
+                        )} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 text-[#c71919] cursor-pointer">
+                           <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
+                           </svg>
+                           <dialog id="my_modal_3" className="modal modal-bottom sm:modal-middle">
                                 <div className="modal-box">
                                     <h3 className="font-bold text-lg">هل انت متأكد من الانسحاب؟</h3>
                                     <div className="modal-action">
                                     <form method="dialog" className='flex justify-center items-center gap-2 w-full '>
-                                        <button className="rounded-lg bg-red-600 text-white hover:bg-red-500 w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh]">نعم</button>
+                                        <button className="rounded-lg bg-red-600 text-white hover:bg-red-500 w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh]" onClick={()=>removeApplication(job.positionName, job.indexNo)}>نعم</button>
                                         <button className="rounded-lg  text-black border border-[#a3a3a3] hover:bg-[#f0f0f0] w-[5vw] h-[6vh] max-sm:w-[12vw] max-sm:h-[4vh] ">لا</button>
                                     </form>
                                     </div>
                                 </div>
                             </dialog>
-                        </div>
-                    </td>
-                    {/* <td className="">
-                        <div className="flex items-center ">
-                            <button>
-                            </button>
-                    </div>
-                    </td> */}
-                </tr>
+                       </div>
+                   </td>
+                   {/* <td className="">
+                       <div className="flex items-center ">
+                           <button>
+                           </button>
+                   </div>
+                   </td> */}
+               </tr>
+
+            ))}
+         
             </tbody>
         </table>  
     </div>
   </div>
+
 </div> 
 
-
-{/* </div>  */}
                         
+</div>
+<div className='mt-6'>
+<Footer />
+
 </div>
  
     </>
