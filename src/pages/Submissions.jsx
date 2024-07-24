@@ -1,16 +1,182 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Nav from '../components/Nav'
 import Tamkeen from '../assets/tamkeen tech.png'
 import Elm from '../assets/elm.png'
 import Wadaie from '../assets/wadaie.png'
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom'
+import { auth, db, storage } from '../config/firebase';
+import { getDoc, doc, collection, getDocs, updateDoc, deleteDoc, setDoc } from 'firebase/firestore';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useScroll } from 'framer-motion'
+import { connectStorageEmulator } from 'firebase/storage'
 
 
 
 const Submissions = () => {
+    const getLocal = JSON.parse(localStorage.getItem("loggedIn"));
+    const [allUserApplication, setAllUserApplication] = useState([])
+    const [allCompaniesWithPositions,setAllCompaniesWithPositions] = useState([])
+
+
+
+    useEffect(()=>{
+        getAllApplications()
+    },[])
+
+
+
+    const getAllApplications = async ()=>{
+
+        const myCompaniesRef = collection(db, `users/${getLocal.id}/myEvents`);
+        const allDocs = await getDocs(myCompaniesRef)
+        console.log("#########"+ JSON.stringify(myCompaniesRef))
+
+
+
+        
+
+        if (allDocs) {
+           
+                const allEvents = allDocs.docs.map(doc => ({
+                    eventId: doc.id,
+                    ...doc.data()
+                }));
+
+                let allCompaniesWithPositions = [];
+
+                // Loop through each event
+                for (let event of allEvents) {
+                    const hisCompaniesRef = collection(db, `users/${getLocal.id}/myEvents/${event.eventId}/appliedCompanies`);
+                    const companyDocs = await getDocs(hisCompaniesRef);
+
+                    if (companyDocs) {
+                        // Map companyDocs to include eventId, companyId, and positions array
+                        const companiesWithPositions = companyDocs.docs.map(doc => ({
+                            eventId: event.eventId,
+                            companyId: doc.id,
+                            positions: doc.data().allPositions || [] // Default to empty array if allPositions does not exist
+                        }));
+
+                        allCompaniesWithPositions = allCompaniesWithPositions.concat(companiesWithPositions);
+                    }
+                }
+
+                // Now allCompaniesWithPositions contains all companies with their positions from all events
+
+                // Fetch companiesData collection and match positions to companies
+                const companiesDataRef = collection(db, 'CompaniesData');
+                
+                const companiesSnapshot = await getDocs(companiesDataRef);
+
+                // Map each company in allCompaniesWithPositions to add companyName
+                const updatedCompaniesWithPositions = allCompaniesWithPositions.map(company => {
+                    const matchingCompany = companiesSnapshot.docs.find(doc => doc.id === company.companyId);
+                   
+                    if (matchingCompany) {
+                        
+                        const companyData = matchingCompany.data();
+                        return {
+                            ...company,
+                            companyName: companyData.companyName // Add companyName field with matched company name
+                        };
+                    } else {
+                        return company;
+                    }
+                });
+
+                // Update state with updatedCompaniesWithPositions
+                setAllCompaniesWithPositions(updatedCompaniesWithPositions);
+
+        }
+            
+
+                
+
+    }
+
+    const getCompaniesData = async (allCompaniesWithPositions, companiesSnapshot) => {
+        try {
+            // Map each company in allCompaniesWithPositions to add companyData
+            const updatedCompanies = await Promise.all(allCompaniesWithPositions.map(async company => {
+                const matchingCompany = companiesSnapshot.docs.find(doc => doc.id === company.companyId);
+                if (matchingCompany) {
+                    const companyData = matchingCompany.data();
+                    return {
+                        ...company,
+                        companyData: companyData // Add companyData field with matched company data
+                    };
+                } else {
+                    return company;
+                }
+            }));
+
+            return updatedCompanies;
+
+        } catch (error) {
+            console.error('Error getting companies data:', error);
+            return allCompaniesWithPositions; // Return original data in case of error
+        }
+    }
   return (
     <>
     <Nav />
+    <div className='bg-[#f7f7f7] h-full w-full flex justify-center items-center '>
+    
+    <div className='flex flex-col justify-center items-start mt-8 mr-8 mb-8 ml-8 w-full h-full '>
+    <div className='bg-white w-full h-full rounded-lg'>
+        <div className='flex justify-between items-end w-full h-[10vh]'>
+            <p className='font-semibold text-[1.5rem] mr-3 pt-6 pr-1 text-[#5C59C2]'> تقديماتي </p> 
+            <div className='flex gap-2'>
+                <Link to='/'><button className="rounded-lg text-white bg-[#999999] hover:bg-[#b1b1b1]  py-1 px-3 ml-3"> عودة</button></Link>
+            </div>
+        </div>
+
+        <div className="w-[90%] mx-auto grid grid-cols-3 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-8 gap-x-28 mt-1 mb-16 max-sm:grid-cols-1 max-sm:gap-y-10">
+        {allCompaniesWithPositions.map((company, companyIndex) => (
+    <div key={`${company.eventId}-${company.companyId}`} className='flex items-center mt-6 bg-white w-[30vw] h-full rounded-lg shadow-lg max-sm:w-[80vw]'>
+        <img className='mr-4 rounded-full h-full w-[10vw] object-cover max-sm:w-[20vw] max-sm:h-[15vh]' src={Tamkeen} alt="Company Logo" />
+        <div className='mr-4 flex flex-col justify-center items-center gap-4 w-full'>
+            <div className='w-full'>
+                <div className='flex gap-2'>
+                    <span className="mt-3 relative flex h-3 w-3">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-[#5fd47c]"></span>
+                    </span>
+                    <p className='font-bold text-[1.2rem]'>{company.companyName}</p>
+                </div>
+            </div>
+
+            <div className='bg-white w-full flex flex-col gap-1'>
+                {company.positions.map((position, index) => (
+                    <div key={`${company.eventId}-${company.companyId}-${index}`}>
+                        <div className='flex gap-1'>
+                            <p className='text-gray-500 text-[0.9rem]'>حالة التقديم</p>
+                            <span className="text-green-500 text-[0.9rem] font-medium">{position.status}</span>
+                        </div>
+
+                        <div className='flex gap-1'>
+                            <p className='text-gray text-[0.9rem]'> المسمى الوظيفي</p>
+                            <div className='flex gap-2 flex-wrap'>
+                                <span className="text-[#686868] text-[0.8rem] border bg-[#eee6f5] rounded-full text-center px-1 py-0.5">{position.positionName}</span>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+
+                <div className='flex'>
+                    <p className='text-gray-500 text-[0.9rem]'> في الطابور</p>
+                    <p className='text-[#cc4d36] text-[0.9rem] text-center w-6 h-6'> 1 </p>
+                </div>
+            </div>
+        </div>
+    </div>
+))}
+
+     
+        </div>
+    </div>
+</div>
+</div>
     {/* search here */}
     {/* <div className='flex gap-2 w-[10vw] h-[10vh] mt-6 mr-6'>
         <div className="pt-2 relative mx-auto text-gray-600">
@@ -35,147 +201,6 @@ const Submissions = () => {
     </div> */}
     {/* search end here */}
 
-<div className='bg-[#f7f7f7] h-full w-full flex justify-center items-center '>
-    
-    <div className='flex flex-col justify-center items-start mt-8 mr-8 mb-8 ml-8 w-full h-full '>
-    <div className='bg-white w-full h-full rounded-lg'>
-        <div className='flex justify-between items-end w-full h-[10vh]'>
-            <p className='font-semibold text-[1.5rem] mr-16 pt-6 pr-1 text-[#5C59C2]'> تقديماتي </p> 
-            <div className='flex gap-2'>
-                <Link to='/'><button className="rounded-lg text-white bg-[#999999] hover:bg-[#b1b1b1]  py-1 px-3 ml-16"> عودة</button></Link>
-            </div>
-        </div>
-
-        <div className="w-[90%] mx-auto grid grid-cols-3 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-20 mt-1 mb-16 max-sm:grid-cols-1 max-sm:gap-y-10">
-            <div className='flex items-center mt-6 bg-white w-full h-full rounded-lg shadow'>
-                <img className='mr-4 rounded-full h-[20vh] w-[8vw] max-sm:w-[20vw] max-sm:h-[15vh]' src={Tamkeen} />
-                <div className='mr-4 flex flex-col gap-2'>
-                    <div className='flex gap-2'>
-                        <span className="mt-3 relative flex h-3 w-3">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-3 w-3 bg-[#5fd47c]"></span>
-                        </span>
-                        <p className='font-bold text-[1.3rem] flex flex-wrap '>شركة تمكين للتقنيات  </p>
-                    </div>
-                    <div className='flex gap-2'>
-                        <p className='text-[gray] text-[0.9rem]'>حالة التقديم</p>
-                        <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400 ">مقبول</span>
-                    </div>
-                    <div className='flex gap-2'>
-                        <p className='text-[gray] text-[0.9rem]'>دورك في الطابور</p>
-                        <p className='mr-1 text-[#5C59C2] text-[0.9rem]  border border-[#5C59C2] bg-[#5d59c24b] rounded text-center w-7'> 1 </p>
-                    </div>
-                    <div className='flex gap-2'>
-                        {/* <p className='text-[#5C59C2] text-[0.9rem]  border border-[#5C59C2] bg-[#5d59c24b] rounded text-center w-7'> 1 </p> */}
-                    </div>
-                </div>
-            </div>
-
-            <div className='flex items-center mt-6 bg-white w-full h-full rounded-lg shadow'>
-                <img className='mr-4 rounded-full h-[20vh] w-[8vw] max-sm:w-[20vw] max-sm:h-[15vh]' src={Elm} />
-                <div className='mr-4 flex flex-col gap-2'>
-                    <div className='flex gap-2'>
-                        <span className="mt-3 relative flex h-3 w-3">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-3 w-3 bg-[#f7e974]"></span>
-                        </span>
-                        <p className='font-bold text-[1.3rem] '>شركة علم </p>
-                    </div>
-                    <div className='flex gap-2'>
-                        <p className='text-[gray] text-[0.9rem]'>حالة التقديم</p>
-                        <span className="bg-yellow-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-700 dark:text-yellow-400 border border-yellow-400 mr-1">انتظار</span>
-                    </div>
-                    <div className='flex gap-2'>
-                        <p className='text-[gray] text-[0.9rem]'>دورك في الطابور</p>
-                        <p className='text-[#5C59C2] text-[0.9rem]  border border-[#5C59C2] bg-[#5d59c24b] rounded text-center w-7'> 10 </p>
-                    </div>
-                </div>
-            </div>
-
-            <div className='flex items-center mt-6 bg-white w-full h-full rounded-lg shadow'>
-                <img className='mr-4 rounded-full h-[20vh] w-[8vw] max-sm:w-[20vw] max-sm:h-[15vh]' src={Wadaie} />
-                <div className='mr-4 flex flex-col gap-2'>
-                    <div className='flex gap-2'>
-                        <span className="mt-3 relative flex h-3 w-3">
-                                <span className=" absolute inline-flex h-full w-full rounded-full bg-gray-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-3 w-3 bg-[#aaaaaa]"></span>
-                        </span>
-                        <p className='font-bold text-[1.3rem] '>شركة ودائع </p>
-                    </div>
-                    <div className='flex gap-2'>
-                        <p className='text-[gray] text-[0.9rem]'>حالة التقديم</p>
-                        <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-400 ">منتهيه</span>
-                    </div>
-                    <div className='flex gap-2'>
-                        <p className='text-[gray] text-[0.9rem]'>دورك في الطابور</p>
-                        <p className='bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-400'> 0 </p>
-                    </div>
-                </div>
-            </div>
-            <div className='flex items-center mt-6 bg-white w-full h-full rounded-lg shadow'>
-                <img className='mr-4 rounded-full h-[20vh] w-[8vw] max-sm:w-[20vw] max-sm:h-[15vh]' src={Wadaie} />
-                <div className='mr-4 flex flex-col gap-2'>
-                    <div className='flex gap-2'>
-                        <span className="mt-3 relative flex h-3 w-3">
-                                <span className=" absolute inline-flex h-full w-full rounded-full bg-gray-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-3 w-3 bg-[#aaaaaa]"></span>
-                        </span>
-                        <p className='font-bold text-[1.3rem] '>شركة ودائع </p>
-                    </div>
-                    <div className='flex gap-2'>
-                        <p className='text-[gray] text-[0.9rem]'>حالة التقديم</p>
-                        <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-400 ">منتهيه</span>
-                    </div>
-                    <div className='flex gap-2'>
-                        <p className='text-[gray] text-[0.9rem]'>دورك في الطابور</p>
-                        <p className='bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-400'> 0 </p>
-                    </div>
-                </div>
-            </div>
-            <div className='flex items-center mt-6 bg-white w-full h-full rounded-lg shadow'>
-                <img className='mr-4 rounded-full h-[20vh] w-[8vw] max-sm:w-[20vw] max-sm:h-[15vh]' src={Wadaie} />
-                <div className='mr-4 flex flex-col gap-2'>
-                    <div className='flex gap-2'>
-                        <span className="mt-3 relative flex h-3 w-3">
-                                <span className=" absolute inline-flex h-full w-full rounded-full bg-gray-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-3 w-3 bg-[#aaaaaa]"></span>
-                        </span>
-                        <p className='font-bold text-[1.3rem] '>شركة ودائع </p>
-                    </div>
-                    <div className='flex gap-2'>
-                        <p className='text-[gray] text-[0.9rem]'>حالة التقديم</p>
-                        <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-400 ">منتهيه</span>
-                    </div>
-                    <div className='flex gap-2'>
-                        <p className='text-[gray] text-[0.9rem]'>دورك في الطابور</p>
-                        <p className='bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-400'> 0 </p>
-                    </div>
-                </div>
-            </div>
-            <div className='flex items-center mt-6 bg-white w-full h-full rounded-lg shadow'>
-                <img className='mr-4 rounded-full h-[20vh] w-[8vw] max-sm:w-[20vw] max-sm:h-[15vh]' src={Wadaie} />
-                <div className='mr-4 flex flex-col gap-2'>
-                    <div className='flex gap-2'>
-                        <span className="mt-3 relative flex h-3 w-3">
-                                <span className=" absolute inline-flex h-full w-full rounded-full bg-gray-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-3 w-3 bg-[#aaaaaa]"></span>
-                        </span>
-                        <p className='font-bold text-[1.3rem] '>شركة ودائع </p>
-                    </div>
-                    <div className='flex gap-2'>
-                        <p className='text-[gray] text-[0.9rem]'>حالة التقديم</p>
-                        <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-400 ">منتهيه</span>
-                    </div>
-                    <div className='flex gap-2'>
-                        <p className='text-[gray] text-[0.9rem]'>دورك في الطابور</p>
-                        <p className='bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-400'> 0 </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
     </>
   )
 }
