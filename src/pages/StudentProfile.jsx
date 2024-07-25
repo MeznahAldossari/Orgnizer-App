@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from "../config/firebase";
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-
+import Footer from '../components/Footer'
 
 
 const StudentProfile = () => {
@@ -68,8 +68,7 @@ const StudentProfile = () => {
         <div key={student.id} className='flex justify-between items-end w-full h-[10vh] '>
             <p className='font-semibold text-[1.5rem] mr-14'> مرحباً <span className='text-[#5C59C2]'> {student.Fname}</span>  </p>
             <div className='flex gap-2'>
-                <button className="rounded-lg text-white bg-[#f39e4e] hover:bg-[#ffb36c] py-1 px-3 "> حفظ</button>
-                <Link to='/'><button className="rounded-lg text-white bg-[#999999] hover:bg-[#b1b1b1]  py-1 px-3 ml-16"> عودة</button></Link>
+                <Link to='/'><button className="rounded-lg text-white bg-[#999999] hover:bg-[#b1b1b1]  py-1 px-3 ml-16 max-sm:ml-6"> عودة</button></Link>
             </div>
         </div>
 
@@ -90,7 +89,7 @@ const StudentProfile = () => {
                         <p className='mt-2 mr-6 font-bold'>الاسم الأول</p>
                         <p className='mt-2  mr-6 text-[gray]'>{student.Fname}</p>
                     </div>
-                    <div className='flex flex-col '>
+                    <div className='flex flex-col ml-28 '>
                         <p className='mt-2 mr-6 font-bold'>الاسم الاخير</p>
                         <p className='mt-2 mr-6 text-[gray]'>{student.Lname}</p>
                     </div>
@@ -101,8 +100,8 @@ const StudentProfile = () => {
                         <p className='mt-2 mr-6 text-[gray]'>{student.phone}</p>
                     </div>
                     <div className='flex flex-col '>
-                        <p className='mt-2 mr-12 font-bold'>الايميل</p>
-                        <p className='mt-2 mr-2 text-[gray]'>{student.email}</p>
+                        <p className='mt-2 mr-2 font-bold  '>الايميل</p>
+                        <p className='mt-2 mr-2 text-[gray] '>{student.email}</p>
                     </div>
                 </div>
                 <div className='flex justify-between w-[30vw] mt-4'>
@@ -168,7 +167,7 @@ const StudentProfile = () => {
                 </div>
                 <div className='mr-6 mt-4'>
               <label className="font-bold" htmlFor="username"> مجالات اهتمامك</label>
-              <p className='mt-2 mr-2 text-[gray]'>{student.favorites.join(', ')}</p>
+              <p className='mt-2 mr-2 gap-2 text-[gray]'>{student.favorites}</p>
 
          
                     </div>
@@ -206,9 +205,9 @@ const StudentProfile = () => {
                   
                 )}
                 {!cvFileName && (
-                  <div className="mt-4">
-                        <p>اسم الملف: {student.cvFileName}</p>
-                    <p>حجم الملف: {student.cvFileSize}</p>
+                  <div className="">
+                        <p className='text-[0.8rem]'>اسم الملف: {student.cvFileName}</p>
+                    <p className='text-[0.8rem]'>حجم الملف: {student.cvFileSize}</p>
                   </div>
                   
                 )}
@@ -235,6 +234,9 @@ const StudentProfile = () => {
             </div> */}
         </div>
 
+    </div>
+    <div className='mt-12'>
+        <Footer />
     </div>
     </div>
   )

@@ -357,7 +357,7 @@ const DetailsCompanies = () => {
    {/* <div className='flex mt-10 flex-col'> */}
     <div className='flex max-sm:flex-wrap w-full gap-5 p-10  bg-[#f7f7f7] max-sm:w-full'>
          <img className='w-[30vw] h-[60vh] rounded-lg object-cover max-sm:w-[82vw] max-sm:h-[45vh] mr-3' src={company.logo} />
-         <div className=' flex flex-col w-[58vw] bg-white rounded-lg h-[60vh] mr-4 p-3 max-sm:w-[82vw] max-sm:h-[45vh] max-sm:mr-0 '>
+         <div className=' flex flex-col w-[58vw] bg-white rounded-lg h-[60vh] mr-2 p-3 max-sm:w-[82vw] max-sm:h-[45vh] max-sm:mr-4 '>
             <p className='pt-6 pr-4 font-extrabold text-[#5C59C2] text-[1.5rem]'> {company.companyName}</p>
             <div className='flex gap-2 mt-4 pt-2 pr-5 '>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5 text-[#99D2CB]">
@@ -373,7 +373,7 @@ const DetailsCompanies = () => {
                 {/* <div className="flex justify-end items-center mt-4 ml-2">
                     <p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#99D2CB] hover:bg-[#a5ddd7] py-2 px-4 rounded-lg cursor-pointer text-center max-sm:text-[0.8rem] max-sm:w-[20vw] ">تقديم</p>
                 </div> */}
-                    <Link to={`/Companies/${eventIDs}`}><p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#7c7c7c] hover:bg-[#919191] py-2 px-4  rounded-lg cursor-pointer text-center max-sm:w-[20vw] max-sm:mb-5">العودة</p>
+                    <Link to={`/Companies/${eventIDs}`}><p className="w-[8vw] text-[#ffffff] font-bold text-[0.9rem] bg-[#7c7c7c] hover:bg-[#919191] py-2 px-4  rounded-lg cursor-pointer text-center max-sm:w-[20vw] max-sm:mb-6 max-sm:ml-4">العودة</p>
                     </Link>
             </div>
             </div>      
@@ -398,7 +398,7 @@ const DetailsCompanies = () => {
         {company.jobPositions.map((job, index) => (
             <tr key={index} className="focus:outline-none h-16 border border-[#e4e6e6] rounded">
                 <td className="p-3 px-5 max-sm:p-1 text-center">
-                    <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-12">
+                    <div className="flex flex-wrap justify-center  h-6 custom-scrollbar max-sm:h-12">
                         <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[10ch] break-words max-sm:w-[10ch]"> {job}</p>
                     </div>
                 </td>
@@ -491,8 +491,10 @@ const DetailsCompanies = () => {
             <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
               <th className="text-center p-3 px-5 max-sm:p-1">المسمى الوظيفي</th>
               <th className="text-center p-3 px-5 max-sm:p-1">الحالة </th>
-              <th className="text-center p-3 px-5 max-sm:p-1"> الترتيب </th>
-              <th className="text-center p-3 px-5 max-sm:p-1"> انسحاب </th>
+              <th className="text-center p-3 px-5 max-sm:p-1">انسحاب </th>
+
+              {/* <th className="text-center p-3 px-5 max-sm:p-1"> الترتيب </th> */}
+              {/* <th className="text-center p-3 px-5 max-sm:p-1"> انسحاب </th> */}
             </tr>
             {hisApplication.map((job, index) => (
             <tr className="focus:outline-none h-16 border border-[#e4e6e6] rounded">
@@ -517,11 +519,11 @@ const DetailsCompanies = () => {
                            </p>
                        </div>
                    </td>
-                   <td className="p-3 px-5 max-sm:p-1 text-center">
+                   {/* <td className="p-3 px-5 max-sm:p-1 text-center">
                         <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-12">
                             <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[10ch] break-words max-sm:w-[10ch]"> 10 </p>
                         </div>
-                    </td>
+                    </td> */}
                     <td className="p-3 px-5 max-sm:p-1 text-center">
                         <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-12">
                            <svg onClick={(()=> 

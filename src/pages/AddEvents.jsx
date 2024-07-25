@@ -193,11 +193,11 @@ const AddEvents = () => {
   return (
     <>
       <Nav />
-      <div className='bg-[#ffffff] h-max w-full py-14'>
-        <div className='flex justify-start mr-24 max-sm:mr-0'>
-          <h1 className="font-semibold text-[1.5rem] mr-16 pt-6 pr-1 text-[#5C59C2]">إضافة معرض</h1>
+      <div className='bg-[#ffffff] h-max  w-full py-14'>
+        <div className='flex mt-[-3%] justify-start mr-24 max-sm:mr-0'>
+          <h1 className="font-semibold text-[1.5rem]  mr-16 pt-6 pr-1 text-[#5C59C2]">إضافة معرض</h1>
         </div>
-        <section dir="rtl" className="max-w-4xl h-auto max-sm:w-[95%] p-6 mx-auto bg-white rounded-md shadow-2xl mt-4">
+        <section dir="rtl" className="max-w-4xl mt-[-1%] h-auto max-sm:w-[95%] p-6 mx-auto bg-white rounded-md shadow-2xl ">
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-6 mt-4 ">
               <div>
@@ -250,7 +250,7 @@ const AddEvents = () => {
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
                   id="start-time"
-                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-[#99D2CB] rounded-full focus:border-blue-500 focus:outline-none focus:ring"
+                  className="block pl-12 w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-[#99D2CB] rounded-full focus:border-blue-500 focus:outline-none focus:ring"
                 >
                   <option value="">اختر وقت البداية</option>
                   <option value="08:00">08:00</option>

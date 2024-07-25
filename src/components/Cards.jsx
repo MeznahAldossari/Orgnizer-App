@@ -210,7 +210,7 @@ const getEvents = async () => {
       {(getLocal !== undefined && getLocal && getLocal.role === "admin" &&
       <>
        <Link to='/AddEvents'>
-       <button className='cursor-pointer gap-2 px-1 w-[10vw] py-3 mt-16 max-sm:mt-0 text-white justify-center items-center rounded-lg mr-12 font-bold text-[0.8rem] bg-[#f39e4e] flex '> 
+       <button className='cursor-pointer max-sm:mt-12 gap-2 px-1 w-[10vw] py-3 mt-16 max-sm:w-32 max-sm:h-10  max-sm:px-0  text-white justify-center items-center rounded-lg mr-12 max-sm:mr-6 font-bold text-[0.8rem] bg-[#f39e4e] flex '> 
        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5  mr-0 ">
          <path fillRule="evenodd" d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z" clipRule="evenodd" />
        </svg>
@@ -221,7 +221,7 @@ const getEvents = async () => {
        )}
     </div>
 
-    <div className='flex mt-[-2%] justify-center '>
+    <div className='flex mt-[-2%]  max-sm:mt-[-10%] justify-center '>
       <div className='grid  mb-16 w-[90%] grid-cols-3 place-items-center gap-y-2 max-sm:grid-cols-1 max-sm:gap-2 max-sm:mt-0 max-sm:gap-y-0 '>
 
       {getLocal ? (

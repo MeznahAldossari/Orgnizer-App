@@ -8,6 +8,7 @@ import EditEventModal from '../components/EventEdit';
 import { updateDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { RiDownload2Fill } from "react-icons/ri"
+import Footer from '../components/Footer'
 const EventInfo = () => {
     const { eventId } = useParams();
     const [event, setEvent] = useState(null);
@@ -132,8 +133,8 @@ const EventInfo = () => {
 <Nav/>
     <div className=' h-full w-full bg-[#f7f7f7]' dir='rtl'>
     <div className='flex max-sm:flex-wrap w-full gap-5 p-10 ml-6 bg-[#f7f7f7] max-sm:w-full'>
-        <img src={event.imageUrl} className='w-[30vw] h-[60vh] rounded-lg object-cover max-sm:w-[82vw] max-sm:h-[45vh]' alt={event.eventName} srcSet="" />
-        <div className='flex flex-col w-[58vw] bg-white rounded-lg h-[60vh] mr-4 p-3 max-sm:w-[82vw] max-sm:h-[45vh] max-sm:mr-0' >
+        <img src={event.imageUrl} className='mr-3 w-[30vw] h-[70vh] rounded-lg object-cover max-sm:w-full max-sm:h-[45vh] max-sm:mr-0' alt={event.eventName} srcSet="" />
+        <div className='flex flex-col w-[58vw] bg-white rounded-lg h-[70vh] mr-2 p-3 max-sm:w-full max-sm:h-[55vh] max-sm:mr-0' >
         <p className='pt-6 pr-4 font-extrabold text-[#5C59C2] text-[1.5rem]'>{event.eventName}</p>
 
         <div className='flex gap-2 mt-4 pt-2 pr-5'>
@@ -187,7 +188,7 @@ const EventInfo = () => {
                 </svg>
             </button>
             <dialog id="my_modal_8" className="modal modal-bottom sm:modal-middle ">
-                <div className="modal-box">
+                <div className="modal-box h-[30vh] flex flex-col justify-center items-center">
                 <div className='flex flex-col justify-center items-center gap-4'>
                 <h3 className="font-bold text-lg">هل انت متأكد من حذف المعرض؟  </h3>
                 </div>
@@ -273,44 +274,44 @@ const EventInfo = () => {
 </table>  
 </div>
 
-    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white hover:text-[#5C59C2]" aria-label="الطلاب" defaultChecked />
+    <input type="radio" name="my_tabs_2" role="tab" className="tab bg-white hover:text-[#5C59C2]" aria-label="الطلاب" />
     <div role="tabpanel" className="tab-content bg-white border-base-100 rounded-box p-6 h-[20vw] overflow-y-auto custom-scrollbar max-sm:h-[28vh] ">
     <p className='text-lg mb-5 font-extrabold text-[#5C59C2]' > قائمة الطلاب</p>
 
     <table className="w-full text-md bg-white shadow-md rounded mb-4  max-sm:text-xs max-sm:table-xs overflow-y-auto">
                 <tbody>
                   <tr className="focus:outline-none h-16 border border-[#e4e6e6] bg-[#fafafa] rounded">
-                    <th className="text-right p-3 px-5 max-sm:p-1 ">الاسم</th>
-                    <th className="text-right p-3 px-5 max-sm:p-1">السيرة الذاتية</th>
-                    <th className="text-right p-3 px-5 max-sm:p-1">الإيميل</th>
-                    <th className="text-right p-3 px-5 max-sm:p-1">المدينة</th>
+                    <th className="text-center p-3 px-5 max-sm:p-1">الاسم</th>
+                    <th className="text-center p-3 px-5 max-sm:p-1">السيرة الذاتية</th>
+                    <th className="text-center p-3 px-5 max-sm:p-1">الإيميل</th>
+                    <th className="text-center p-3 px-5 max-sm:p-1">المدينة</th>
                   </tr>
                   {students.map((student) => (
                     <tr  className="focus:outline-none h-16 border border-[#e4e6e6] rounded">
-                      <td className="p-3 px-5 max-sm:p-1">
-                        <div className="flex flex-wrap">
-                          <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[10ch]">
-                            {student.Fname}
+                      <td className="p-3 px-5 max-sm:p-1 text-center">
+                        <div className="flex flex-wrap justify-center  h-6  max-sm:h-12">
+                          <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[10ch] break-words max-sm:w-[10ch]">
+                          {student.Fname}
                           </p>
                         </div>
                       </td>
-                      <td className="p-3 px-5 max-sm:p-1">
-                        <div className="flex flex-wrap">
-                          <button    onClick={() => handleOpenCV(student.CV)}  value={student.CV} className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[10ch]">
+                      <td className="p-3 px-5 max-sm:p-1 text-center">
+                        <div className="flex flex-wrap justify-center  h-6  max-sm:h-12">
+                          <button    onClick={() => handleOpenCV(student.CV)}  value={student.CV} className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[10ch] break-words max-sm:w-[10ch]">
                             {student.cvFileName}
                           </button>
                         </div>
                       </td>
-                      <td className="p-3 px-5 max-sm:p-1">
-                        <div className="flex flex-wrap">
+                      <td className="p-3 px-5 max-sm:p-1 text-center">
+                        <div className="flex flex-wrap justify-center  h-6  max-sm:h-12">
                           <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[9ch]">
                             {student.email}
                           </p>
                         </div>
                       </td>
-                      <td className="p-3 px-5 max-sm:p-1">
-                        <div className="flex flex-wrap">
-                          <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[15ch] break-words max-sm:w-[6ch]">
+                      <td className="p-3 px-5 max-sm:p-1 text-center">
+                        <div className="flex flex-wrap justify-center  h-6  max-sm:h-12">
+                          <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[10ch] break-words max-sm:w-[10ch]">
                             {student.city}
                           </p>
                         </div>
@@ -335,6 +336,9 @@ const EventInfo = () => {
 
 
 
+    </div>
+    <div className='mt-8'>
+      <Footer />
     </div>
     </>
   )

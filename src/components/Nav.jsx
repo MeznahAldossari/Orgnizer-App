@@ -140,9 +140,14 @@ const Nav = () => {
   >
     <RiLogoutCircleLine fill='#6e68c4' size={23} className='mb-1 cursor-pointer' />
     <dialog id="my_modal_10" className="modal modal-bottom sm:modal-middle">
-      <div className="modal-box flex flex-col justify-center items-center h-[25vh] ">
-        <h3 className="font-bold text-lg">هل انت متأكد من تسجيل الخروج؟</h3>
-        <div className="modal-action">
+     
+
+        <div className="modal-box h-[30vh] flex flex-col justify-center items-center">
+        <div className='flex flex-col justify-center items-center gap-4'>
+  <h3 className="font-bold text-lg">هل انت متأكد من تسجيل الخروج؟</h3>
+          
+
+          
           <form method="dialog" className='flex justify-center items-center gap-2 w-full '>
             <button
               type="button"

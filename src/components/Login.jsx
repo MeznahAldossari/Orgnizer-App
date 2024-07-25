@@ -103,25 +103,29 @@ function Login() {
 	<div className='w-full h-screen flex flex-col  justify-center items-center'>
     <div className='relative flex flex-col mt-6 items-center gap-3 w-[35%] bg-white rounded-lg shadow-lg h-[75vh] max-sm:w-[90%]'>
       <img className="w-[20vw] mt-6 " src={Logo} />
-      <div className='w-[80%] flex  flex-col  '>
+      
+      <div className='w-[80%] flex  flex-col items-center '>
         <i className='fa fa-user   text-purple-800 text-lg'></i>
           <input type='email' value={user.email} onChange={changeName} placeholder='البريد الالكتروني' className='pr-1 w-[90%] border-b-2 focus:outline-none focus:border-[#99d2cb]  ' />
-          {emailErr && <span className='text-red-500 w-full '>{emailErr}</span>}
+          {emailErr && <span className='text-red-500 text-end text-[0.7rem] '>{emailErr}</span>}
 
       </div>
 
-      <div className=' mt-4 w-[80%] flex flex-col'>
+      <div className=' mt-4 w-[80%] flex flex-col items-center'>
         <i className='fa fa-lock  text-purple-800 text-lg'></i>
           <input type='password' value={user.password} onChange={changePassword} placeholder='كلمة المرور' className='pr-1 border-b-2 w-[90%] focus:outline-none focus:border-[#99d2cb] ' />
-          {passwordErr && <span className='text-red-500 w-full'>{passwordErr}</span>}
+          {passwordErr && <span className='text-red-500 text-end text-[0.7rem]'>{passwordErr}</span>}
 
       </div>
+      
+    
       <div className='flex justify-end w-[20vw] max-sm:w-[65vw]'>
       </div>
-      <button onClick={loginData} className='py-3 px-20 bg-[#99d2cb] rounded-lg text-white font-bold uppercase text-lg mt-6 transform hover:translate-y-1 transition-all duration-500'> تسجيل دخول</button>
       {err && (
-            <span className='text-red-500 w-[80%] mt-2'>{err}</span>
+            <span className='text-red-500 text-center w-full text-[0.7rem]'>{err}</span>
         )}
+      <button onClick={loginData} className='py-3 px-20 bg-[#99d2cb] rounded-lg text-white font-bold uppercase text-lg my-6 transform hover:translate-y-1 transition-all duration-500'> تسجيل دخول</button>
+      
     </div>
   </div>
 
