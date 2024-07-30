@@ -512,14 +512,14 @@ const DetailsCompanies = () => {
                        </div>
                    </td> */}
                    <td className="p-3 px-5 max-sm:p-1 text-center">
-                        <div className="flex flex-wrap justify-center overflow-y-auto h-6 custom-scrollbar max-sm:h-12">
+                        <div className="flex flex-wrap justify-center  h-6  max-sm:h-12">
                         
                            <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[10ch] break-words max-sm:w-[10ch]">    {job.positionName}  </p>
                        </div>
                    </td>
                    
                    <td className="p-3 px-5 max-sm:p-1 text-center">
-                        <div className="flex flex-wrap justify-center overflow-y-auto h-7 custom-scrollbar max-sm:h-12">
+                        <div className="flex flex-wrap justify-center h-7  max-sm:h-12">
                             <p className="text-base font-medium max-sm:text-xs leading-none text-gray-700 w-[10ch] break-words max-sm:w-[10ch] ">  
                                 <div className='flex gap-2 justify-center'>
                                    <span className="text-base px-4 bg-[#fccd69] py-1 rounded-md text-white font-medium leading-none  mr-2 max-sm:w-10 max-sm:text-[0.7rem] max-sm:px-0.5 max-sm:font-bold">{job.status}</span>
