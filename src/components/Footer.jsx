@@ -13,7 +13,7 @@ const Footer = () => {
                 {/* <img className='w-[10vw] max-sm:w-[30vw]' src={Logo} alt="" /> */}
                 {/* <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem quisquam vero nam labore eum, reprehenderit explicabo laborum facilis consequatur? Ducimus nihil exercitationem, blanditiis voluptas laborum alias deleniti ullam soluta tempora?</p> */}
                 <div className='h-[8vh] flex flex-col gap-1 max-sm:h-[6vh]'>
-                    <div className='flex justify-center'>Contact Us</div>
+                    <div className='flex justify-center'>لتواصل معنا</div>
                     <div className="flex justify-center w-[50vw] gap-2 cursor-pointer max-sm:w-[80vw] max-sm:justify-center">
                         <a href='https://x.com/Afnan117084'><img className='w-9 h-9 max-sm:w-8 max-sm:h-8' src={X} alt="x-icon" /></a>
                         {/* <img src={Facebook} alt="facebook-icon " /> */}

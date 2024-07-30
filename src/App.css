@@ -91,3 +91,22 @@
 .custom-shape-divider-bottom-1721182767 .shape-fill {
     fill: #FFFFFF;
 } */
+
+
+.custom-scrollbar {
+  scrollbar-width: thin; 
+  scrollbar-color: #a0aec0 #edf2f7;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #a0aec0;
+  scrollbar-width: thin;  
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #edf2f7;
+}

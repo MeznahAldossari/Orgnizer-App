@@ -7,7 +7,7 @@ import { Link, useParams } from 'react-router-dom'
 import { auth, db } from '../config/firebase';
 import { getDoc, doc, collection, getDocs,setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
-
+import Footer from '../components/Footer'
 
 const Companies = () => {
   const getLocal = JSON.parse(localStorage.getItem("loggedIn"));
@@ -152,29 +152,59 @@ const Companies = () => {
             <div className='flex flex-col justify-center items-start mr-8 mb-8 ml-8 w-full h-full'>
 
                 <div className='bg-white w-full h-full rounded-lg'>
-                    <div className='flex flex-wrap justify-start items-end w-full h-auto p-4'>
-                        <p className='font-semibold text-[1.3rem] mt-12 mr-4 pt-1 pr-1 text-[#5C59C2] mb-7 max-sm:text-[1rem] max-sm:text-center'>
+                    <div className='flex justify-between items-center w-full h-auto p-4 pr-0 '>
+                        <div>
+                        <p className='font-semibold text-[1.6rem] mt-12  pt-1 pr-1 text-[#5C59C2] mb-7 max-sm:text-[1rem] max-sm:text-center'>
                             قائمة الشركات ذات الاهتمام بمجال تخصصك
                         </p>
-                        <div className='flex gap-2 w-full sm:w-[10vw] h-auto mt-6 mr-6'>
-                            <div className="pt-2 relative mx-auto text-gray-600">
-                                {checkExists && (
-                                    <button onClick={() => eventRegister(id)}>تسجيل</button>
-                                )}
-                            </div>
                         </div>
+                        
+                        <dialog id="my_modal_11" className="modal modal-bottom sm:modal-middle">
+    <div className="modal-box">
+        <div className="flex flex-col justify-center items-center gap-4">
+            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 512 512">
+                <path fill="#32BEA6" d="M504.1,256C504.1,119,393,7.9,256,7.9C119,7.9,7.9,119,7.9,256C7.9,393,119,504.1,256,504.1C393,504.1,504.1,393,504.1,256z"></path>
+                <path fill="#FFF" d="M392.6,172.9c-5.8-15.1-17.7-12.7-30.6-10.1c-7.7,1.6-42,11.6-96.1,68.8c-22.5,23.7-37.3,42.6-47.1,57c-6-7.3-12.8-15.2-20-22.3C176.7,244.2,152,229,151,228.4c-10.3-6.3-23.8-3.1-30.2,7.3c-6.3,10.3-3.1,23.8,7.2,30.2c0.2,0.1,21.4,13.2,39.6,31.5c18.6,18.6,35.5,43.8,35.7,44.1c4.1,6.2,11,9.8,18.3,9.8c1.2,0,2.5-0.1,3.8-0.3c8.6-1.5,15.4-7.9,17.5-16.3c0.1-0.2,8.8-24.3,54.7-72.7c37-39.1,61.7-51.5,70.3-54.9c0.1,0,0.1,0,0.3,0c0,0,0.3-0.1,0.8-0.4c1.5-0.6,2.3-0.8,2.3-0.8c-0.4,0.1-0.6,0.1-0.6,0.1l0-0.1c4-1.7,11.4-4.9,11.5-5C393.3,196.1,397,184.1,392.6,172.9z"></path>
+            </svg>
+            <h3 className="font-bold text-lg">تم تسجيل حضورك بنجاح</h3>
+        </div>
+        <div className="modal-action">
+            <form method="dialog">
+                {/* <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button> */}
+            </form>
+        </div>
+    </div>
+</dialog>
+
+<div className="pt-2 ml-[-1%] w-[50%] flex justify-end mx-auto text-gray-600 ">
+    {checkExists && (
+        <button
+            className="cursor-pointer w-[12vw] gap-2 px-1 py-3 max-sm:mt-0 text-white justify-center items-center rounded-lg font-bold text-[0.8rem] bg-[#f39e4e] flex"
+            onClick={() => {
+                eventRegister(id);
+                document.getElementById('my_modal_11').showModal();
+                setTimeout(() => {
+                    document.getElementById('my_modal_11').close();
+                }, 2000);
+            }}
+        >
+            تأكيد حضورك
+        </button>
+    )}
+</div>
+
                     </div>
 
-                    <div className="w-fit mx-auto grid grid-cols-3 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-32 mb-16 mt-10 max-sm:grid-cols-1 max-sm:gap-y-4">
+                    <div className="w-full  mx-auto grid grid-cols-3 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-32 mb-16 mt-10 max-sm:grid-cols-1 max-sm:gap-y-8 ">
                         {/* Cards here */}
                         {hisCompanies && (
                             <>
                                 {hisCompanies.map((item, index) => (
-                                    <div key={index} className='w-80 overflow-hidden rounded-md bg-[#fafafa] shadow-[0_0_1rem_rgb(0,0,0,0.1)]'>
+                                    <div key={index} className='w-[25vw] h-[80vh] overflow-hidden rounded-md bg-[#fafafa] shadow-[0_0_1rem_rgb(0,0,0,0.1)] max-sm:w-full max-sm:h-full'>
                                         <div className='card_cover'></div>
                                         <div className='flex flex-col items-center justify-center gap-2'>
-                                            <div className='mt-[3.5rem] flex flex-col items-center justify-center px-8 py-4 pt-0 '>
-                                                <div className='absolute mb-12 h-[6rem] w-[6rem] overflow-hidden rounded-full border-4 border-[3px_soild_#fafafa] shadow-[0_0_1rem_rgba(0,0,0,0.2)]'>
+                                            <div className='mt-[0.5rem] bg-white flex flex-col items-center justify-center px-8 py-4 pt-0 '>
+                                                <div className='absolute bg-white mb-12 h-[6rem] w-[6rem] overflow-hidden rounded-full border-4 border-[3px_soild_#fafafa] shadow-[0_0_1rem_rgba(0,0,0,0.2)]'>
                                                     <img className='h-full w-full object-cover' src={item.logo} alt="Company Logo" />
                                                 </div>
                                             </div>
@@ -217,6 +247,9 @@ const Companies = () => {
                     </div>
                 </div>
             </div>
+        </div>
+        <div>
+            <Footer />
         </div>
     </>
 );

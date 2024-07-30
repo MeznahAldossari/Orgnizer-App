@@ -43,7 +43,7 @@ function Router() {
         //   errorElement:<ErrorPage/>
         },
         {
-            path: "/StudentProfile",
+            path: "/StudentProfile/:studentId",
             element: <StudentProfile />,
         },
         {
