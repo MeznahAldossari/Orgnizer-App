@@ -238,8 +238,6 @@ const [companyupdated, setCompanyupdated] = useState({
         companyupdated.logo !== "" &&
         companyupdated.jobPositions !== "" &&
         companyupdated.logo !== undefined &&
-        companyupdated.jobPositions !== undefined &&
-        companyupdated.jobPositions.length !== 0 &&
         companyupdated.description !== undefined &&
         companyupdated.Location !== undefined
       ) {

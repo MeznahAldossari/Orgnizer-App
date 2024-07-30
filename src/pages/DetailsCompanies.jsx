@@ -157,6 +157,14 @@ const DetailsCompanies = () => {
                            ]
                        });
                        setApplied(true)
+// HERE
+                       addToCompanies([{ indexNo: index, 
+                        company: companyID, 
+                        studentID: getLocal.id, 
+                        positionName: jobName, 
+                        status: "انتظار", 
+                        eventId:eventIDs,
+                        appliedDate: localDate }])
 
                    } else {
                        console.error(`Parent document 'users/${getLocal.id}/myEvents/${eventIDs}' does not exist.`);
